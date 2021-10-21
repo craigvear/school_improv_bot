@@ -118,7 +118,7 @@ class AiDataEngine():
                             'affect_net',
                             'self_awareness']
 
-        self.rhythm_rate = 0.1
+        self.rhythm_rate = 1
         self.affect_listen = 0
 
         # fill with random values
@@ -133,7 +133,7 @@ class AiDataEngine():
         self.affect_perception = MoveAffectCONV2()
 
         # logging on/off switches
-        self.net_logging = False
+        self.net_logging = True
         self.master_logging = False
         self.streaming_logging = False
         self.affect_logging = False
@@ -150,7 +150,11 @@ class AiDataEngine():
 
             # calc rhythmic intensity based on self-awareness factor & global speed
             intensity = self.datadict.get('self_awareness')
-            self.rhythm_rate = (self.rhythm_rate * intensity) * self.global_speed
+            # todo this is a dirty fix, and not what I meant
+            #  it is too slow for the affect responses
+            self.rhythm_rate = (self.rhythm_rate * intensity) + self.global_speed
+
+            print('                                 rhythm rate', self.rhythm_rate)
             self.datadict['rhythm_rate'] = self.rhythm_rate
 
             # get input vars from dict (NB not always self)
@@ -309,6 +313,7 @@ class AiDataEngine():
                             print('interrupt bang = ', self.interrupt_bang)
 
                     # and wait for a cycle
+                    # todo this is being effected by the rhythm rate crapola
                     sleep(self.rhythm_rate)
 
     def parse_got_dict(self, got_dict):

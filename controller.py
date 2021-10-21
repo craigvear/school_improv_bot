@@ -58,7 +58,7 @@ class Client:
     def snd_listen(self):
         print("mic listener: started!")
         while True:
-            data = np.frombuffer(self.stream.read(self.CHUNK,exception_on_overflow = False),
+            data = np.frombuffer(self.stream.read(self.CHUNK, exception_on_overflow = False),
                                  dtype=np.int16)
             peak = np.average(np.abs(data)) * 2
             if peak > 2000:
@@ -90,7 +90,7 @@ class Client:
         print('im here sound bot - sleeping for 3')
         # sleep(3)
 
-        # then start improvisers
+    # then start improvisers
         while True:
             print('im here4')
             # grab raw data from engine stream
@@ -110,27 +110,29 @@ class Client:
         print('making sound')
 
         # make some duration decisions
+        # todo this needs fixing - it should some form a variability
+        #  so its not totally dependent on nets prediction
         len_delta = random() * 1000
         duration = rhythm_rate * len_delta
 
         print('duration = ', duration)
 
         # making sound
-        if duration > 10:
-            self.piano.which_note(incoming_raw_data)
-            print('play')
+        # if duration > 10: # todo this is problamatoic
+        self.piano.which_note(incoming_raw_data)
+        print('play')
 
         # move bot
         if self.robot_connected:
             self.move_robot(incoming_raw_data, duration)
         else:
-            sleep(duration/1000) # sleep while Kyma makes a sound (in ms) - now son
+            sleep(duration/100) # todo this should be / 1000 but duration is glitchy
 
         print('fininshed a play')
 
     def move_robot(self, incoming_data, duration):
         # which movement: fwd, back, left, right
-        if duration > 0.2:
+        if duration > 0.2: # todo this is problamatoic
             # define movement
             rnd_move = randrange(4)
 
@@ -151,5 +153,5 @@ class Client:
                 self.robot_robot.right(rnd_speed)
 
         # sleep for duration then send a stop command
-        sleep(duration/1000)
+        sleep(duration/100)
         self.robot_robot.stop()

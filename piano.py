@@ -26,7 +26,7 @@
 # from mingus.core import notes, chords
 from mingus.containers import *
 from mingus.midi import fluidsynth
-from time import sleep
+from time import sleep, time
 from random import random, randrange, getrandbits, shuffle
 
 
@@ -68,11 +68,13 @@ class Piano:
         # fluidsynth.stop_Note(note=self.played_note)
 
         # which chord
-        # if self.tick:
-        rnd_chord = randrange(3)
-        if rnd_chord == 0:
+        now_time = int(time())
+        bar = now_time % 4
+
+        # rnd_chord = randrange(3)
+        if bar == 0:
             chord = self.dmin7
-        elif rnd_chord == 1:
+        elif bar == 1:
             chord = self.g9
         else:
             chord = self.cM7

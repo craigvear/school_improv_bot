@@ -41,7 +41,7 @@ def main():
 
 if __name__ == '__main__':
     # instantiate the AI server
-    engine = AiDataEngine()
+    engine = AiDataEngine(speed=1)
 
     # instantiate the controller client and pass AI engine
     cl = Client(engine)
