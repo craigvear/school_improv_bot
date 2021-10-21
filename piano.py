@@ -27,7 +27,7 @@
 from mingus.containers import *
 from mingus.midi import fluidsynth
 from time import sleep
-from random import random, randrange, getrandbits
+from random import random, randrange, getrandbits, shuffle
 
 
 class Piano:
@@ -49,7 +49,7 @@ class Piano:
 
         # start fluidsynth
         fluidsynth.init(SF2)
-        # self.played_note = "C"
+        self.played_note = 0
 
         # start someform of clock for chord sequence
         self.tick = 0.0
@@ -70,13 +70,16 @@ class Piano:
         # which chord
         # if self.tick:
         rnd_chord = randrange(3)
-        # if rnd_chord == 0:
-        #     chord = self.dmin7
-        # elif rnd_chord == 1:
-        #     chord = self.g9
-        # else:
-        chord = self.cM7
-        print (chord)
+        if rnd_chord == 0:
+            chord = self.dmin7
+        elif rnd_chord == 1:
+            chord = self.g9
+        else:
+            chord = self.cM7
+
+        # shufle chord seq --- too much random???
+        shuffle(chord)
+        print(chord)
 
         # # which note
         # len_of_chord = len(chord)
@@ -86,68 +89,46 @@ class Piano:
 
         # rough random for weighting
         which_weight = random() * 100
-        print(which_weight)
 
         # chord note or next note?
-        add_whole_note = getrandbits(1)
-        print(add_whole_note)
+        add_whole_note = randrange(2)
 
+        # which octave? Drunk walk
+        drunk_octave = randrange(4)
+        print('                         ', drunk_octave)
+        # drunk move down octave
+        if drunk_octave == 0:
+            self.octave -= 1
+
+        # drunk move up an octave
+        elif drunk_octave == 1:
+            self.octave += 1
+
+        # drunk reset to octave 4
+        elif drunk_octave == 3:
+            self.octave = 4
+
+        # check its in range
+        if self.octave < 0:
+            self.octave = 2
+        elif self.octave > self.OCTAVES:
+            self.octave = 4
+
+        # get note and play
         current_sum = 0
         for note_pos, weight in chord:
             note_name = self.note_list[note_pos + add_whole_note]
-            print(note_name, weight)
+            print(f'original note name = {self.note_list[note_pos]}; '
+                  f'adjusted note name = {note_name}, weight = {weight}')
+
+            # which note depending on weighting
             current_sum += weight
             if current_sum > which_weight:
                 print('playing', note_name)
                 self.play_note(Note(note_name, self.octave))
-                # self.played_note = note_name
+                self.played_note = note_name
                 break
 
-
-
-
-        #
-        # # work out weighting
-        # # if
-        #
-        #
-        # # quick rescale as a fix
-        # # note_data = incoming_data
-        #
-        #
-        #
-        #
-        # if add_whole_note:
-        #
-        #     note_data = randrange(13)
-        #     note_data += 1
-        #
-        #     if note_data == 1:
-        #         self.play_note(Note("C", self.octave))
-        #     elif note_data == 2:
-        #         self.play_note(Note("C#", self.octave))
-        #     elif note_data == 3:
-        #         self.play_note(Note("D", self.octave))
-        #     elif note_data == 4:
-        #         self.play_note(Note("D#", self.octave))
-        #     elif note_data == 5:
-        #         self.play_note(Note("E", self.octave))
-        #     elif note_data == 6:
-        #         self.play_note(Note("F", self.octave))
-        #     elif note_data == 7:
-        #         self.play_note(Note("F#", self.octave))
-        #     elif note_data == 8:
-        #         self.play_note(Note("G", self.octave))
-        #     elif note_data == 9:
-        #         self.play_note(Note("G#", self.octave))
-        #     elif note_data == 10:
-        #         self.play_note(Note("A", self.octave))
-        #     elif note_data == 11:
-        #         self.play_note(Note("A#", self.octave))
-        #     elif note_data == 12:
-        #         self.play_note(Note("B", self.octave))
-        #     elif note_data == 13:
-        #         self.play_note(Note("C", self.octave + 1))
 
 if __name__ == "__main__":
     piano = Piano()

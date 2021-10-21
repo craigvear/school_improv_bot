@@ -134,7 +134,7 @@ class AiDataEngine():
 
         # logging on/off switches
         self.net_logging = False
-        self.master_logging = True
+        self.master_logging = False
         self.streaming_logging = False
         self.affect_logging = False
 

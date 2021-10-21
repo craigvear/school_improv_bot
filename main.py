@@ -30,7 +30,7 @@ def main():
     t2 = Thread(target=engine.affect)
     t3 = Thread(target=cl.snd_listen)
     t4 = Thread(target=cl.data_exchange)
-    t5 = Thread(target=cl.robot_sax)
+    t5 = Thread(target=cl.sound_bot)
 
     t1.start()
     t2.start()
