@@ -61,6 +61,7 @@ class Client:
         # init got dict
         self.got_dict = self.engine.datadict
 
+        # todo - move this sequence to its own build and incorporate the rest.
         # start visual processing and pass got_dict
         PLATFORM = platform.machine()
         app = QApplication(sys.argv)
@@ -68,6 +69,7 @@ class Client:
         widget = Gui(self.got_dict)
         widget.resize(800, 600)
         widget.showFullScreen()
+        print('widget')
         widget.setWindowTitle("visual robotic score")
         widget.setStyleSheet("background-color:white;")
 
