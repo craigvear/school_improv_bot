@@ -3,9 +3,9 @@ import pyaudio
 import numpy as np
 from random import random
 from time import sleep
-from pydub import AudioSegment
-from pydub.playback import play
-from pythonosc.udp_client import SimpleUDPClient
+# from pydub import AudioSegment
+# from pydub.playback import play
+# from pythonosc.udp_client import SimpleUDPClient
 from jetbot.robot import Robot
 from piano import Piano
 
@@ -19,7 +19,6 @@ class Client:
         self.running = True
         self.connected = False
         self.logging = False
-        # self.kyma = True
 
         # is the robot connected
         self.robot_connected = False
@@ -52,13 +51,14 @@ class Client:
         # init got dict
         self.got_dict = {}
 
-        # # instantiate the server
+        # own the AI data server
         self.engine = ai_engine
 
     def snd_listen(self):
         print("mic listener: started!")
         while True:
-            data = np.frombuffer(self.stream.read(self.CHUNK, exception_on_overflow = False),
+            data = np.frombuffer(self.stream.read(self.CHUNK,
+                                                  exception_on_overflow = False),
                                  dtype=np.int16)
             peak = np.average(np.abs(data)) * 2
             if peak > 2000:
@@ -110,15 +110,14 @@ class Client:
         print('making sound')
 
         # make some duration decisions
-        # todo this needs fixing - it should some form a variability
-        #  so its not totally dependent on nets prediction
-        len_delta = random() * 1000
-        duration = rhythm_rate * len_delta
+        intensity = self.got_dict['self_awareness']
+        len_delta = (random() + intensity) * 1000
+        duration = rhythm_rate + len_delta
 
         print('duration = ', duration)
 
         # making sound
-        # if duration > 10: # todo this is problamatoic
+
         self.piano.which_note(incoming_raw_data)
         print('play')
 
@@ -126,32 +125,31 @@ class Client:
         if self.robot_connected:
             self.move_robot(incoming_raw_data, duration)
         else:
-            sleep(duration/100) # todo this should be / 1000 but duration is glitchy
+            sleep(duration/1000)
 
         print('fininshed a play')
 
     def move_robot(self, incoming_data, duration):
         # which movement: fwd, back, left, right
-        if duration > 0.2: # todo this is problamatoic
-            # define movement
-            rnd_move = randrange(4)
+        # define movement
+        rnd_move = randrange(4)
 
-            rnd_speed = randrange(1, 5)
-            rnd_speed = rnd_speed * self.speed_factor # int(rnd_speed * self.speed_factor)
+        rnd_speed = randrange(1, 5)
+        rnd_speed = rnd_speed * self.speed_factor # int(rnd_speed * self.speed_factor)
 
-            # move an arm joint
-            if rnd_move == 0:
-                self.robot_robot.forward(rnd_speed)
+        # move an arm joint
+        if rnd_move == 0:
+            self.robot_robot.forward(rnd_speed)
 
-            elif rnd_move == 1:
-                self.robot_robot.backward(rnd_speed)
+        elif rnd_move == 1:
+            self.robot_robot.backward(rnd_speed)
 
-            elif rnd_move == 2:
-                self.robot_robot.left(rnd_speed)
+        elif rnd_move == 2:
+            self.robot_robot.left(rnd_speed)
 
-            elif rnd_move == 3:
-                self.robot_robot.right(rnd_speed)
+        elif rnd_move == 3:
+            self.robot_robot.right(rnd_speed)
 
         # sleep for duration then send a stop command
-        sleep(duration/100)
+        sleep(duration/1000)
         self.robot_robot.stop()
