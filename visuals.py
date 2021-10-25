@@ -24,22 +24,35 @@ from processVisualImages import ProcessVisuals
 
 
 class Gui(QWidget):
-    def __init__(self, ai_engine):
+    def __init__(self, ai_dict):
         QWidget.__init__(self)
 
-        # osc_signal = GotOscSignal()
+        # FP = open a signal streamer
+        self.osc_signal = ai_dict
+        # CV = get a stream of data from the AI engine
+
+        # # add additional params to dict
+        screen_resolution = self.geometry()
+        height = screen_resolution.height()
+        width = screen_resolution.width()
+        print(self.osc_signal)
+
+        # self.osc_signal["width"] = width
+        # self.osc_signal["height"] = height
+        # print(self.osc_signal)
+
+        # FP = and connect
         # osc_signal.osc_str.connect(self.got_osc_signal)
-        #
+        # CV = nothing to do
+
+        # FP = pass to OSC dispatcher for robot control and dict filling
         # _osc_data = OscData(osc_signal)
+        # CV = fill the dict (using old names for now), no robot control
 
-        # own the AI data server
-        engine = ai_engine
-        # self.data_dict = self.engine.datadict
+        # FP & CV = instantiate the visual processing object
+        self.process_visuals = ProcessVisuals(height, width)
 
-        # start visual processing and pass engine
-        self.process_visuals = ProcessVisuals()
-
-        # start the gui
+        # FP & CV = start the thread
         self.gui_thread = None
         self.update_gui()
 
@@ -47,7 +60,7 @@ class Gui(QWidget):
         # print("-------- updating gui")
 
         # get data dict from AI engine and add to a queue
-        # self.data_dict = self.engine.datadict
+        self.process_visuals.add_to_queue(self.osc_signal)
 
         self.update()
         self.gui_thread = threading.Timer(0.1, self.update_gui)
@@ -119,7 +132,8 @@ class Gui(QWidget):
 
         self.process_visuals.add_to_queue(osc_msg)
 
-def main():
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     widget = Gui()
@@ -134,6 +148,3 @@ def main():
     widget.show()
 
     sys.exit(app.exec_())
-
-if __name__ == "__main__":
-    main()

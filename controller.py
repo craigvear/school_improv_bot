@@ -8,6 +8,13 @@ from time import sleep
 # from pythonosc.udp_client import SimpleUDPClient
 from jetbot.robot import Robot
 from piano import Piano
+from visuals import Gui
+from PySide2.QtWidgets import (QApplication, QWidget)
+from PySide2.QtGui import QPainter, Qt, QPen, QColor, QImage
+
+import platform
+import sys
+
 
 """main client script
 controls microphone stream and organise all audio responses
@@ -48,11 +55,26 @@ class Client:
                                'tempo': 0.1
                                }
 
-        # init got dict
-        self.got_dict = {}
-
         # own the AI data server
         self.engine = ai_engine
+
+        # init got dict
+        self.got_dict = self.engine.datadict
+
+        # start visual processing and pass got_dict
+        PLATFORM = platform.machine()
+        app = QApplication(sys.argv)
+
+        widget = Gui(self.got_dict)
+        widget.resize(800, 600)
+        widget.showFullScreen()
+        widget.setWindowTitle("visual robotic score")
+        widget.setStyleSheet("background-color:white;")
+
+        if PLATFORM == "x86_64":
+            widget.setCursor(Qt.BlankCursor)
+
+        widget.show()
 
     def snd_listen(self):
         print("mic listener: started!")

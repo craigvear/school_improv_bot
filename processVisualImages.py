@@ -3,13 +3,14 @@ import random
 from operator import itemgetter
 
 from PySide2.QtGui import QImage, QPainter
+from PySide2.QtWidgets import QWidget
 
 MAX_SIZE = 500
 MAX_LIFESPAN = 250
 
 
 class ProcessVisuals:
-    def __init__(self):
+    def __init__(self, height, width):
 
         self.queue = []
         self.visual_types = ("line",
@@ -17,7 +18,7 @@ class ProcessVisuals:
                              "rect",
                              "image")
 
-        self.external_images = [QImage(image_to_load) for image_to_load in glob.glob("images/*.png")]
+        self.external_images = [QImage(image_to_load) for image_to_load in glob.glob("fab_visual_score/images/*.png")]
 
         self.image_composition_modes = (QPainter.CompositionMode_HardLight,
                                         QPainter.CompositionMode_Difference,
@@ -26,34 +27,24 @@ class ProcessVisuals:
                                         QPainter.CompositionMode_Multiply,
                                         QPainter.CompositionMode_SoftLight)
 
-    def add_to_queue(self, osc_signal_dict):
-        axisa = osc_signal_dict["axisa"]
-        axisb = osc_signal_dict["axisb"]
+        # add additional params to dict
+        self.height = height
+        self.width = width
 
-        if (axisa < -0.2 or axisa > 0.2 or axisb < 0.2 or axisb > 0.2) and len(self.queue) < 10:
+    def add_to_queue(self, osc_signal_dict):
+        if len(self.queue) < 10:
             self.process_osc_signal(osc_signal_dict)
 
     def process_osc_signal(self, osc_signal_dict):
         # print("processing signal")
 
         # get current data dict from AI engine
-        axisa, axisb, mlx, mly, kinx, kinz, width, height = itemgetter("move_rnn",
-                                                                       "axisb",
-                                                                       "mlx",
-                                                                       "mly",
-                                                                       "kinx",
-                                                                       "kinz",
-                                                                       "width",
-                                                                       "height")(osc_signal_dict)
-
-        # axisa, axisb, mlx, mly, kinx, kinz, width, height = itemgetter("axisa",
-        #                                                                "axisb",
-        #                                                                "mlx",
-        #                                                                "mly",
-        #                                                                "kinx",
-        #                                                                "kinz",
-        #                                                                "width",
-        #                                                                "height")(osc_signal_dict)
+        axisa, axisb, mlx, mly, kinx, kinz = itemgetter("move_rnn",
+                                                                       "affect_rnn",
+                                                                       "move_affect_conv2",
+                                                                       "affect_move_conv2",
+                                                                       "rnd_poetry",
+                                                                       "affect_net")(osc_signal_dict)
 
         final_visual = dict(type=random.choice(self.visual_types),
                             lifespan=self.lifespan(axisa, axisb, mlx, mly, kinx, kinz),
@@ -66,8 +57,8 @@ class ProcessVisuals:
                             image_composition_mode=random.choice(self.image_composition_modes),
                             pen=random.randint(1, MAX_SIZE),
                             size=random.randint(1, MAX_SIZE),
-                            position={"x": random.randint(0, width),
-                                      "y": random.randint(0, height)},
+                            position={"x": random.randint(0, self.width),
+                                      "y": random.randint(0, self.height)},
                             direction=random.randint(0, 11))
 
         self.queue.append(final_visual)
