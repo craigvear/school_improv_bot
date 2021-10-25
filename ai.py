@@ -154,7 +154,6 @@ class AiDataEngine():
 
             self.rhythm_rate = (self.rhythm_rate * intensity) * self.global_speed
 
-            print('                                 rhythm rate', self.rhythm_rate)
             self.datadict['rhythm_rate'] = self.rhythm_rate
 
             # get input vars from dict (NB not always self)

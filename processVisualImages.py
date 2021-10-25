@@ -31,9 +31,9 @@ class ProcessVisuals:
         self.height = height
         self.width = width
 
-    def add_to_queue(self, osc_signal_dict):
+    def add_to_queue(self, ai_signal_dict):
         if len(self.queue) < 10:
-            self.process_osc_signal(osc_signal_dict)
+            self.process_osc_signal(ai_signal_dict)
 
     def process_osc_signal(self, osc_signal_dict):
         # print("processing signal")
@@ -45,6 +45,8 @@ class ProcessVisuals:
                                                                        "affect_move_conv2",
                                                                        "rnd_poetry",
                                                                        "affect_net")(osc_signal_dict)
+
+        # print(' getting values ', axisa, axisb, mlx, mly, kinx, kinz)
 
         final_visual = dict(type=random.choice(self.visual_types),
                             lifespan=self.lifespan(axisa, axisb, mlx, mly, kinx, kinz),
@@ -61,6 +63,7 @@ class ProcessVisuals:
                                       "y": random.randint(0, self.height)},
                             direction=random.randint(0, 11))
 
+        # print(final_visual)
         self.queue.append(final_visual)
 
     def lifespan(self, a, b, c, d, e, f):

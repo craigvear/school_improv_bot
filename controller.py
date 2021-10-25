@@ -118,7 +118,7 @@ class Client:
             # grab raw data from engine stream
             raw_data_from_dict = self.got_dict['master_output']
             rhythm_rate = self.got_dict['rhythm_rate']
-            print('data = ', raw_data_from_dict, rhythm_rate)
+            # print('data = ', raw_data_from_dict, rhythm_rate)
 
             # make a sound & move bot
             self.make_sound(raw_data_from_dict, rhythm_rate)
@@ -136,7 +136,7 @@ class Client:
         len_delta = (random() + intensity) * 1000
         duration = rhythm_rate + len_delta
 
-        print('duration = ', duration)
+        # print('duration = ', duration)
 
         # making sound
 

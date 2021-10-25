@@ -81,7 +81,6 @@ class Piano:
 
         # shufle chord seq --- too much random???
         shuffle(chord)
-        print(chord)
 
         # # which note
         # len_of_chord = len(chord)
@@ -97,7 +96,7 @@ class Piano:
 
         # which octave? Drunk walk
         drunk_octave = randrange(4)
-        print('                         ', drunk_octave)
+
         # drunk move down octave
         if drunk_octave == 0:
             self.octave -= 1
@@ -120,8 +119,8 @@ class Piano:
         current_sum = 0
         for note_pos, weight in chord:
             note_name = self.note_list[note_pos + add_whole_note]
-            print(f'original note name = {self.note_list[note_pos]}; '
-                  f'adjusted note name = {note_name}, weight = {weight}')
+            # print(f'original note name = {self.note_list[note_pos]}; '
+            #       f'adjusted note name = {note_name}, weight = {weight}')
 
             # which note depending on weighting
             current_sum += weight

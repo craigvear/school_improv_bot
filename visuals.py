@@ -28,14 +28,14 @@ class Gui(QWidget):
         QWidget.__init__(self)
 
         # FP = open a signal streamer
-        self.osc_signal = ai_dict
+        self.ai_input = ai_dict
         # CV = get a stream of data from the AI engine
 
         # # add additional params to dict
         screen_resolution = self.geometry()
         height = screen_resolution.height()
         width = screen_resolution.width()
-        print(self.osc_signal)
+        print(self.ai_input)
 
         # self.osc_signal["width"] = width
         # self.osc_signal["height"] = height
@@ -60,19 +60,21 @@ class Gui(QWidget):
         # print("-------- updating gui")
 
         # get data dict from AI engine and add to a queue
-        self.process_visuals.add_to_queue(self.osc_signal)
+        # todo align this to sound generation
+        self.process_visuals.add_to_queue(self.ai_input)
 
         self.update()
         self.gui_thread = threading.Timer(0.1, self.update_gui)
         self.gui_thread.start()
 
     def paintEvent(self, paint_event):
+        print('paint event')
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing, True)
 
         if len(self.process_visuals.queue):
             for i in self.process_visuals.queue:
-                # print("i {}".format(i))
+                print("i {}".format(i))
                 element_type, pen_size, size, original_color, position = itemgetter("type",
                                                                                     "pen",
                                                                                     "size",
@@ -104,7 +106,7 @@ class Gui(QWidget):
 
         painter.end()
 
-        # print("UPDATED")
+        print("UPDATED")
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_F:
@@ -117,20 +119,20 @@ class Gui(QWidget):
             self.gui_thread.cancel()
             app.quit()
 
-    @Slot(str)
-    def got_osc_signal(self, osc_msg):
-        osc_msg = literal_eval(osc_msg)
-
-        screen_resolution = self.geometry()
-        height = screen_resolution.height()
-        width = screen_resolution.width()
-
-        osc_msg["width"] = width
-        osc_msg["height"] = height
-
-        # print("main {}".format(str(osc_msg)))
-
-        self.process_visuals.add_to_queue(osc_msg)
+    # @Slot(str)
+    # def got_osc_signal(self, osc_msg):
+    #     osc_msg = literal_eval(osc_msg)
+    #
+    #     screen_resolution = self.geometry()
+    #     height = screen_resolution.height()
+    #     width = screen_resolution.width()
+    #
+    #     osc_msg["width"] = width
+    #     osc_msg["height"] = height
+    #
+    #     print("main {}".format(str(osc_msg)))
+    #
+    #     self.process_visuals.add_to_queue(osc_msg)
 
 
 if __name__ == "__main__":
