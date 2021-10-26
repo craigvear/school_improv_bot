@@ -25,8 +25,8 @@ class ProcessVisuals:
                                         QPainter.CompositionMode_SoftLight)
 
     def add_to_queue(self, ai_signal_dict):
-        if len(self.queue) < 10:
-            self.process_AI_signal(ai_signal_dict)
+        # if len(self.queue) < 10:
+        self.process_AI_signal(ai_signal_dict)
 
     def process_AI_signal(self, ai_signal_dict):
         print("processing signal")
@@ -56,7 +56,7 @@ class ProcessVisuals:
         print('length of queue = ', len(self.queue))
 
     def lifespan(self, rate):
-        lifespan = rate * 10
+        lifespan = rate * random.randint(10, 100)
         if lifespan < 0:
             lifespan *= -1
         while lifespan > MAX_LIFESPAN:
@@ -69,7 +69,8 @@ class ProcessVisuals:
         if len(self.queue):
             for i, val in enumerate(self.queue):
                 lifespan = val["lifespan"] - 1
-                if not lifespan:
+                # if not lifespan:
+                if lifespan <= 0:
                     del self.queue[i]
 
                 else:

@@ -248,7 +248,6 @@ class AiDataEngine():
             # flag for breaking on big affect signal
             self.interrupt_bang = True
 
-            # todo - is this doing what you think?
             # calc master cycle before a change
             master_cycle = randrange(6, 26) * self.global_speed
             loop_dur = time() + master_cycle
@@ -256,7 +255,7 @@ class AiDataEngine():
             if self.affect_logging:
                 print(f"                 interrupt_listener: started! sleeping now for {loop_dur}...")
 
-            # refill the dicts?????
+            # refill the dicts
             self.dict_fill()
 
             # child cycle - waiting for interrupt  from master clock
@@ -301,9 +300,12 @@ class AiDataEngine():
 
                     # calc affect on behaviour
                     # if input stream is LOUD then smash a random fill and break out to Daddy cycle...
-                    if affect_listen > 0.40:
+                    if affect_listen > 20000:
                         if self.affect_logging:
                             print('interrupt > HIGH !!!!!!!!!')
+
+                        # emit at various points in the affect cycle
+                        # self.emitter(affect_listen)
 
                         # A - refill dict with random
                         self.dict_fill()
@@ -317,18 +319,24 @@ class AiDataEngine():
                         break
 
                     # if middle loud fill dict with random, all processes norm
-                    elif 0.15 < affect_listen < 0.29:
+                    elif 3000 < affect_listen < 19999:
                         if self.affect_logging:
                             print('interrupt MIDDLE -----------')
                             print('interrupt bang = ', self.interrupt_bang)
 
+                        # emit at various points in the affect cycle
+                        # self.emitter(affect_listen)
+
                         # refill dict with random
                         self.dict_fill()
 
-                    elif affect_listen <= 0.15:
+                    elif affect_listen <= 3000:
                         if self.affect_logging:
                             print('interrupt LOW_______________')
                             print('interrupt bang = ', self.interrupt_bang)
+
+                    # # emit at various points in the affect cycle
+                    # self.emitter(affect_listen)
 
                     # and wait for a cycle
                     sleep(self.rhythm_rate)
