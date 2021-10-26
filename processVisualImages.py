@@ -1,21 +1,13 @@
 import glob
 import random
 from operator import itemgetter
-
 from PySide2.QtGui import QImage, QPainter
-from PySide2.QtWidgets import QWidget
-
-# from soundbot import SoundBot
 
 MAX_SIZE = 500
-MAX_LIFESPAN = 250
-
+MAX_LIFESPAN = 50
 
 class ProcessVisuals:
     def __init__(self):
-
-        # # own the sound bot object
-        # self.soundbot = SoundBot()
 
         self.queue = []
         self.visual_types = ("line",
@@ -39,17 +31,6 @@ class ProcessVisuals:
     def process_AI_signal(self, ai_signal_dict):
         print("processing signal")
 
-        # get current data dict from AI engine
-        # move_rnn, affect_rnn, move_affect_conv2, affect_move_conv2, \
-        # rnd_poetry, affect_net, rhythm_rate, width, height = itemgetter("move_rnn",
-        #                                                                 "affect_rnn",
-        #                                                                 "move_affect_conv2",
-        #                                                                 "affect_move_conv2",
-        #                                                                 "rnd_poetry",
-        #                                                                 "affect_net",
-        #                                                                 "rhythm_rate",
-        #                                                                 "height")(ai_signal_dict)
-
         master_output, rhythm_rate, width, height = itemgetter("master_output",
                                                              "rhythm_rate",
                                                              "width",
@@ -70,22 +51,12 @@ class ProcessVisuals:
                                       "y": random.randint(0, height)},
                             direction=random.randint(0, 11))
 
-        # lifespan=self.lifespan(move_rnn,
-        #                                                    affect_rnn,
-        #                                                    move_affect_conv2,
-        #                                                    affect_move_conv2,
-        #                                                    rnd_poetry,
-        #                                                    affect_net
-        #                                                    ),
-
         # print(final_visual)
         self.queue.append(final_visual)
-
-        # # make sound/ move robot?
-        # self.soundbot.make_sound(master_output, rhythm_rate)
+        print('length of queue = ', len(self.queue))
 
     def lifespan(self, rate):
-        lifespan = rate * 100
+        lifespan = rate * 10
         if lifespan < 0:
             lifespan *= -1
         while lifespan > MAX_LIFESPAN:
@@ -100,6 +71,7 @@ class ProcessVisuals:
                 lifespan = val["lifespan"] - 1
                 if not lifespan:
                     del self.queue[i]
+
                 else:
                     self.queue[i]["lifespan"] = lifespan
                     direction = self.queue[i]["direction"]
