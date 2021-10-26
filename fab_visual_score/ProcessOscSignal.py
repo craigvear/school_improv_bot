@@ -16,7 +16,7 @@ class ProcessOscSignal:
                              "rect",
                              "image")
 
-        self.external_images = [QImage(image_to_load) for image_to_load in glob.glob("images/*.png")]
+        self.external_images = [QImage(image_to_load) for image_to_load in glob.glob("../images/*.png")]
 
         self.image_composition_modes = (QPainter.CompositionMode_HardLight,
                                         QPainter.CompositionMode_Difference,
