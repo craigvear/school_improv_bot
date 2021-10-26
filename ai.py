@@ -2,7 +2,6 @@
 # --------------------------------------------------
 #
 # Embodied AI Engine Prototype v0.10
-# 2021/01/25
 #
 # © Craig Vear 2021
 # cvear@dmu.ac.uk
@@ -32,8 +31,7 @@ import socket
 # --------------------------------------------------
 
 
-# v4 models were trained with 1st batch of Blue Haze datasets
-
+"""The hive of neural nets - this is only the beginning of the singularity!"""
 class MoveRNN:
     def __init__(self):
         print('MoveRNN initialization')
@@ -74,15 +72,17 @@ class AffectMoveCONV2:
         self.pred = self.affect_move_conv2.predict(in_val)
         return self.pred
 
+"""
 # --------------------------------------------------
 #
 # controls all thought-trains and affect responses
 #
 # --------------------------------------------------
+"""
 
 class AiDataEngine():
     """speed = general tempo 0.5 ~ moderate fast, 1 ~ moderato; 2 ~ presto"""
-    def __init__(self, speed=1):
+    def __init__(self, ai_signal_obj, speed=0.5):
         print('building engine server')
         self.interrupt_bang = False
         # self.running = False
@@ -139,14 +139,22 @@ class AiDataEngine():
         self.streaming_logging = False
         self.affect_logging = False
 
+        # own the signal object for emission
+        self.ai_signal = ai_signal_obj
+
+    """
     # --------------------------------------------------
     #
     # prediction and rnd num gen zone
     #
     # --------------------------------------------------
+    """
 
-    # makes a prediction for a given net and defined input var
     def make_data(self):
+        """makes a prediction for a given net and defined input var.
+        this spins in its own rhythm making data.
+        Do not disturb - it has its own life cycle"""
+
         while True:
 
             # calc rhythmic intensity based on self-awareness factor & global speed
@@ -192,7 +200,7 @@ class AiDataEngine():
             if self.streaming_logging:
                 print(f'random poetry = {rnd_poetry}')
 
-            sleep(self.rhythm_rate/10)
+            sleep(self.rhythm_rate)
 
     # function to get input value for net prediction from dictionary
     def get_in_val(self, which_dict):
@@ -217,17 +225,24 @@ class AiDataEngine():
             rnd = random()
             self.datadict[key] = rnd
 
+    """
     # --------------------------------------------------
     #
     # affect and streaming methods
     #
     # --------------------------------------------------
+    """
 
-    # define which feed to listen to, and duration
-    # and a course of affect response
     def affect(self):
+        """define which feed to listen to, and duration
+        and a course of affect response.
+        This is defined by the master output."""
+
         # daddy cycle = is the master running on?
         while True:
+            # emit at various points in the affect cycle
+            self.emitter()
+
             if self.affect_logging:
                 print('\t\t\t\t\t\t\t\t=========HIYA - DADDY cycle===========')
 
@@ -238,6 +253,7 @@ class AiDataEngine():
             # calc master cycle before a change
             master_cycle = randrange(6, 26) * self.global_speed
             loop_dur = time() + master_cycle
+
             if self.affect_logging:
                 print(f"                 interrupt_listener: started! sleeping now for {loop_dur}...")
 
@@ -268,6 +284,10 @@ class AiDataEngine():
 
                 # baby cycle 2 - own time loops
                 while time() < end_time:
+
+                    # emit at various points in the affect cycle
+                    self.emitter()
+
                     if self.affect_logging:
                         print('\t\t\t\t\t\t\t\t=========Hello - baby cycle 2 ===========')
 
@@ -312,16 +332,22 @@ class AiDataEngine():
                             print('interrupt LOW_______________')
                             print('interrupt bang = ', self.interrupt_bang)
 
-                    # and wait for a cycle
-                    sleep(self.rhythm_rate/100)
+                    # emit at various points in the affect cycle
+                    self.emitter()
 
+                    # and wait for a cycle
+                    sleep(self.rhythm_rate)
+
+    def emitter(self):
+        self.ai_signal.ai_str.emit(str(self.datadict))
+
+    # parses the incoming dictionary and vars from the client
     def parse_got_dict(self, got_dict):
         self.datadict['user_in'] = got_dict['mic_level']
 
         # user change the overall speed of the engine
         self.global_speed = got_dict['speed']
 
-        # todo - check what this is doing
         # user change tempo of outputs and parsing
         self.rhythm_rate = got_dict['tempo']
 

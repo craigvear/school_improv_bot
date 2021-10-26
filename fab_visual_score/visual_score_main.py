@@ -35,7 +35,7 @@ class MyWidget(QWidget):
         osc_signal.osc_str.connect(self.got_osc_signal)
         # CV = nothing to do
 
-        # FP = pass to OSC dispatcher for robot control and dict filling
+        # FP = pass t  o OSC dispatcher for robot control and dict filling
         _osc_data = OscData(osc_signal)
         # CV = fill the dict (using old names for now), no robot control
 

@@ -135,6 +135,7 @@ class Gui(QWidget):
     #     self.process_visuals.add_to_queue(osc_msg)
 
 
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 

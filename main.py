@@ -1,47 +1,133 @@
-import concurrent.futures
-from threading import Thread
+import sys
+import threading
+import platform
 
-# from visuals import main as gui
-from controller import Client
-from ai import AiDataEngine
+from ast import literal_eval
+from operator import itemgetter
 
+PLATFORM = platform.machine()
 
-def main():
-    # # lis of task for concurrency
-    # tasks = [engine.make_data,
-    #          engine.affect,
-    #          cl.snd_listen,
-    #          cl.data_exchange,
-    #          cl.robot_sax] # add Gui to this list
-    #
-    # with concurrent.futures.ThreadPoolExecutor() as executor:
-    #     futures = {executor.submit(task): task for task in tasks}
+if PLATFORM == "x86_64":
+    from PySide2 import QtCore
+    from PySide2.QtCore import Slot
+    from PySide2.QtGui import QPainter, Qt, QPen, QColor, QImage
+    from PySide2.QtWidgets import (QApplication, QWidget)
+else:
+    from PySide2 import QtCore
+    from PySide2.QtCore import Slot
+    from PySide2.QtGui import QPainter, QPen, QColor, QImage
+    from PySide2.QtWidgets import (QApplication, QWidget)
 
-    t1 = Thread(target=engine.make_data)
-    t2 = Thread(target=engine.affect)
-    t3 = Thread(target=cl.snd_listen)
-    t4 = Thread(target=cl.data_exchange)
-    t5 = Thread(target=cl.sound_bot)
-    # t6 = Thread(target=gui)
-
-    t1.start()
-    t2.start()
-    t3.start()
-    t4.start()
-    t5.start()
-    # t6.start()
+from GotAISignal import GotAISignal
+from AIData import AIData
+from processVisualImages import ProcessVisuals
 
 
-if __name__ == '__main__':
-    # instantiate the AI server
-    engine = AiDataEngine(speed=1)
+class MyWidget(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
 
-    # instantiate the controller client and pass AI engine
-    cl = Client(engine)
+        # open a signal streamer
+        ai_signal = GotAISignal()
 
-    # instantiate Gui and pass AI engine
-    # gui = Gui(engine)
+        # and connect to emitting stream
+        ai_signal.ai_str.connect(self.got_ai_signal)
 
-    # set the ball rolling
-    main()
+        # start the ball rolling with all data generation and parsing
+        _ai_data_engine = AIData(ai_signal)
 
+        # FP & CV = instantiate the visual processing object
+        self.process_AI_signal = ProcessVisuals()
+
+        # FP & CV = start the thread
+        self.gui_thread = None
+        self.update_gui()
+
+    def update_gui(self):
+        # print("-------- updating gui")
+        self.update()
+        self.gui_thread = threading.Timer(0.1, self.update_gui)
+        self.gui_thread.start()
+
+    def paintEvent(self, paint_event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        if len(self.process_AI_signal.queue):
+            for i in self.process_AI_signal.queue:
+                # print("i {}".format(i))
+                element_type, pen_size, size, original_color, position = itemgetter("type",
+                                                                                    "pen",
+                                                                                    "size",
+                                                                                    "color",
+                                                                                    "position")(i)
+                x, y = itemgetter("x", "y")(position)
+                r, g, b, a = itemgetter("r", "g", "b", "a")(original_color)
+
+                color = QColor(r, g, b, a)
+
+                if element_type == "line":
+                    painter.setPen(QPen(color, pen_size))
+                    painter.drawLine(x, y, x + size, y)
+                elif element_type == "ellipse":
+                    painter.setPen(QPen(color, 1))
+                    painter.setBrush(color)
+                    painter.drawEllipse(x, y, size, size)
+                elif element_type == "rect":
+                    painter.setPen(QPen(color, 1))
+                    painter.setBrush(color)
+                    painter.drawRect(x, y, x + size, y + size)
+                elif element_type == "image":
+                    image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
+                    painter.setOpacity(i["image_transparency"])
+                    painter.compositionMode = i["image_composition_mode"]
+                    painter.drawImage(x, y, image_to_display)
+
+        self.process_AI_signal.update_queue()
+
+        painter.end()
+
+        # print("UPDATED")
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_F:
+            if self.isFullScreen():
+                self.showNormal()
+            else:
+                self.showFullScreen()
+
+        if event.key() == QtCore.Qt.Key_Escape:
+            self.gui_thread.cancel()
+            app.quit()
+
+    @Slot(str)
+    def got_ai_signal(self, ai_msg):
+        ai_msg = literal_eval(ai_msg)
+
+        screen_resolution = self.geometry()
+        height = screen_resolution.height()
+        width = screen_resolution.width()
+
+        ai_msg["width"] = width
+        ai_msg["height"] = height
+
+        print("main {}".format(str(ai_msg)))
+
+        self.process_AI_signal.add_to_queue(ai_msg)
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+
+    widget = MyWidget()
+    widget.resize(800, 600)
+    widget.showFullScreen()
+    widget.setWindowTitle("visual robotic score")
+    widget.setStyleSheet("background-color:white;")
+
+    if PLATFORM == "x86_64":
+        widget.setCursor(Qt.BlankCursor)
+
+    widget.show()
+
+    sys.exit(app.exec_())

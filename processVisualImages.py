@@ -10,7 +10,7 @@ MAX_LIFESPAN = 250
 
 
 class ProcessVisuals:
-    def __init__(self, height, width):
+    def __init__(self):
 
         self.queue = []
         self.visual_types = ("line",
@@ -27,29 +27,33 @@ class ProcessVisuals:
                                         QPainter.CompositionMode_Multiply,
                                         QPainter.CompositionMode_SoftLight)
 
-        # add additional params to dict
-        self.height = height
-        self.width = width
-
     def add_to_queue(self, ai_signal_dict):
         if len(self.queue) < 10:
             self.process_osc_signal(ai_signal_dict)
 
-    def process_osc_signal(self, osc_signal_dict):
+    def process_osc_signal(self, ai_signal_dict):
         # print("processing signal")
 
         # get current data dict from AI engine
-        axisa, axisb, mlx, mly, kinx, kinz = itemgetter("move_rnn",
+        move_rnn, affect_rnn, move_affect_conv2, affect_move_conv2, rnd_poetry, affect_net, width, height = itemgetter("move_rnn",
                                                                        "affect_rnn",
                                                                        "move_affect_conv2",
                                                                        "affect_move_conv2",
                                                                        "rnd_poetry",
-                                                                       "affect_net")(osc_signal_dict)
+                                                                       "affect_net",
+                                                                       "width",
+                                                                       "height")(ai_signal_dict)
 
         # print(' getting values ', axisa, axisb, mlx, mly, kinx, kinz)
 
         final_visual = dict(type=random.choice(self.visual_types),
-                            lifespan=self.lifespan(axisa, axisb, mlx, mly, kinx, kinz),
+                            lifespan=self.lifespan(move_rnn,
+                                                   affect_rnn,
+                                                   move_affect_conv2,
+                                                   affect_move_conv2,
+                                                   rnd_poetry,
+                                                   affect_net
+                                                   ),
                             color={"r": random.randint(0, 255),
                                    "g": random.randint(0, 255),
                                    "b": random.randint(0, 255),
@@ -59,8 +63,8 @@ class ProcessVisuals:
                             image_composition_mode=random.choice(self.image_composition_modes),
                             pen=random.randint(1, MAX_SIZE),
                             size=random.randint(1, MAX_SIZE),
-                            position={"x": random.randint(0, self.width),
-                                      "y": random.randint(0, self.height)},
+                            position={"x": random.randint(0, width),
+                                      "y": random.randint(0, height)},
                             direction=random.randint(0, 11))
 
         # print(final_visual)

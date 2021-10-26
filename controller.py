@@ -1,27 +1,27 @@
+"""main client script
+controls microphone stream and organise all audio responses
+and move the Jetbot"""
+
+
+# get python libraries
 from random import randrange
 import pyaudio
 import numpy as np
 from random import random
 from time import sleep
-# from pydub import AudioSegment
-# from pydub.playback import play
-# from pythonosc.udp_client import SimpleUDPClient
+import platform
+import sys
+
+# get project libraries
 from jetbot.robot import Robot
 from piano import Piano
 from visuals import Gui
 from PySide2.QtWidgets import (QApplication, QWidget)
 from PySide2.QtGui import QPainter, Qt, QPen, QColor, QImage
 
-import platform
-import sys
-
-
-"""main client script
-controls microphone stream and organise all audio responses
-and move the Jetbot"""
-
 
 class Client:
+    """controls listening plate and robot comms"""
     def __init__(self, ai_engine):
         self.running = True
         self.connected = False
@@ -61,22 +61,21 @@ class Client:
         # init got dict
         self.got_dict = self.engine.datadict
 
-        # todo - move this sequence to its own build and incorporate the rest.
-        # start visual processing and pass got_dict
-        PLATFORM = platform.machine()
-        app = QApplication(sys.argv)
-
-        widget = Gui(self.got_dict)
-        widget.resize(800, 600)
-        widget.showFullScreen()
-        print('widget')
-        widget.setWindowTitle("visual robotic score")
-        widget.setStyleSheet("background-color:white;")
-
-        if PLATFORM == "x86_64":
-            widget.setCursor(Qt.BlankCursor)
-
-        widget.show()
+        # # todo - move this sequence to its own build and incorporate the rest.
+        # # start visual processing and pass got_dict
+        # PLATFORM = platform.machine()
+        # app = QApplication(sys.argv)
+        #
+        # widget = Gui(self.got_dict)
+        # widget.resize(800, 600)
+        # widget.showFullScreen()
+        # widget.setWindowTitle("visual robotic score")
+        # widget.setStyleSheet("background-color:white;")
+        #
+        # if PLATFORM == "x86_64":
+        #     widget.setCursor(Qt.BlankCursor)
+        #
+        # widget.show()
 
     def snd_listen(self):
         print("mic listener: started!")
@@ -95,6 +94,7 @@ class Client:
         self.stream.close()
         self.p.terminate()
 
+    # todo this needs to be an emission !!!
     def data_exchange(self):
         print("data exchange: started!")
         while True:
