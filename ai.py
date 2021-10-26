@@ -14,14 +14,11 @@ from random import randrange
 from time import time
 from tensorflow.keras.models import load_model
 
-import pyaudio
 import numpy as np
-import concurrent.futures
 from random import random
 from time import sleep
-from pydub import AudioSegment
-from pydub.playback import play
-import socket
+
+from soundbot import SoundBot
 
 
 # --------------------------------------------------
@@ -82,13 +79,13 @@ class AffectMoveCONV2:
 
 class AiDataEngine():
     """speed = general tempo 0.5 ~ moderate fast, 1 ~ moderato; 2 ~ presto"""
-    def __init__(self, ai_signal_obj, speed=0.5):
+    def __init__(self, ai_signal_obj, speed=1):
         print('building engine server')
         self.interrupt_bang = False
         # self.running = False
         # self.PORT = 8000
         # self.IP_ADDR = "127.0.0.1"
-        self.global_speed = speed
+        self.global_speed = speed / 10
         self.rnd_stream = 0
 
         # make a default dict for the engine
@@ -142,6 +139,9 @@ class AiDataEngine():
         # own the signal object for emission
         self.ai_signal = ai_signal_obj
 
+        # own the sound bot object
+        self.soundbot = SoundBot()
+
     """
     # --------------------------------------------------
     #
@@ -156,12 +156,12 @@ class AiDataEngine():
         Do not disturb - it has its own life cycle"""
 
         while True:
-
             # calc rhythmic intensity based on self-awareness factor & global speed
+            # NB - divide not *
+
             intensity = self.datadict.get('self_awareness')
-
+            print('////////////////////////   intensity = ', intensity)
             self.rhythm_rate = (self.rhythm_rate * intensity) * self.global_speed
-
             self.datadict['rhythm_rate'] = self.rhythm_rate
 
             # get input vars from dict (NB not always self)
@@ -237,12 +237,11 @@ class AiDataEngine():
         """define which feed to listen to, and duration
         and a course of affect response.
         This is defined by the master output."""
+        # little val for emission control avoiding repeated vals
+        self.old_val = 0
 
-        # daddy cycle = is the master running on?
+        # daddy cycle
         while True:
-            # emit at various points in the affect cycle
-            self.emitter()
-
             if self.affect_logging:
                 print('\t\t\t\t\t\t\t\t=========HIYA - DADDY cycle===========')
 
@@ -284,10 +283,6 @@ class AiDataEngine():
 
                 # baby cycle 2 - own time loops
                 while time() < end_time:
-
-                    # emit at various points in the affect cycle
-                    self.emitter()
-
                     if self.affect_logging:
                         print('\t\t\t\t\t\t\t\t=========Hello - baby cycle 2 ===========')
 
@@ -301,9 +296,12 @@ class AiDataEngine():
                     if self.master_logging:
                         print(f'\t\t ==============  master move output = {affect_listen}')
 
+                    # emit at various points in the affect cycle
+                    self.emitter(affect_listen)
+
                     # calc affect on behaviour
                     # if input stream is LOUD then smash a random fill and break out to Daddy cycle...
-                    if affect_listen > 0.50:
+                    if affect_listen > 0.40:
                         if self.affect_logging:
                             print('interrupt > HIGH !!!!!!!!!')
 
@@ -319,7 +317,7 @@ class AiDataEngine():
                         break
 
                     # if middle loud fill dict with random, all processes norm
-                    elif 0.20 < affect_listen < 0.49:
+                    elif 0.15 < affect_listen < 0.29:
                         if self.affect_logging:
                             print('interrupt MIDDLE -----------')
                             print('interrupt bang = ', self.interrupt_bang)
@@ -327,19 +325,23 @@ class AiDataEngine():
                         # refill dict with random
                         self.dict_fill()
 
-                    elif affect_listen <= 0.20:
+                    elif affect_listen <= 0.15:
                         if self.affect_logging:
                             print('interrupt LOW_______________')
                             print('interrupt bang = ', self.interrupt_bang)
 
-                    # emit at various points in the affect cycle
-                    self.emitter()
-
                     # and wait for a cycle
                     sleep(self.rhythm_rate)
 
-    def emitter(self):
-        self.ai_signal.ai_str.emit(str(self.datadict))
+    def emitter(self, incoming_affect_listen):
+        if incoming_affect_listen != self.old_val:
+            self.ai_signal.ai_str.emit(str(self.datadict))
+            print('//////////////////                   EMITTING and making sound')
+
+            # make sound/ move robot?
+            self.soundbot.make_sound(incoming_affect_listen, self.rhythm_rate)
+
+        self.old_val = incoming_affect_listen
 
     # parses the incoming dictionary and vars from the client
     def parse_got_dict(self, got_dict):

@@ -111,7 +111,7 @@ class MyWidget(QWidget):
         ai_msg["width"] = width
         ai_msg["height"] = height
 
-        print("main {}".format(str(ai_msg)))
+        # print("main {}".format(str(ai_msg)))
 
         self.process_AI_signal.add_to_queue(ai_msg)
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
     widget = MyWidget()
     widget.resize(800, 600)
-    widget.showFullScreen()
+    # widget.showFullScreen()
     widget.setWindowTitle("visual robotic score")
     widget.setStyleSheet("background-color:white;")
 
