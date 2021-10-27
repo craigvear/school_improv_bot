@@ -1,22 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-*** Description ***
-    A pygame MIDI piano.
-    This piano is completely controlled by the keyboard, no MIDI hardware is
-    required. You only have to set the SF2 variable to a valid soundfont file.
-*** Keys ****
-    Base octave:
-        z,x,c,v,b,n,m    C,D,E,F,G,A,B
-        s,d,g,h,j    C#,D#,F#,G#,A#
-    Octave higher:
-        w,e,r,t,y,u,i   C,D,E,F,G,A,B
-        3,4,6,7,8    C#,D#,F#,G#,A#
-    Control octaves (default = 4):
-        -        octave down
-        =        octave up
-    Control channels (default = 8):
-        backspace    channel down
-        \        channel up
+
 """
 
 
@@ -59,7 +43,9 @@ class Piano:
         """play_note determines the coordinates of a note on the keyboard image
         and sends a request to play the note to the fluidsynth server"""
 
-        fluidsynth.play_Note(note, self.channel, 100)
+        dynamic = 90 + randrange(1, 30)
+
+        fluidsynth.play_Note(note, self.channel, dynamic)
 
     def which_note(self, incoming_data):
         """receives raw data from robot controller and converts into piano note"""

@@ -300,7 +300,12 @@ class AiDataEngine():
                         print(f'\t\t ==============  master move output = {affect_listen}')
 
                     # emit at various points in the affect cycle
-                    self.emitter(affect_listen)
+                    # might make a sound emission
+                    if getrandbits(1) == 1:
+                        print('bang')
+                        self.emitter(affect_listen)
+                    else:
+                        print('no bang')
 
                     # calc affect on behaviour
                     # if input stream is LOUD then smash a random fill and break out to Daddy cycle...
@@ -331,7 +336,10 @@ class AiDataEngine():
                         # emit at various points in the affect cycle
                         # might make a sound emission
                         if getrandbits(1) == 1:
+                            print('bang')
                             self.emitter(affect_listen)
+                        else:
+                            print('no bang')
 
                         # refill dict with random
                         self.dict_fill()
