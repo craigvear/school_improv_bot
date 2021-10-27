@@ -81,8 +81,8 @@ class MyWidget(QWidget):
                     image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
                     painter.setOpacity(i["image_transparency"])
                     painter.compositionMode = i["image_composition_mode"]
-                    painter.scale(2, 2)
-                    painter.translate(-20, -50)
+                    # painter.scale(3, 3)
+                    # painter.translate(-20, -50)
                     painter.drawImage(x, y, image_to_display)
 
         self.process_AI_signal.update_queue()
