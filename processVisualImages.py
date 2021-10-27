@@ -4,7 +4,7 @@ from operator import itemgetter
 from PySide2.QtGui import QImage, QPainter
 
 MAX_SIZE = 500
-MAX_LIFESPAN = 50
+MAX_LIFESPAN = 100
 
 class ProcessVisuals:
     def __init__(self):

@@ -15,7 +15,7 @@ from time import time
 from tensorflow.keras.models import load_model
 
 import numpy as np
-from random import random
+from random import random, getrandbits
 from time import sleep
 
 from soundbot import SoundBot
@@ -249,17 +249,17 @@ class AiDataEngine():
             self.interrupt_bang = True
 
             # calc master cycle before a change
-            master_cycle = randrange(6, 26) * self.global_speed
-            loop_dur = time() + master_cycle
+            master_cycle = randrange(6, 26) # * self.global_speed
+            loop_end = time() + master_cycle
 
             if self.affect_logging:
-                print(f"                 interrupt_listener: started! sleeping now for {loop_dur}...")
+                print(f"                 interrupt_listener: started! sleeping now for {master_cycle}...")
 
             # refill the dicts
             self.dict_fill()
 
             # child cycle - waiting for interrupt  from master clock
-            while time() < loop_dur:
+            while time() < loop_end:
                 if self.affect_logging:
                         print('\t\t\t\t\t\t\t\t=========Hello - child cycle 1 ===========')
 
@@ -282,6 +282,10 @@ class AiDataEngine():
 
                 # baby cycle 2 - own time loops
                 while time() < end_time:
+                    # get current mic level
+                    peak = self.datadict["user_in"]
+                    # print('mic level = ', peak)
+
                     if self.affect_logging:
                         print('\t\t\t\t\t\t\t\t=========Hello - baby cycle 2 ===========')
 
@@ -300,12 +304,12 @@ class AiDataEngine():
 
                     # calc affect on behaviour
                     # if input stream is LOUD then smash a random fill and break out to Daddy cycle...
-                    if affect_listen > 20000:
+                    if peak > 20000:
                         if self.affect_logging:
                             print('interrupt > HIGH !!!!!!!!!')
 
                         # emit at various points in the affect cycle
-                        # self.emitter(affect_listen)
+                        self.emitter(affect_listen)
 
                         # A - refill dict with random
                         self.dict_fill()
@@ -319,24 +323,28 @@ class AiDataEngine():
                         break
 
                     # if middle loud fill dict with random, all processes norm
-                    elif 3000 < affect_listen < 19999:
+                    elif 3000 < peak < 19999:
                         if self.affect_logging:
                             print('interrupt MIDDLE -----------')
                             print('interrupt bang = ', self.interrupt_bang)
 
                         # emit at various points in the affect cycle
-                        # self.emitter(affect_listen)
+                        # might make a sound emission
+                        if getrandbits(1) == 1:
+                            self.emitter(affect_listen)
 
                         # refill dict with random
                         self.dict_fill()
 
-                    elif affect_listen <= 3000:
-                        if self.affect_logging:
-                            print('interrupt LOW_______________')
-                            print('interrupt bang = ', self.interrupt_bang)
+                        # jumps out of current local loop, but not main one
+                        break
 
-                    # # emit at various points in the affect cycle
-                    # self.emitter(affect_listen)
+                    # nothing happens here
+                    elif peak <= 3000:
+                        pass
+                        # if self.affect_logging:
+                        #     print('interrupt LOW_______________')
+                        #     print('interrupt bang = ', self.interrupt_bang)
 
                     # and wait for a cycle
                     sleep(self.rhythm_rate)

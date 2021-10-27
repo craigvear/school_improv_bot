@@ -14,7 +14,7 @@ class AIData:
         self.ai_signal = ai_signal_obj
 
         # instantiate the AI server
-        engine = AiDataEngine(self.ai_signal, speed=10)
+        engine = AiDataEngine(self.ai_signal, speed=1)
 
         # instantiate the controller client and pass AI engine
         cl = Client(engine)

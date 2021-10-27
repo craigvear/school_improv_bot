@@ -32,9 +32,9 @@ class Client:
 
         # own the AI data server
         self.engine = ai_engine
-
-        # init got dict
-        self.got_dict = self.engine.datadict
+        #
+        # # init got dict
+        # self.got_dict = self.engine.datadict
 
     def snd_listen(self):
         print("mic listener: started!")
@@ -47,6 +47,7 @@ class Client:
                 bars = "#" * int(50 * peak / 2 ** 16)
                 print("%05d %s" % (peak, bars))
             self.send_data_dict['mic_level'] = peak # / 30000
+            self.engine.parse_got_dict(self.send_data_dict)
 
     def terminate(self):
         self.stream.stop_stream()
