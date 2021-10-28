@@ -53,6 +53,7 @@ class Piano:
         # turn previous note off
         # fluidsynth.stop_Note(note=self.played_note)
 
+        # todo - sort out 2-5-1 changes over a specified tempo
         # which chord
         now_time = int(time())
         bar = now_time % 4

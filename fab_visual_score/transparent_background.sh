@@ -1,1 +1,1 @@
-for file in *.gif; do convert "$file" -transparent white format png "$file"; done
+for file in *.png; do convert "$file" -transparent white "$file"; done

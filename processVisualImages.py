@@ -15,7 +15,8 @@ class ProcessVisuals:
                              "rect",
                              "image")
 
-        # 2-5-1 images taken from https://www.jazzguitar.be/blog/ii-v-i-jazz-guitar-licks/
+        # todo - replace temp content.
+        #  Currently 2-5-1 images taken from https://www.jazzguitar.be/blog/ii-v-i-jazz-guitar-licks/
         self.external_images = [QImage(image_to_load) for image_to_load in glob.glob("images/*.png")]
 
         self.image_composition_modes = (QPainter.CompositionMode_HardLight,
