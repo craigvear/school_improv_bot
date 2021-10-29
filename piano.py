@@ -32,7 +32,7 @@ class Piano:
         self.channel = 8
 
         # start fluidsynth
-        fluidsynth.init(SF2)
+        fluidsynth.init(SF2, "alsa")
         self.played_note = 0
 
         # start someform of clock for chord sequence
