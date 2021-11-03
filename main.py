@@ -34,7 +34,7 @@ class MyWidget(QWidget):
         ai_signal.ai_str.connect(self.got_ai_signal)
 
         # start the ball rolling with all data generation and parsing
-        _ai_data_engine = AIData(ai_signal)
+        self._ai_data_engine = AIData(ai_signal)
 
         # FP & CV = instantiate the visual processing object
         self.process_AI_signal = ProcessVisuals()
@@ -83,8 +83,8 @@ class MyWidget(QWidget):
                     painter.compositionMode = i["image_composition_mode"]
                     # todo - would be good to slice the original image here
                     #  rather than pre-slice into the library
-                    # painter.scale(3, 3)
-                    # painter.translate(-20, -50)
+                    # painter.scale(2, 2)
+                    # painter.translate(20, -50)
                     painter.drawImage(x, y, image_to_display)
 
         self.process_AI_signal.update_queue()
@@ -101,8 +101,13 @@ class MyWidget(QWidget):
                 self.showFullScreen()
 
         if event.key() == QtCore.Qt.Key_Escape:
-            self.gui_thread.cancel()
-            app.quit()
+            self.terminate()
+
+    def terminate(self):
+        # todo - crash all threads
+        # self._ai_data_engine
+        self.gui_thread.cancel()
+        app.quit()
 
     @Slot(str)
     def got_ai_signal(self, ai_msg):

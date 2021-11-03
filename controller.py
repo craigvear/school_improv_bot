@@ -38,7 +38,7 @@ class Client:
 
     def snd_listen(self):
         print("mic listener: started!")
-        while True:
+        while self.running:
             data = np.frombuffer(self.stream.read(self.CHUNK,
                                                   exception_on_overflow = False),
                                  dtype=np.int16)

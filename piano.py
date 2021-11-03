@@ -12,7 +12,9 @@ from mingus.containers import *
 from mingus.midi import fluidsynth
 from time import sleep, time
 from random import random, randrange, getrandbits, shuffle
+import platform
 
+PLATFORM = platform.machine()
 
 class Piano:
     def __init__(self):
@@ -32,7 +34,10 @@ class Piano:
         self.channel = 8
 
         # start fluidsynth
-        fluidsynth.init(SF2, "alsa")
+        if PLATFORM == "x86_64":
+            fluidsynth.init(SF2)
+        else:
+            fluidsynth.init(SF2, "alsa")
         self.played_note = 0
 
         # start someform of clock for chord sequence
