@@ -1,6 +1,6 @@
 from robot import Robot
 from piano import Piano
-from random import random, randrange
+from random import random, randrange, getrandbits
 from time import sleep
 
 class SoundBot:
@@ -50,8 +50,12 @@ class SoundBot:
         #
         # # making sound
 
-        self.piano.which_note(incoming_raw_data)
-        print('play')
+        # decide to make sound or not
+        play = getrandbits(1)
+
+        if play == 1:
+            self.piano.which_note(incoming_raw_data)
+            print('play')
 
         # move bot
         if self.robot_connected:
