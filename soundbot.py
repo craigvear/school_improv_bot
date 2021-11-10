@@ -51,9 +51,7 @@ class SoundBot:
         # # making sound
 
         # decide to make sound or not
-        play = getrandbits(1)
-
-        if play == 1:
+        if getrandbits(1) == 1:
             self.piano.which_note(incoming_raw_data)
             print('play')
 
