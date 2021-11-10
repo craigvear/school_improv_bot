@@ -39,7 +39,7 @@ class SoundBot:
         # # temp random num gen
         # rnd = randrange(self.audio_dir_len)
         # print(self.audio_dir[rnd])
-        print('making sound')
+        # print('making sound')
 
         # # make some duration decisions
         # intensity = self.got_dict['self_awareness']
@@ -61,7 +61,7 @@ class SoundBot:
         else:
             sleep(rhythm_rate)
 
-        print('fininshed a play')
+        # print('fininshed a play')
 
 
     def move_robot(self, incoming_data, duration):
