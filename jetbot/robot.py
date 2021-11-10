@@ -5,7 +5,7 @@ from Adafruit_MotorHAT import Adafruit_MotorHAT
 from motor import Motor
 
 
-class Robot(SingletonConfigurable):
+class MyRobot(SingletonConfigurable):
     left_motor = traitlets.Instance(Motor)
     right_motor = traitlets.Instance(Motor)
 
