@@ -1,4 +1,4 @@
-# from jetbot.robot import Robot
+from jetbot.robot import Robot
 from piano import Piano
 from random import random, randrange
 from time import sleep
@@ -6,7 +6,7 @@ from time import sleep
 class SoundBot:
     def __init__(self):
         # is the robot connected
-        self.robot_connected = False
+        self.robot_connected = True
         self.direction = 1
         self.speed_factor = 0.3
 
