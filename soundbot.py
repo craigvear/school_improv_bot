@@ -1,4 +1,4 @@
-from jetbot.robot import MyRobot
+from robot import Robot
 from piano import Piano
 from random import random, randrange
 from time import sleep
@@ -12,7 +12,7 @@ class SoundBot:
 
         # instantiate robot
         if self.robot_connected:
-            self.robot_robot = MyRobot()
+            self.robot_robot = Robot()
 
         # instanstiate piano player class
         self.piano = Piano()
