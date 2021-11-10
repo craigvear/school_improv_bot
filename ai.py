@@ -160,7 +160,7 @@ class AiDataEngine():
             # NB - divide not *
 
             intensity = self.datadict.get('self_awareness')
-            print('////////////////////////   intensity = ', intensity)
+            # print('////////////////////////   intensity = ', intensity)
             self.rhythm_rate = (self.rhythm_rate * intensity) * self.global_speed
             self.datadict['rhythm_rate'] = self.rhythm_rate
 
@@ -360,7 +360,7 @@ class AiDataEngine():
     def emitter(self, incoming_affect_listen):
         if incoming_affect_listen != self.old_val:
             self.ai_signal.ai_str.emit(str(self.datadict))
-            print('//////////////////                   EMITTING and making sound')
+            #print('//////////////////                   EMITTING and making sound')
 
             # make sound/ move robot?
             self.soundbot.make_sound(incoming_affect_listen, self.rhythm_rate)

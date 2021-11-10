@@ -81,10 +81,8 @@ class MyWidget(QWidget):
                     image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
                     painter.setOpacity(i["image_transparency"])
                     painter.compositionMode = i["image_composition_mode"]
-                    # todo - would be good to slice the original image here
-                    #  rather than pre-slice into the library
-                    # painter.scale(2, 2)
-                    # painter.translate(20, -50)
+                    zoom_factor = i["zoom"]
+                    painter.scale(zoom_factor, zoom_factor)
                     painter.drawImage(x, y, image_to_display)
 
         self.process_AI_signal.update_queue()
@@ -130,7 +128,7 @@ if __name__ == "__main__":
 
     widget = MyWidget()
     widget.resize(800, 600)
-    widget.showFullScreen()
+    # widget.showFullScreen()
     widget.setWindowTitle("visual robotic score")
     widget.setStyleSheet("background-color:white;")
 

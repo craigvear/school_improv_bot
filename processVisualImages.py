@@ -31,12 +31,13 @@ class ProcessVisuals:
         self.process_AI_signal(ai_signal_dict)
 
     def process_AI_signal(self, ai_signal_dict):
-        print("processing signal")
+        # print("processing signal")
 
         master_output, rhythm_rate, width, height = itemgetter("master_output",
                                                              "rhythm_rate",
                                                              "width",
                                                              "height")(ai_signal_dict)
+
 
         final_visual = dict(type=random.choice(self.visual_types),
                             lifespan=self.lifespan(rhythm_rate),
@@ -51,11 +52,12 @@ class ProcessVisuals:
                             size=random.randint(1, MAX_SIZE),
                             position={"x": random.randint(0, width),
                                       "y": random.randint(0, height)},
-                            direction=random.randint(0, 11))
+                            direction=random.randint(1, 11),
+                            zoom=random.randrange(1, 4))
 
         # print(final_visual)
         self.queue.append(final_visual)
-        print('length of queue = ', len(self.queue))
+        # print('length of queue = ', len(self.queue))
 
     def lifespan(self, rate):
         lifespan = rate * random.randint(10, 100)
@@ -64,7 +66,7 @@ class ProcessVisuals:
         while lifespan > MAX_LIFESPAN:
             lifespan /= random.randint(2, 10)
 
-        print('////////////////             lifespan = ', lifespan)
+        # print('////////////////             lifespan = ', lifespan)
         return int(lifespan)
 
     def update_queue(self):
