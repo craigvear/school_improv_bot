@@ -6,7 +6,7 @@ from time import sleep
 class SoundBot:
     def __init__(self):
         # is the robot connected
-        self.robot_connected = True
+        self.robot_connected = False
         self.direction = 1
         self.speed_factor = 0.3
 

@@ -23,12 +23,20 @@ class Piano:
         self.LOWEST = 2  # lowest octave to show
         self.FADEOUT = 0.25  # coloration fadeout time (1 tick = 0.001)
 
-        self.note_list = ["A", "B", "C", "D", "E", "F", "G", "A"]
+        # list the notes in the master key of C Maj;
+        # including the "add whole tone" to 1, 3, 5 of each chord tones
+        # giving us lydian #11 and tritone/ dom #13 5th last
+        self.note_list = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"]
 
         # set up harmonic matrix with weighting adding to 100%
         self.dmin7 = [(3, 20), (5, 40), (0, 10), (2, 30)]
         self.g9 = [(6, 15), (1, 35), (3, 5), (5, 20), (0, 25)]
         self.cM7 = [(2, 20), (4, 40), (6, 10), (1, 30)]
+
+        # set up the lydian + whole step extenstion to chordal tone
+        self.dmin7_lyd = [(4, 34), (6, 33), (1, 33)]
+        self.g9_lyd = [(7, 34), (9, 33), (3, 33)]
+        self.cM7_lyd = [(5, 34), (8, 33), (0, 33)]
 
         self.octave = 4
         self.channel = 8
@@ -63,13 +71,23 @@ class Piano:
         now_time = int(time())
         bar = now_time % 4
 
-        # rnd_chord = randrange(3)
-        if bar == 0:
-            chord = self.dmin7
-        elif bar == 1:
-            chord = self.g9
+        # which chord & is it root or mixo
+        # normal chord notes or jazz/ mixo notes
+        if getrandbits(1) == 1:
+            if bar == 0:
+                chord = self.dmin7
+            elif bar == 1:
+                chord = self.g9
+            else:
+                chord = self.cM7
+
         else:
-            chord = self.cM7
+            if bar == 0:
+                chord = self.dmin7_lyd
+            elif bar == 1:
+                chord = self.g9_lyd
+            else:
+                chord = self.cM7_lyd
 
         # shufle chord seq --- too much random???
         shuffle(chord)
@@ -82,9 +100,6 @@ class Piano:
 
         # rough random for weighting
         which_weight = random() * 100
-
-        # chord note or next note?
-        add_whole_note = randrange(2)
 
         # which octave? Drunk walk
         drunk_octave = randrange(4)
@@ -110,7 +125,7 @@ class Piano:
         # get note and play
         current_sum = 0
         for note_pos, weight in chord:
-            note_name = self.note_list[note_pos + add_whole_note]
+            note_name = self.note_list[note_pos]
             # print(f'original note name = {self.note_list[note_pos]}; '
             #       f'adjusted note name = {note_name}, weight = {weight}')
 
