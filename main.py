@@ -19,6 +19,7 @@ else:
     from PySide2.QtWidgets import (QApplication, QWidget)
 
 from GotAISignal import GotAISignal
+from GotMusicSignal import GotMusicSignal
 from AIData import AIData
 from processVisualImages import ProcessVisuals
 
@@ -27,14 +28,20 @@ class MyWidget(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 
-        # open a signal streamer
+        # open a signal streamer for AI emissions
         ai_signal = GotAISignal()
 
         # and connect to emitting stream
         ai_signal.ai_str.connect(self.got_ai_signal)
 
+        # open a signal streamer for music harmony reporting
+        harmony_signal = GotMusicSignal()
+
+        # and connect to emitting stream
+        harmony_signal.harmony_str.connect(self.got_harmony_signal)
+
         # start the ball rolling with all data generation and parsing
-        self._ai_data_engine = AIData(ai_signal)
+        self._ai_data_engine = AIData(ai_signal, harmony_signal)
 
         # FP & CV = instantiate the visual processing object
         self.process_AI_signal = ProcessVisuals()
@@ -121,6 +128,10 @@ class MyWidget(QWidget):
         # print("main {}".format(str(ai_msg)))
 
         self.process_AI_signal.add_to_queue(ai_msg)
+
+    @Slot(str)
+    def got_harmony_signal(self, harmony_msg):
+        print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', harmony_msg)
 
 
 if __name__ == "__main__":

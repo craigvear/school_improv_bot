@@ -19,7 +19,9 @@ from threading import Thread, Timer
 PLATFORM = platform.machine()
 
 class Piano:
-    def __init__(self):
+    def __init__(self, harmony_signal):
+
+        self.harmony_signal = harmony_signal
         SF2 = "media/soundfontGM.sf2"
         self.OCTAVES = 5  # number of octaves to show
         self.LOWEST = 2  # lowest octave to show
@@ -58,6 +60,8 @@ class Piano:
         # find the ms wait for triplets
         self.tick = (((60 / bpm) * 1000) / 3)
 
+        self.harmony_dict = {"BPM": bpm}
+
         # start a thread to wait for commands to write
         self.incoming_note_queue = []
         self.played_note_queue = []
@@ -71,6 +75,10 @@ class Piano:
     def update_player(self):
         # print("-------- updating queues")
         self.parse_queues()
+
+        # gather and send details to the harmony signal emitter
+        self.fill_harmony_dict()
+
         playingThread = Timer(self.tick/ 1000, self.update_player)
         playingThread.start()
 
@@ -107,13 +115,17 @@ class Piano:
                     # delete from played queue
                     del self.played_note_queue[i]
 
+    def fill_harmony_dict(self):
+        # self.harmony_dict =
+
+        self.harmony_signal.harmony_str.emit(str(self.harmony_dict))
+        # print('//////////////////                   EMITTING and making sound')
 
     def play_note(self, note_to_play):
         """play_note determines the coordinates of a note on the keyboard image
         and sends a request to play the note to the fluidsynth server"""
 
         dynamic = 90 + randrange(1, 30)
-
         fluidsynth.play_Note(note_to_play, self.channel, dynamic)
 
     def stop_note(self, note_to_stop):

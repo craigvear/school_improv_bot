@@ -10,11 +10,12 @@ class AIData:
     """start all the data threading
      pass it the master signal class for emmission"""
 
-    def __init__(self, ai_signal_obj):
+    def __init__(self, ai_signal_obj, harmony_signal):
         self.ai_signal = ai_signal_obj
+        self.harmony_signal = harmony_signal
 
         # instantiate the AI server
-        engine = AiDataEngine(self.ai_signal, speed=1)
+        engine = AiDataEngine(self.ai_signal, self.harmony_signal, speed=1)
 
         # instantiate the controller client and pass AI engine
         cl = Client(engine)

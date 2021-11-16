@@ -4,7 +4,7 @@ from random import random, randrange, getrandbits
 from time import sleep
 
 class SoundBot:
-    def __init__(self):
+    def __init__(self, harmony_signal):
         # is the robot connected
         self.robot_connected = False
         self.direction = 1
@@ -14,8 +14,9 @@ class SoundBot:
         if self.robot_connected:
             self.robot_robot = Robot()
 
-        # instanstiate piano player class
-        self.piano = Piano()
+        # instanstiate piano player class and pass harmony_signal
+        self.harmony_signal = harmony_signal
+        self.piano = Piano(self.harmony_signal)
 
     # def sound_bot(self):
     #     # make a serial port connection here

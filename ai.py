@@ -79,7 +79,7 @@ class AffectMoveCONV2:
 
 class AiDataEngine():
     """speed = general tempo 0.5 ~ moderate fast, 1 ~ moderato; 2 ~ presto"""
-    def __init__(self, ai_signal_obj, speed=1):
+    def __init__(self, ai_signal_obj, harmony_signal, speed=1):
         print('building engine server')
         self.interrupt_bang = False
         # self.running = False
@@ -138,9 +138,10 @@ class AiDataEngine():
 
         # own the signal object for emission
         self.ai_signal = ai_signal_obj
+        self.harmony_signal = harmony_signal
 
-        # own the sound bot object
-        self.soundbot = SoundBot()
+        # own the sound bot object and send harmony emitter
+        self.soundbot = SoundBot(self.harmony_signal)
 
     """
     # --------------------------------------------------
