@@ -52,7 +52,7 @@ class SoundBot:
 
         # decide to make sound or not
         if getrandbits(1) == 1:
-            self.piano.which_note(incoming_raw_data)
+            self.piano.which_note(incoming_raw_data, rhythm_rate)
             print('play')
 
         # move bot

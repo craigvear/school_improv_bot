@@ -13,6 +13,8 @@ from mingus.midi import fluidsynth
 from time import sleep, time
 from random import random, randrange, getrandbits, shuffle
 import platform
+import atexit
+from threading import Thread, Timer
 
 PLATFORM = platform.machine()
 
@@ -33,13 +35,13 @@ class Piano:
         self.g9 = [(6, 15), (1, 35), (3, 5), (5, 20), (0, 25)]
         self.cM7 = [(2, 20), (4, 40), (6, 10), (1, 30)]
 
-        # set up the lydian + whole step extenstion to chordal tone
+        # set up the lydian + whole step extention to chordal tone
         self.dmin7_lyd = [(4, 34), (6, 33), (1, 33)]
         self.g9_lyd = [(7, 34), (9, 33), (3, 33)]
         self.cM7_lyd = [(5, 34), (8, 33), (0, 33)]
 
         self.octave = 4
-        self.channel = 8
+        self.channel = 1
 
         # start fluidsynth
         if PLATFORM == "x86_64":
@@ -56,6 +58,35 @@ class Piano:
         # todo make this a thread controlled by incoming Queue
         #  & rate = BPM x semi-quavers/ triplets!!
 
+        # start a thread to wait for commands to write
+        self.incoming_note_queue = []
+        self.played_note_queue = []
+
+        playingThread = Thread(target=self.listening, args=(self.incoming_commands_queue,), daemon=True)
+        playingThread.start()
+
+        atexit.register(playingThread.join())
+
+        # start the thread
+        # self.gui_thread = None
+        self.update_player()
+
+    def update_player(self):
+
+        if len(self.incoming_note_queue):
+            for i, val in enumerate(self.queue):
+                lifespan = val["lifespan"] - 1
+                # if not lifespan:
+                if lifespan <= 0:
+                    del self.queue[i]
+
+
+
+        # print("-------- updating gui")
+        self.update_player()
+        self.gui_thread = Timer(0.1, self.update_gui)
+        self.gui_thread.start()
+
 
     def play_note(self, note):
         """play_note determines the coordinates of a note on the keyboard image
@@ -65,7 +96,7 @@ class Piano:
 
         fluidsynth.play_Note(note, self.channel, dynamic)
 
-    def which_note(self, incoming_data):
+    def which_note(self, incoming_data, rhythm_rate):
         """receives raw data from robot controller and converts into piano note"""
 
         # turn previous note off
@@ -141,8 +172,15 @@ class Piano:
             current_sum += weight
             if current_sum > which_weight:
                 print('playing', note_name)
-                self.play_note(Note(note_name, self.octave))
-                self.played_note = note_name
+
+                note_to_play = dict(note_name=note_name,
+                                    octave=self.octave,
+                                    endTime=time() + (rhythm_rate*1000))
+
+                # add note, octave, duration (from visual processing)
+                self.incoming_note_queue.append(note_to_play)
+                # self.play_note(Note(note_name, self.octave))
+                # self.played_note = note_name
                 break
 
 
