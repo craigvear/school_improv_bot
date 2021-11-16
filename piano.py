@@ -13,7 +13,7 @@ from mingus.midi import fluidsynth
 from time import sleep, time
 from random import random, randrange, getrandbits, shuffle
 import platform
-import atexit
+from operator import itemgetter
 from threading import Thread, Timer
 
 PLATFORM = platform.machine()
@@ -52,49 +52,72 @@ class Piano:
         # start of a played not queue to
         self.played_note = 0
 
-        # start someform of clock for chord sequence
-        self.tick = 0.0
+        # state BPM
+        bpm = 120
 
-        # todo make this a thread controlled by incoming Queue
-        #  & rate = BPM x semi-quavers/ triplets!!
+        # find the ms wait for triplets
+        self.tick = (((60 / bpm) * 1000) / 3)
 
         # start a thread to wait for commands to write
         self.incoming_note_queue = []
         self.played_note_queue = []
 
-        playingThread = Thread(target=self.listening, args=(self.incoming_commands_queue,), daemon=True)
-        playingThread.start()
+        # # start the thread
+        # self.update_player()
 
-        atexit.register(playingThread.join())
-
-        # start the thread
-        # self.gui_thread = None
+        self.playingThread = None
         self.update_player()
 
     def update_player(self):
+        # print("-------- updating queues")
+        self.parse_queues()
+        playingThread = Timer(self.tick/ 1000, self.update_player)
+        playingThread.start()
 
+    def parse_queues(self):
+        # this func spins around controlling the 2 note queues
+        # print("1")
+        # print('incoming note queue', self.incoming_note_queue)
         if len(self.incoming_note_queue):
-            for i, val in enumerate(self.queue):
-                lifespan = val["lifespan"] - 1
-                # if not lifespan:
-                if lifespan <= 0:
-                    del self.queue[i]
+            for i, event in enumerate(self.incoming_note_queue):
+                note_name, octave = itemgetter("note_name",
+                                               "octave")(event)
+
+                # play note
+                self.play_note(Note(note_name, octave))
+
+                # delete from incoming queue
+                del self.incoming_note_queue[i]
+
+                # add to played list
+                self.played_note_queue.append(event)
 
 
+        if len(self.played_note_queue):
+            for i, event in enumerate(self.played_note_queue):
+                lifespan, note_name, octave = itemgetter("endtime",
+                                                        "note_name",
+                                                        "octave")(event)
 
-        # print("-------- updating gui")
-        self.update_player()
-        self.gui_thread = Timer(0.1, self.update_gui)
-        self.gui_thread.start()
+                # if lifespan (endtime) is less than current time
+                if lifespan <= time():
+                    # stop note
+                    self.stop_note(Note(note_name, octave))
+
+                    # delete from played queue
+                    del self.played_note_queue[i]
 
 
-    def play_note(self, note):
+    def play_note(self, note_to_play):
         """play_note determines the coordinates of a note on the keyboard image
         and sends a request to play the note to the fluidsynth server"""
 
         dynamic = 90 + randrange(1, 30)
 
-        fluidsynth.play_Note(note, self.channel, dynamic)
+        fluidsynth.play_Note(note_to_play, self.channel, dynamic)
+
+    def stop_note(self, note_to_stop):
+        fluidsynth.stop_Note(note_to_stop, self.channel)
 
     def which_note(self, incoming_data, rhythm_rate):
         """receives raw data from robot controller and converts into piano note"""
@@ -175,8 +198,9 @@ class Piano:
 
                 note_to_play = dict(note_name=note_name,
                                     octave=self.octave,
-                                    endTime=time() + (rhythm_rate*1000))
+                                    endtime=time() + (rhythm_rate))
 
+                # print (f'current time = {time()},  note data =   {note_to_play}')
                 # add note, octave, duration (from visual processing)
                 self.incoming_note_queue.append(note_to_play)
                 # self.play_note(Note(note_name, self.octave))
@@ -187,5 +211,5 @@ class Piano:
 if __name__ == "__main__":
     piano = Piano()
     for x in range(10):
-        piano.which_note(x)
+        piano.which_note(x, random())
         sleep(1)
