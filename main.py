@@ -11,12 +11,12 @@ if PLATFORM == "x86_64":
     from PySide2 import QtCore
     from PySide2.QtCore import Slot
     from PySide2.QtGui import QPainter, Qt, QPen, QColor, QImage
-    from PySide2.QtWidgets import (QApplication, QWidget)
+    from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QHBoxLayout)
 else:
     from PySide2 import QtCore
     from PySide2.QtCore import Slot
     from PySide2.QtGui import QPainter, QPen, QColor, QImage
-    from PySide2.QtWidgets import (QApplication, QWidget)
+    from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QHBoxLayout)
 
 from GotAISignal import GotAISignal
 from GotMusicSignal import GotMusicSignal
@@ -40,21 +40,44 @@ class MyWidget(QWidget):
         # and connect to emitting stream
         harmony_signal.harmony_str.connect(self.got_harmony_signal)
 
+        # init the harmony dict
+        self.harmony_dict = {}
+
         # start the ball rolling with all data generation and parsing
         self._ai_data_engine = AIData(ai_signal, harmony_signal)
 
-        # FP & CV = instantiate the visual processing object
+        # instantiate the visual processing object
         self.process_AI_signal = ProcessVisuals()
 
-        # FP & CV = start the thread
+        # create the widget labels for harmony telemetry
+        self.create_telemetry()
+
+        # start the thread
         self.gui_thread = None
+
         self.update_gui()
 
     def update_gui(self):
         # print("-------- updating gui")
+        self.update_harmony()
         self.update()
         self.gui_thread = threading.Timer(0.1, self.update_gui)
         self.gui_thread.start()
+
+    def update_harmony(self):
+        # self.bpm_label = QLabel
+        # self.BPM, self.chord, self.note, self.beat
+        pass
+
+    def create_telemetry(self):
+        self.test_box = QHBoxLayout()
+
+        self.test_box.addWidget(QLabel("falcon"))
+        self.test_box.addWidget(QLabel("owl"))
+        self.test_box.addWidget(QLabel("eagle"))
+        self.test_box.addWidget(QLabel("skylark"))
+
+        self.setLayout(self.test_box)
 
     def paintEvent(self, paint_event):
         painter = QPainter(self)
@@ -133,6 +156,7 @@ class MyWidget(QWidget):
     def got_harmony_signal(self, harmony_msg):
         print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', harmony_msg)
 
+        self.harmony_dict = harmony_msg
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

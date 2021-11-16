@@ -60,7 +60,11 @@ class Piano:
         # find the ms wait for triplets
         self.tick = (((60 / bpm) * 1000) / 3)
 
-        self.harmony_dict = {"BPM": bpm}
+        # init the harmony dictionary for emission to GUI
+        self.harmony_dict = {"BPM": bpm,
+                             "chord": "none",
+                             "note": "none",
+                             "beat": 0}
 
         # start a thread to wait for commands to write
         self.incoming_note_queue = []
@@ -150,18 +154,24 @@ class Piano:
         if getrandbits(1) == 1:
             if bar == 0:
                 chord = self.dmin7
+                self.harmony_dict['chord'] = "Dmin7"
             elif bar == 1:
                 chord = self.g9
+                self.harmony_dict['chord'] = "G9"
             else:
                 chord = self.cM7
+                self.harmony_dict['chord'] = "Cmaj7"
 
         else:
             if bar == 0:
                 chord = self.dmin7_lyd
+                self.harmony_dict['chord'] = "Dmin7 lydian"
             elif bar == 1:
                 chord = self.g9_lyd
+                self.harmony_dict['chord'] = "G9 lydian"
             else:
                 chord = self.cM7_lyd
+                self.harmony_dict['chord'] = "Cmaj7 lydian"
 
         # shufle chord seq --- too much random???
         shuffle(chord)
@@ -207,6 +217,7 @@ class Piano:
             current_sum += weight
             if current_sum > which_weight:
                 print('playing', note_name)
+                self.harmony_dict['note'] = note_name
 
                 note_to_play = dict(note_name=note_name,
                                     octave=self.octave,
