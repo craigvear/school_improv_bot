@@ -46,10 +46,15 @@ class Piano:
             fluidsynth.init(SF2)
         else:
             fluidsynth.init(SF2, "alsa")
+
+        # start of a played not queue to
         self.played_note = 0
 
         # start someform of clock for chord sequence
         self.tick = 0.0
+
+        # todo make this a thread controlled by incoming Queue
+        #  & rate = BPM x semi-quavers/ triplets!!
 
 
     def play_note(self, note):
@@ -68,11 +73,14 @@ class Piano:
 
         # todo - sort out 2-5-1 changes over a specified tempo
         # which chord
+        # BPM = 60
+
         now_time = int(time())
         bar = now_time % 4
+        print(f'\t\t\t\t BAR = {bar}')
 
-        # which chord & is it root or mixo
-        # normal chord notes or jazz/ mixo notes
+        # which chord & is it root or lyd
+        # normal chord notes or jazz/ lyd notes
         if getrandbits(1) == 1:
             if bar == 0:
                 chord = self.dmin7
