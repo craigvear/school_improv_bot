@@ -107,10 +107,12 @@ class MyWidget(QWidget):
 
     def create_telemetry(self):
         # start a painter
-        # bpm, chord, note, beat = itemgetter("BPM",
-        #                                     "chord",
-        #                                     "note",
-        #                                     "beat")(self.harmony_dict)
+        bpm, chord, note, beat = itemgetter("BPM",
+                                            "chord",
+                                            "note",
+                                            "beat")(self.harmony_dict)
+
+        bpm = str(bpm)
 
         harmonypainter = QPainter(self)
         harmonypainter.setRenderHint(QPainter.Antialiasing, True)
@@ -118,7 +120,7 @@ class MyWidget(QWidget):
         harmonypainter.setFont(QFont("PT Sans", 10, QFont.Bold))
         harmonypainter.drawText(10, 20, "BPM")
         harmonypainter.setFont(QFont("PT Sans", 10, QFont.Normal))
-        harmonypainter.drawText(20, 20, "test")
+        harmonypainter.drawText(40, 20, bpm)
         # painter.drawText(QRect(QPoint(2, 2), text_size), Qt.AlignCenter,
         #          self.text)
         text = "TESTY"
@@ -156,11 +158,12 @@ class MyWidget(QWidget):
 
         self.process_AI_signal.add_to_queue(ai_msg)
 
-    @Slot(str)
+    @Slot(object)
     def got_harmony_signal(self, harmony_msg):
         # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', harmony_msg)
 
         self.harmony_dict = harmony_msg
+        # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', self.harmony_dict.get("BPM"))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

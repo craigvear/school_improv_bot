@@ -120,9 +120,8 @@ class Piano:
                     del self.played_note_queue[i]
 
     def fill_harmony_dict(self):
-        # self.harmony_dict =
 
-        self.harmony_signal.harmony_str.emit(str(self.harmony_dict))
+        self.harmony_signal.harmony_str.emit(self.harmony_dict)
         # print('//////////////////                   EMITTING and making sound')
 
     def play_note(self, note_to_play):
