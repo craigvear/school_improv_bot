@@ -10,13 +10,13 @@ PLATFORM = platform.machine()
 if PLATFORM == "x86_64":
     from PySide2 import QtCore
     from PySide2.QtCore import Slot
-    from PySide2.QtGui import QPainter, Qt, QPen, QColor, QImage
-    from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QHBoxLayout)
+    from PySide2.QtGui import QPainter, Qt, QPen, QColor, QImage, QFont
+    from PySide2.QtWidgets import (QApplication, QWidget)
 else:
     from PySide2 import QtCore
     from PySide2.QtCore import Slot
-    from PySide2.QtGui import QPainter, QPen, QColor, QImage
-    from PySide2.QtWidgets import (QApplication, QWidget, QLabel, QHBoxLayout)
+    from PySide2.QtGui import QPainter, QPen, QColor, QImage, QFont
+    from PySide2.QtWidgets import (QApplication, QWidget)
 
 from GotAISignal import GotAISignal
 from GotMusicSignal import GotMusicSignal
@@ -49,9 +49,6 @@ class MyWidget(QWidget):
         # instantiate the visual processing object
         self.process_AI_signal = ProcessVisuals()
 
-        # create the widget labels for harmony telemetry
-        self.create_telemetry()
-
         # start the thread
         self.gui_thread = None
 
@@ -59,25 +56,9 @@ class MyWidget(QWidget):
 
     def update_gui(self):
         # print("-------- updating gui")
-        self.update_harmony()
         self.update()
         self.gui_thread = threading.Timer(0.1, self.update_gui)
         self.gui_thread.start()
-
-    def update_harmony(self):
-        # self.bpm_label = QLabel
-        # self.BPM, self.chord, self.note, self.beat
-        pass
-
-    def create_telemetry(self):
-        self.test_box = QHBoxLayout()
-
-        self.test_box.addWidget(QLabel("falcon"))
-        self.test_box.addWidget(QLabel("owl"))
-        self.test_box.addWidget(QLabel("eagle"))
-        self.test_box.addWidget(QLabel("skylark"))
-
-        self.setLayout(self.test_box)
 
     def paintEvent(self, paint_event):
         painter = QPainter(self)
@@ -115,11 +96,34 @@ class MyWidget(QWidget):
                     painter.scale(zoom_factor, zoom_factor)
                     painter.drawImage(x, y, image_to_display)
 
+        # pass painter to harmony telemetry and draw text
+        self.create_telemetry()
+
         self.process_AI_signal.update_queue()
 
         painter.end()
 
         # print("UPDATED")
+
+    def create_telemetry(self):
+        # start a painter
+        # bpm, chord, note, beat = itemgetter("BPM",
+        #                                     "chord",
+        #                                     "note",
+        #                                     "beat")(self.harmony_dict)
+
+        harmonypainter = QPainter(self)
+        harmonypainter.setRenderHint(QPainter.Antialiasing, True)
+        harmonypainter.setPen(QPen(Qt.black, 10))
+        harmonypainter.setFont(QFont("PT Sans", 10, QFont.Bold))
+        harmonypainter.drawText(10, 20, "BPM")
+        harmonypainter.setFont(QFont("PT Sans", 10, QFont.Normal))
+        harmonypainter.drawText(20, 20, "test")
+        # painter.drawText(QRect(QPoint(2, 2), text_size), Qt.AlignCenter,
+        #          self.text)
+        text = "TESTY"
+        # painter.drawText(QRect(56, 0, 64, 48), 0, text)
+        # painter.end()
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_F:
@@ -154,7 +158,7 @@ class MyWidget(QWidget):
 
     @Slot(str)
     def got_harmony_signal(self, harmony_msg):
-        print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', harmony_msg)
+        # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', harmony_msg)
 
         self.harmony_dict = harmony_msg
 

@@ -64,7 +64,7 @@ class Piano:
         self.harmony_dict = {"BPM": bpm,
                              "chord": "none",
                              "note": "none",
-                             "beat": 0}
+                             "beat": "none"}
 
         # start a thread to wait for commands to write
         self.incoming_note_queue = []
