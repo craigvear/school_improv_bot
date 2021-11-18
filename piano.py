@@ -24,7 +24,7 @@ class Piano:
         self.harmony_signal = harmony_signal
         SF2 = "media/soundfontGM.sf2"
         self.OCTAVES = 5  # number of octaves to show
-        self.LOWEST = 2  # lowest octave to show
+        self.LOWEST = 3  # lowest octave to show
         self.FADEOUT = 0.25  # coloration fadeout time (1 tick = 0.001)
 
         # list the notes in the master key of C Maj;
@@ -45,6 +45,10 @@ class Piano:
         self.octave = 4
         self.channel = 1
 
+        # chronos vars
+        self.bass_octave = 1
+        self._last_bar = None
+
         # start fluidsynth
         if PLATFORM == "x86_64":
             fluidsynth.init(SF2)
@@ -64,7 +68,7 @@ class Piano:
         self.harmony_dict = {"BPM": bpm,
                              "chord": "none",
                              "note": "none",
-                             "beat": "none"}
+                             "bar": "none"}
 
         # start a thread to wait for commands to write
         self.incoming_note_queue = []
@@ -83,8 +87,50 @@ class Piano:
         # gather and send details to the harmony signal emitter
         self.fill_harmony_dict()
 
-        playingThread = Timer(self.tick/ 1000, self.update_player)
+        # calc bar and beat & play root in LH
+        self.chronos()
+
+        playingThread = Timer(self.tick / 1000, self.update_player)
         playingThread.start()
+
+    def chronos(self):
+        """coordinate the master tempo and behaviours using BPM and root notes in bass LH"""
+        # get bar
+        current_bar = self.calc_bar()
+
+        # calc root of current sequence & play
+        # on bar change
+        if current_bar != self._last_bar:
+            if current_bar == 0:
+                root_note_name = "D"
+            elif current_bar == 1:
+                root_note_name = "G"
+            else:
+                root_note_name = "C"
+
+            # play the root
+            # self.play_note(Note(root_note_name, self.bass_octave))
+            bass = dict(note_name=root_note_name,
+                                octave=self.bass_octave,
+                                endtime=time() + 1)
+
+            # print (f'current time = {time()},  note data =   {note_to_play}')
+            # add note, octave, duration (from visual processing)
+            self.incoming_note_queue.append(bass)
+
+        self._last_bar = current_bar
+
+    def calc_bar(self):
+        # calc bar (from 4 bar ii-V-1)
+        # todo - clever calc with tempo/ tick!!
+        now_time = int(time()) # / self.tick)
+        bar = now_time % 4
+
+        # store it to the dict
+        print(f'\t\t\t\t BAR = {bar}')
+        self.harmony_dict['bar'] = bar
+
+        return bar
 
     def parse_queues(self):
         # this func spins around controlling the 2 note queues
@@ -137,17 +183,15 @@ class Piano:
     def which_note(self, incoming_data, rhythm_rate):
         """receives raw data from robot controller and converts into piano note"""
 
-        # turn previous note off
-        # fluidsynth.stop_Note(note=self.played_note)
-
-        # todo - sort out 2-5-1 changes over a specified tempo
         # which chord
         # BPM = 60
 
-        now_time = int(time())
-        bar = now_time % 4
-        print(f'\t\t\t\t BAR = {bar}')
+        # now_time = int(time())
+        # bar = now_time % 4
+        # print(f'\t\t\t\t BAR = {bar}')
+        # self.harmony_dict['bar'] = bar
 
+        bar = self.harmony_dict.get('bar')
         # which chord & is it root or lyd
         # normal chord notes or jazz/ lyd notes
         if getrandbits(1) == 1:
@@ -200,8 +244,8 @@ class Piano:
             self.octave = 4
 
         # check its in range
-        if self.octave < 0:
-            self.octave = 2
+        if self.octave < self.LOWEST:
+            self.octave = 3
         elif self.octave > self.OCTAVES:
             self.octave = 4
 

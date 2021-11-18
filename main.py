@@ -107,25 +107,38 @@ class MyWidget(QWidget):
 
     def create_telemetry(self):
         # start a painter
-        bpm, chord, note, beat = itemgetter("BPM",
+        bpm, chord, note, bar = itemgetter("BPM",
                                             "chord",
                                             "note",
-                                            "beat")(self.harmony_dict)
-
-        bpm = str(bpm)
+                                            "bar")(self.harmony_dict)
 
         harmonypainter = QPainter(self)
         harmonypainter.setRenderHint(QPainter.Antialiasing, True)
         harmonypainter.setPen(QPen(Qt.black, 10))
-        harmonypainter.setFont(QFont("PT Sans", 10, QFont.Bold))
-        harmonypainter.drawText(10, 20, "BPM")
-        harmonypainter.setFont(QFont("PT Sans", 10, QFont.Normal))
-        harmonypainter.drawText(40, 20, bpm)
-        # painter.drawText(QRect(QPoint(2, 2), text_size), Qt.AlignCenter,
-        #          self.text)
-        text = "TESTY"
-        # painter.drawText(QRect(56, 0, 64, 48), 0, text)
-        # painter.end()
+
+        # print BPM
+        harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
+        harmonypainter.drawText(10, 20, "BPM:")
+        harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
+        harmonypainter.drawText(40, 20, str(bpm))
+
+        # print Bar
+        harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
+        harmonypainter.drawText(70, 20, "Bar:")
+        harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
+        harmonypainter.drawText(100, 20, str(bar+1))
+
+        # print chord
+        harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
+        harmonypainter.drawText(10, 30, "Chord:")
+        harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
+        harmonypainter.drawText(50, 30, chord)
+
+        # print note
+        harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
+        harmonypainter.drawText(10, 40, "Note:")
+        harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
+        harmonypainter.drawText(50, 40, note)
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_F:
