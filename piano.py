@@ -32,6 +32,7 @@ class Piano:
         # giving us lydian #11 and tritone/ dom #13 5th last
         self.note_list = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"]
 
+        # todo - tramsform these into Dicts for multiple transpositions and turnaround keys.
         # set up harmonic matrix with weighting adding to 100%
         self.dmin7 = [(3, 20), (5, 40), (0, 10), (2, 30)]
         self.g9 = [(6, 15), (1, 35), (3, 5), (5, 20), (0, 25)]
