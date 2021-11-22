@@ -59,10 +59,23 @@ class Piano:
         self.played_note = 0
 
         # state BPM
-        bpm = 120
+        bpm = 80
+        self.time_sig = 4
 
-        # find the ms wait for triplets
-        self.tick = (((60 / bpm) * 1000) / 3)
+        # which turnaround
+        turnaround_bar_length = 4
+        self.turnaround = turnaround_bar_length
+
+        # consts for the counting process
+        self.bar = 1
+        self.beat = 1
+        self.tick = 0
+
+        # convert bar and beat to ms
+        bpm_to_ms = ((60 / bpm) * 1000)
+
+        # find the ms wait for triplet semiquavers
+        self.sleep_dur = (bpm_to_ms / 12) / 1000
 
         # init the harmony dictionary for emission to GUI
         self.harmony_dict = {"BPM": bpm,
@@ -90,13 +103,15 @@ class Piano:
         # calc bar and beat & play root in LH
         self.chronos()
 
-        playingThread = Timer(self.tick / 1000, self.update_player)
+        # Update the piano playback system 12 times a beat (covers semi's and trips)
+        playingThread = Timer(self.sleep_dur, self.update_player)
         playingThread.start()
 
     def chronos(self):
         """coordinate the master tempo and behaviours using BPM and root notes in bass LH"""
         # get bar
         current_bar = self.calc_bar()
+        current_bar = current_bar % self.turnaround
 
         # calc root of current sequence & play
         # on bar change
@@ -111,8 +126,9 @@ class Piano:
             # play the root
             # self.play_note(Note(root_note_name, self.bass_octave))
             bass = dict(note_name=root_note_name,
-                                octave=self.bass_octave,
-                                endtime=time() + 1)
+                        octave=self.bass_octave,
+                        endtime=time() + 1,
+                        dynamic=40)
 
             # print (f'current time = {time()},  note data =   {note_to_play}')
             # add note, octave, duration (from visual processing)
@@ -121,16 +137,19 @@ class Piano:
         self._last_bar = current_bar
 
     def calc_bar(self):
-        # calc bar (from 4 bar ii-V-1)
-        # todo - clever calc with tempo/ tick!!
-        now_time = int(time()) # / self.tick)
-        bar = now_time % 4
+        self.tick += 1
+        # print(f'doin stuff - BAR BEAT TICK {self.bar}, {self.beat}, {self.tick}')
 
-        # store it to the dict
-        print(f'\t\t\t\t BAR = {bar}')
-        self.harmony_dict['bar'] = bar
+        if self.tick >= 12:
+            self.beat += 1
+            self.tick = 0
 
-        return bar
+        if self.beat > self.time_sig:
+            self.bar += 1
+            self.beat = 1
+
+        self.harmony_dict['bar'] = self.bar
+        return self.bar
 
     def parse_queues(self):
         # this func spins around controlling the 2 note queues
@@ -138,11 +157,12 @@ class Piano:
         # print('incoming note queue', self.incoming_note_queue)
         if len(self.incoming_note_queue):
             for i, event in enumerate(self.incoming_note_queue):
-                note_name, octave = itemgetter("note_name",
-                                               "octave")(event)
+                note_name, octave, dynamic = itemgetter("note_name",
+                                                        "octave",
+                                                        "dynamic")(event)
 
                 # play note
-                self.play_note(Note(note_name, octave))
+                self.play_note(Note(note_name, octave), dynamic)
 
                 # delete from incoming queue
                 del self.incoming_note_queue[i]
@@ -150,12 +170,11 @@ class Piano:
                 # add to played list
                 self.played_note_queue.append(event)
 
-
         if len(self.played_note_queue):
             for i, event in enumerate(self.played_note_queue):
                 lifespan, note_name, octave = itemgetter("endtime",
-                                                        "note_name",
-                                                        "octave")(event)
+                                                                  "note_name",
+                                                                  "octave")(event)
 
                 # if lifespan (endtime) is less than current time
                 if lifespan <= time():
@@ -170,26 +189,19 @@ class Piano:
         self.harmony_signal.harmony_str.emit(self.harmony_dict)
         # print('//////////////////                   EMITTING and making sound')
 
-    def play_note(self, note_to_play):
+    def play_note(self, note_to_play, dynamic):
         """play_note determines the coordinates of a note on the keyboard image
         and sends a request to play the note to the fluidsynth server"""
 
-        dynamic = 90 + randrange(1, 30)
-        fluidsynth.play_Note(note_to_play, self.channel, dynamic)
+        # dynamic = 90 + randrange(1, 30)
+        fluidsynth.play_Note(note=note_to_play, channel=self.channel, velocity=dynamic)
+        print(f'\t\t\t\t\tplaying {note_to_play}, channel {self.channel}, velocity {dynamic}')
 
     def stop_note(self, note_to_stop):
         fluidsynth.stop_Note(note_to_stop, self.channel)
 
     def which_note(self, incoming_data, rhythm_rate):
         """receives raw data from robot controller and converts into piano note"""
-
-        # which chord
-        # BPM = 60
-
-        # now_time = int(time())
-        # bar = now_time % 4
-        # print(f'\t\t\t\t BAR = {bar}')
-        # self.harmony_dict['bar'] = bar
 
         bar = self.harmony_dict.get('bar')
         # which chord & is it root or lyd
@@ -262,9 +274,14 @@ class Piano:
                 print('playing', note_name)
                 self.harmony_dict['note'] = note_name
 
+                # random generate a dynamic
+                dynamic = 90 + randrange(1, 30)
+
+                # package into dict for queue
                 note_to_play = dict(note_name=note_name,
                                     octave=self.octave,
-                                    endtime=time() + (rhythm_rate))
+                                    endtime=time() + (rhythm_rate),
+                                    dynamic=dynamic)
 
                 # print (f'current time = {time()},  note data =   {note_to_play}')
                 # add note, octave, duration (from visual processing)
