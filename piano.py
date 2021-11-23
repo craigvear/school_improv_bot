@@ -29,10 +29,24 @@ class Piano:
         # including the "add whole tone" to 1, 3, 5 of each chord tones
         # giving us lydian #11 and tritone/ dom #13 5th last
         self.note_list = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"]
+
+        # alt method using full 12 note alphabet: 0 - 11
         self.note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
 
+        # set up harmonic matrix with weighting adding to 100%
+        # offset by starting tonic of master key
+
+        # minor 7th = ii in the 2-5-1
         self.min7 = [(0, 20), (3, 40), (7, 10), (10, 30)]  # 1, 3, 5, 7 of minor scale
         self.min7_sharp11_13 = [(0, 15), (3, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]  # 1, 3, 5, 7, 9, #11, 13 of minor scale
+
+        # major dom 9th - V in the 2-5-1
+        self.dom9 = [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)] # flat 7
+        self.dom9_sharp11_13 = [(0, 15), (4, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]
+
+        # major dom 9th - V in the 2-5-1
+        self.maj7 = [(0, 20), (4, 40), (7, 10), (11, 30)]
+        self.maj7_sharp11_13 = [(0, 15), (4, 20), (7, 5), (11, 15), (2, 15), (5, 20), (9, 10)]
 
         # todo - tramsform these into Dicts for multiple transpositions and turnaround keys.
         # set up harmonic matrix with weighting adding to 100%
@@ -45,6 +59,9 @@ class Piano:
         self.g9_lyd = [(7, 34), (9, 33), (3, 33)]
         self.cM7_lyd = [(5, 34), (8, 33), (0, 33)]
 
+        self.masterkey = 3  # which is C on the note alphabet
+
+        # piano range vars
         self.octave = 4
         self.channel = 1
 

@@ -1,39 +1,67 @@
-from time import time, sleep
+# alt method using full 12 note alphabet: 0 - 11
+note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
 
-# state BPM
-bpm = 80
-time_sig = 3
+# set up harmonic matrix with weighting adding to 100%
+# offset by starting tonic of master key
 
-# convert bar and beat to ms
-bpm_to_ms = ((60 / bpm) * 1000)
-# bar_pulse = bpm_to_ms * time_sig
+# minor 7th = ii in the 2-5-1
+min7 = [(0, 20), (3, 40), (7, 10), (10, 30)]  # 1, 3, 5, 7 of minor scale
+min7_sharp11_13 = [(0, 15), (3, 20), (7, 5), (10, 15),
+                   (2, 15), (5, 20), (9, 10)]  # 1, 3, 5, 7, 9, #11, 13 of minor scale
 
-# print (f'tempo = {bpm}, tim sig = {time_sig}')
-# print (f'bar tempo in ms = {bar_pulse}, beat in ms = {bpm_to_ms}')
+# major dom 9th - V in the 2-5-1
+dom9 = [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)]  # flat 7
+dom9_sharp11_13 = [(0, 15), (4, 20), (7, 5), (10, 15),
+                   (2, 15), (5, 20), (9, 10)]
 
-# start the clock
-# start_time = time()
-# print(start_time)
+# major dom 9th - V in the 2-5-1
+maj7 = [(0, 20), (4, 40), (7, 10), (11, 30)]
+maj7_sharp11_13 = [(0, 15), (4, 20), (7, 5), (11, 15),
+                   (2, 15), (5, 20), (9, 10)]
 
-# start the counting process
-bar = 1
-beat = 1
-tick = 0
+# chord types are
+chord_shapes = {"1": [(0, 20), (4, 40), (7, 10), (11, 30)],
+                "2": [(0, 20), (3, 40), (7, 10), (10, 30)],
+                "5": [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)]
+                }
 
-while True:
-    tick += 1
-    print(f'doin stuff - BAR BEAT TICK {bar}, {beat}, {tick}')
+lyd_chord_shapes = {"1": [(0, 15), (4, 20), (7, 5), (11, 15),
+                   (2, 15), (6, 20), (9, 10)],
+                "2": [(0, 15), (3, 20), (7, 5), (10, 15),
+                   (2, 15), (5, 20), (9, 10)],
+                "5": [(0, 15), (4, 20), (7, 5), (10, 15),
+                   (2, 15), (5, 20), (9, 10)]
+                }
 
-    if tick >= 12:
-        beat += 1
-        tick = 0
+master_key = 3 # Cmajor
 
-    if beat > time_sig:
-        bar += 1
-        beat = 1
+# list the name and note alphabet position for each progression
+progression251 = [("2", 2), ("5", 7), ("1", 0)] # ii-V-1
 
+print("2-5-1 =")
 
-    # sleep in 12 divisions of a beat
-    sleep_dur = (bpm_to_ms / 12) / 1000
-    sleep(sleep_dur)
+for pos in progression251:
+    # calc position of root (1st position) for each chord in progression
+    root_of_this_chord = pos[1] + master_key
+    # go get its name from alphabet
+    if root_of_this_chord <= 11:
+        chord_root = note_alphabet[root_of_this_chord]
+    else:
+        chord_root = note_alphabet[root_of_this_chord-12]
+    print ('chord is ', chord_root)
+
+    # get its shape of chordtones from chord shapes dict
+    chordtones = lyd_chord_shapes.get(pos[0])
+    print ('chord shape is', chordtones)
+
+    # for each of chord tones this shape calc the actual note
+    for chordtone in chordtones:
+        # add the master key & print the chordtone as iterated from note alphabet
+        # scale_position = root_of_this_chord + chordtone[0]
+        chord_note_position = root_of_this_chord + chordtone[0]
+        if chord_note_position <= 11:
+            chord_note = note_alphabet[chord_note_position]
+        else:
+            chord_note = note_alphabet[chord_note_position-12]
+        print(f'\t {root_of_this_chord} chord in master key {note_alphabet[master_key]}  = ', chord_note)
 
