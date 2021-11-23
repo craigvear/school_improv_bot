@@ -33,12 +33,12 @@ lyd_chord_shapes = {"1": [(0, 15), (4, 20), (7, 5), (11, 15),
                    (2, 15), (5, 20), (9, 10)]
                 }
 
-master_key = 3 # Cmajor
+master_key = 6 # Cmajor
 
 # list the name and note alphabet position for each progression
 progression251 = [("2", 2), ("5", 7), ("1", 0)] # ii-V-1
 
-print("2-5-1 =")
+print(f"2-5-1 in key of {note_alphabet[master_key]}")
 
 for pos in progression251:
     # calc position of root (1st position) for each chord in progression
@@ -57,11 +57,10 @@ for pos in progression251:
     # for each of chord tones this shape calc the actual note
     for chordtone in chordtones:
         # add the master key & print the chordtone as iterated from note alphabet
-        # scale_position = root_of_this_chord + chordtone[0]
         chord_note_position = root_of_this_chord + chordtone[0]
         if chord_note_position <= 11:
             chord_note = note_alphabet[chord_note_position]
         else:
             chord_note = note_alphabet[chord_note_position-12]
-        print(f'\t {root_of_this_chord} chord in master key {note_alphabet[master_key]}  = ', chord_note)
+        print(f'\t {pos[0]} chord in master key {note_alphabet[master_key]}  = {chord_note}, with weighting {chordtone[1]}%')
 
