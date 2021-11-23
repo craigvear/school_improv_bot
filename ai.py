@@ -302,6 +302,7 @@ class AiDataEngine():
 
                     # emit at various points in the affect cycle
                     # might make a sound emission
+                    # todo - add percentage here
                     if getrandbits(1) == 1:
                         # print('bang')
                         self.emitter(affect_listen)

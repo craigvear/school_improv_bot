@@ -4,7 +4,6 @@
 """
 
 
-
 # import pygame
 # from pygame.locals import *
 # from mingus.core import notes, chords
@@ -59,9 +58,15 @@ class Piano:
         # start of a played not queue to
         self.played_note = 0
 
+        # % factor if a note event is played or not
+        self.note_played_or_not = 0.8
+
         # state BPM
-        bpm = 80
+        bpm = 120
         self.time_sig = 4
+
+        # state how many sub divides to a beat. 4=16ths, 12 = semi trips
+        self.subdivision = 24
 
         # which turnaround
         turnaround_bar_length = 4
@@ -75,8 +80,8 @@ class Piano:
         # convert bar and beat to ms
         bpm_to_ms = ((60 / bpm) * 1000)
 
-        # find the ms wait for triplet semiquavers
-        self.sleep_dur = (bpm_to_ms / 12) / 1000
+        # find the ms wait for subdivide
+        self.sleep_dur = (bpm_to_ms / self.subdivision) / 1000
 
         # init the harmony dictionary for emission to GUI
         self.harmony_dict = {"BPM": bpm,
@@ -88,8 +93,8 @@ class Piano:
         self.incoming_note_queue = []
         self.played_note_queue = []
 
-        # # start the thread
-        # self.update_player()
+        # Play a root bass note at beginning of each bar?
+        self.bass_line = True
 
         self.playingThread = None
         self.update_player()
@@ -133,7 +138,8 @@ class Piano:
 
             # print (f'current time = {time()},  note data =   {note_to_play}')
             # add note, octave, duration (from visual processing)
-            self.incoming_note_queue.append(bass)
+            if self.bass_line:
+                self.incoming_note_queue.append(bass)
 
         self._last_bar = current_bar
 
@@ -141,7 +147,7 @@ class Piano:
         self.tick += 1
         # print(f'doin stuff - BAR BEAT TICK {self.bar}, {self.beat}, {self.tick}')
 
-        if self.tick >= 12:
+        if self.tick >= self.subdivision:
             self.beat += 1
             self.tick = 0
 
@@ -204,92 +210,96 @@ class Piano:
     def which_note(self, incoming_data, rhythm_rate):
         """receives raw data from robot controller and converts into piano note"""
 
-        bar = self.harmony_dict.get('bar')
-        # which chord & is it root or lyd
-        # normal chord notes or jazz/ lyd notes
-        if getrandbits(1) == 1:
-            if bar == 0:
-                chord = self.dmin7
-                self.harmony_dict['chord'] = "Dmin7"
-            elif bar == 1:
-                chord = self.g9
-                self.harmony_dict['chord'] = "G9"
+        # decide to make sound or not
+        if random() <= self.note_played_or_not:
+            print('play')
+
+            bar_position = self.harmony_dict.get('bar')
+            # which chord & is it root or lyd
+            # normal chord notes or jazz/ lyd notes
+            if getrandbits(1) == 1:
+                if bar_position == 0:
+                    chord = self.dmin7
+                    self.harmony_dict['chord'] = "Dmin7"
+                elif bar_position == 1:
+                    chord = self.g9
+                    self.harmony_dict['chord'] = "G9"
+                else:
+                    chord = self.cM7
+                    self.harmony_dict['chord'] = "Cmaj7"
+
             else:
-                chord = self.cM7
-                self.harmony_dict['chord'] = "Cmaj7"
+                if bar_position == 0:
+                    chord = self.dmin7_lyd
+                    self.harmony_dict['chord'] = "Dmin7 lydian"
+                elif bar_position == 1:
+                    chord = self.g9_lyd
+                    self.harmony_dict['chord'] = "G9 lydian"
+                else:
+                    chord = self.cM7_lyd
+                    self.harmony_dict['chord'] = "Cmaj7 lydian"
 
-        else:
-            if bar == 0:
-                chord = self.dmin7_lyd
-                self.harmony_dict['chord'] = "Dmin7 lydian"
-            elif bar == 1:
-                chord = self.g9_lyd
-                self.harmony_dict['chord'] = "G9 lydian"
-            else:
-                chord = self.cM7_lyd
-                self.harmony_dict['chord'] = "Cmaj7 lydian"
+            # shufle chord seq --- too much random???
+            shuffle(chord)
 
-        # shufle chord seq --- too much random???
-        shuffle(chord)
+            # # which note
+            # len_of_chord = len(chord)
+            # which_note = randrange(len_of_chord)
+            # this_note, this_weight = chord[which_note]
+            # print(this_note, this_weight)
 
-        # # which note
-        # len_of_chord = len(chord)
-        # which_note = randrange(len_of_chord)
-        # this_note, this_weight = chord[which_note]
-        # print(this_note, this_weight)
+            # rough random for weighting
+            which_weight = random() * 100
 
-        # rough random for weighting
-        which_weight = random() * 100
+            # which octave? Drunk walk
+            drunk_octave = randrange(4)
 
-        # which octave? Drunk walk
-        drunk_octave = randrange(4)
+            # drunk move down octave
+            if drunk_octave == 0:
+                self.octave -= 1
 
-        # drunk move down octave
-        if drunk_octave == 0:
-            self.octave -= 1
+            # drunk move up an octave
+            elif drunk_octave == 1:
+                self.octave += 1
 
-        # drunk move up an octave
-        elif drunk_octave == 1:
-            self.octave += 1
+            # drunk reset to octave 4
+            elif drunk_octave == 3:
+                self.octave = 4
 
-        # drunk reset to octave 4
-        elif drunk_octave == 3:
-            self.octave = 4
+            # check its in range
+            if self.octave < self.LOWEST:
+                self.octave = 3
+            elif self.octave > self.OCTAVES:
+                self.octave = 4
 
-        # check its in range
-        if self.octave < self.LOWEST:
-            self.octave = 3
-        elif self.octave > self.OCTAVES:
-            self.octave = 4
+            # get note and play
+            current_sum = 0
+            for note_pos, weight in chord:
+                note_name = self.note_list[note_pos]
+                # print(f'original note name = {self.note_list[note_pos]}; '
+                #       f'adjusted note name = {note_name}, weight = {weight}')
 
-        # get note and play
-        current_sum = 0
-        for note_pos, weight in chord:
-            note_name = self.note_list[note_pos]
-            # print(f'original note name = {self.note_list[note_pos]}; '
-            #       f'adjusted note name = {note_name}, weight = {weight}')
+                # which note depending on weighting
+                current_sum += weight
+                if current_sum > which_weight:
+                    print('playing', note_name)
+                    self.harmony_dict['note'] = note_name
 
-            # which note depending on weighting
-            current_sum += weight
-            if current_sum > which_weight:
-                print('playing', note_name)
-                self.harmony_dict['note'] = note_name
+                    # random generate a dynamic
+                    dynamic = 90 + randrange(1, 30)
 
-                # random generate a dynamic
-                dynamic = 90 + randrange(1, 30)
+                    # package into dict for queue
+                    note_to_play = dict(note_name=note_name,
+                                        octave=self.octave,
+                                        endtime=time() + (rhythm_rate),
+                                        dynamic=dynamic)
 
-                # package into dict for queue
-                note_to_play = dict(note_name=note_name,
-                                    octave=self.octave,
-                                    endtime=time() + (rhythm_rate),
-                                    dynamic=dynamic)
-
-                # print (f'current time = {time()},  note data =   {note_to_play}')
-                # add note, octave, duration (from visual processing)
-                self.incoming_note_queue.append(note_to_play)
-                # self.play_note(Note(note_name, self.octave))
-                # self.played_note = note_name
-                break
+                    # print (f'current time = {time()},  note data =   {note_to_play}')
+                    # add note, octave, duration (from visual processing)
+                    self.incoming_note_queue.append(note_to_play)
+                    # self.play_note(Note(note_name, self.octave))
+                    # self.played_note = note_name
+                    break
 
 
 if __name__ == "__main__":

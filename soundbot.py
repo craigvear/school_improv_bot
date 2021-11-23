@@ -49,12 +49,9 @@ class SoundBot:
         #
         # # print('duration = ', duration)
         #
-        # # making sound
 
-        # decide to make sound or not
-        if getrandbits(1) == 1:
-            self.piano.which_note(incoming_raw_data, rhythm_rate)
-            print('play')
+        # send make sound signal to piano
+        self.piano.which_note(incoming_raw_data, rhythm_rate)
 
         # move bot
         if self.robot_connected:
