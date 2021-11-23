@@ -24,12 +24,15 @@ class Piano:
         SF2 = "media/soundfontGM.sf2"
         self.OCTAVES = 5  # number of octaves to show
         self.LOWEST = 3  # lowest octave to show
-        self.FADEOUT = 0.25  # coloration fadeout time (1 tick = 0.001)
 
         # list the notes in the master key of C Maj;
         # including the "add whole tone" to 1, 3, 5 of each chord tones
         # giving us lydian #11 and tritone/ dom #13 5th last
         self.note_list = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"]
+        self.note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
+
+        self.min7 = [(0, 20), (3, 40), (7, 10), (10, 30)]  # 1, 3, 5, 7 of minor scale
+        self.min7_sharp11_13 = [(0, 15), (3, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]  # 1, 3, 5, 7, 9, #11, 13 of minor scale
 
         # todo - tramsform these into Dicts for multiple transpositions and turnaround keys.
         # set up harmonic matrix with weighting adding to 100%
@@ -59,14 +62,14 @@ class Piano:
         self.played_note = 0
 
         # % factor if a note event is played or not
-        self.note_played_or_not = 0.8
+        self.note_played_or_not = 0.5
 
         # state BPM
         bpm = 120
         self.time_sig = 4
 
         # state how many sub divides to a beat. 4=16ths, 12 = semi trips
-        self.subdivision = 24
+        self.subdivision = 12
 
         # which turnaround
         turnaround_bar_length = 4
@@ -291,7 +294,7 @@ class Piano:
                     # package into dict for queue
                     note_to_play = dict(note_name=note_name,
                                         octave=self.octave,
-                                        endtime=time() + (rhythm_rate),
+                                        endtime=time() + rhythm_rate,
                                         dynamic=dynamic)
 
                     # print (f'current time = {time()},  note data =   {note_to_play}')
