@@ -25,41 +25,6 @@ class Piano:
         self.OCTAVES = 5  # number of octaves to show
         self.LOWEST = 3  # lowest octave to show
 
-
-        ##############################################################
-        # old matrix here
-        ##############################################################
-
-        # list the notes in the master key of C Maj;
-        # including the "add whole tone" to 1, 3, 5 of each chord tones
-        # giving us lydian #11 and tritone/ dom #13 5th last
-        # self.note_list = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"]
-
-        # set up harmonic matrix with weighting adding to 100%
-        # offset by starting tonic of master key
-
-        # # minor 7th = ii in the 2-5-1
-        # self.min7 = [(0, 20), (3, 40), (7, 10), (10, 30)]  # 1, 3, 5, 7 of minor scale
-        # self.min7_sharp11_13 = [(0, 15), (3, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]  # 1, 3, 5, 7, 9, #11, 13 of minor scale
-        #
-        # # major dom 9th - V in the 2-5-1
-        # self.dom9 = [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)] # flat 7
-        # self.dom9_sharp11_13 = [(0, 15), (4, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]
-        #
-        # # major dom 9th - V in the 2-5-1
-        # self.maj7 = [(0, 20), (4, 40), (7, 10), (11, 30)]
-        # self.maj7_sharp11_13 = [(0, 15), (4, 20), (7, 5), (11, 15), (2, 15), (5, 20), (9, 10)]
-        #
-        # # set up harmonic matrix with weighting adding to 100%
-        # self.dmin7 = [(3, 20), (5, 40), (0, 10), (2, 30)]
-        # self.g9 = [(6, 15), (1, 35), (3, 5), (5, 20), (0, 25)]
-        # self.cM7 = [(2, 20), (4, 40), (6, 10), (1, 30)]
-        #
-        # # set up the lydian + whole step extention to chordal tone
-        # self.dmin7_lyd = [(4, 34), (6, 33), (1, 33)]
-        # self.g9_lyd = [(7, 34), (9, 33), (3, 33)]
-        # self.cM7_lyd = [(5, 34), (8, 33), (0, 33)]
-
         ##############################################################
         # new matrix here
         ##############################################################
@@ -178,6 +143,7 @@ class Piano:
         current_bar = self.calc_bar()
         current_bar = current_bar % self.turnaround
 
+        # todo - align bass calc to new matrix!!!
         # calc root of current sequence & play
         # on bar change
         if current_bar != self._last_bar:
@@ -214,7 +180,11 @@ class Piano:
             self.bar += 1
             self.beat = 1
 
+        if self.bar > len(self.progression):
+            self.bar = 1
+
         self.harmony_dict['bar'] = self.bar
+        print('bar =', self.bar)
         return self.bar
 
     def parse_queues(self):
@@ -389,144 +359,6 @@ class Piano:
                     self.harmony_dict['note'] = chord_note
 
                     break
-
-
-
-
-
-
-
-
-
-
-
-
-            # # which chord & is it root or lyd
-            # # normal chord notes or jazz/ lyd notes
-            # if getrandbits(1) == 1:
-            #     if bar_position == 0:
-            #         chord = self.dmin7
-            #         self.harmony_dict['chord'] = "Dmin7"
-            #     elif bar_position == 1:
-            #         chord = self.g9
-            #         self.harmony_dict['chord'] = "G9"
-            #     else:
-            #         chord = self.cM7
-            #         self.harmony_dict['chord'] = "Cmaj7"
-            #
-            # else:
-            #     if bar_position == 0:
-            #         chord = self.dmin7_lyd
-            #         self.harmony_dict['chord'] = "Dmin7 lydian"
-            #     elif bar_position == 1:
-            #         chord = self.g9_lyd
-            #         self.harmony_dict['chord'] = "G9 lydian"
-            #     else:
-            #         chord = self.cM7_lyd
-            #         self.harmony_dict['chord'] = "Cmaj7 lydian"
-
-            #
-            # # which chord & is it root or lyd
-            # # normal chord notes or jazz/ lyd notes
-            # if getrandbits(1) == 1:
-            #     # major chord shapes
-            #     chord_shapes = self.lyd_chord_shapes
-            # else:
-            #     chord_shapes = self.major_key_chord_shapes
-            #
-            # progression_length = len(self.progression)
-            # print(progression_length)
-            #
-            # if bar_position > progression_length:
-            #     bar_position = progression_length
-            #
-            # pos = self.progression[bar_position]
-            #
-            # # calc position of root (1st position) for each chord in progression
-            # root_of_this_chord = pos[1] + self.masterkey
-            # # go get its name from alphabet
-            # if root_of_this_chord <= 11:
-            #     chord_root = self.note_alphabet[root_of_this_chord]
-            # else:
-            #     chord_root = self.note_alphabet[root_of_this_chord - 12]
-            # print('chord is ', chord_root)
-            #
-            # # get its shape of chordtones from chord shapes dict
-            # chordtones = chord_shapes.get(pos[0])
-            # print('chord shape is', chordtones)
-            #
-            # # for each of chord tones this shape calc the actual note
-            # for chordtone in chordtones:
-            #     # add the master key & print the chordtone as iterated from note alphabet
-            #     chord_note_position = root_of_this_chord + chordtone[0]
-            #     if chord_note_position <= 11:
-            #         chord_note = self.note_alphabet[chord_note_position]
-            #     else:
-            #         chord_note = self.note_alphabet[chord_note_position - 12]
-            #     print(
-            #         f'\t {pos[0]} chord {chord_root}{pos[2]} in master key {self.note_alphabet[master_key]}  = {chord_note}, with weighting {chordtone[1]}%')
-            #
-            # # shufle chord seq --- too much random???
-            # shuffle(chord)
-            #
-            # # # which note
-            # # len_of_chord = len(chord)
-            # # which_note = randrange(len_of_chord)
-            # # this_note, this_weight = chord[which_note]
-            # # print(this_note, this_weight)
-            #
-            # # rough random for weighting
-            # which_weight = random() * 100
-            #
-            # # which octave? Drunk walk
-            # drunk_octave = randrange(4)
-            #
-            # # drunk move down octave
-            # if drunk_octave == 0:
-            #     self.octave -= 1
-            #
-            # # drunk move up an octave
-            # elif drunk_octave == 1:
-            #     self.octave += 1
-            #
-            # # drunk reset to octave 4
-            # elif drunk_octave == 3:
-            #     self.octave = 4
-            #
-            # # check its in range
-            # if self.octave < self.LOWEST:
-            #     self.octave = 3
-            # elif self.octave > self.OCTAVES:
-            #     self.octave = 4
-            #
-            # # get note and play
-            # current_sum = 0
-            # for note_pos, weight in chord:
-            #     note_name = self.note_list[note_pos]
-            #     # print(f'original note name = {self.note_list[note_pos]}; '
-            #     #       f'adjusted note name = {note_name}, weight = {weight}')
-            #
-            #     # which note depending on weighting
-            #     current_sum += weight
-            #     if current_sum > which_weight:
-            #         print('playing', note_name)
-            #         self.harmony_dict['note'] = note_name
-            #
-            #         # random generate a dynamic
-            #         dynamic = 90 + randrange(1, 30)
-            #
-            #         # package into dict for queue
-            #         note_to_play = dict(note_name=note_name,
-            #                             octave=self.octave,
-            #                             endtime=time() + rhythm_rate,
-            #                             dynamic=dynamic)
-            #
-            #         # print (f'current time = {time()},  note data =   {note_to_play}')
-            #         # add note, octave, duration (from visual processing)
-            #         self.incoming_note_queue.append(note_to_play)
-            #         # self.play_note(Note(note_name, self.octave))
-            #         # self.played_note = note_name
-            #         break
 
 
 if __name__ == "__main__":
