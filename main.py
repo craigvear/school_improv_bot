@@ -126,7 +126,7 @@ class MyWidget(QWidget):
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
         harmonypainter.drawText(70, 20, "Bar:")
         harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
-        harmonypainter.drawText(100, 20, str(bar+1))
+        harmonypainter.drawText(100, 20, str(bar))
 
         # print chord
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))

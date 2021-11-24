@@ -92,8 +92,7 @@ class Piano:
         self.subdivision = 12
 
         # which turnaround
-        turnaround_bar_length = 4
-        self.turnaround = turnaround_bar_length
+        self.turnaround_bar_length = len(self.progression)
 
         # consts for the counting process
         self.bar = 1
@@ -139,30 +138,30 @@ class Piano:
     def chronos(self):
         """coordinate the master tempo and behaviours
         using BPM and root notes in bass LH"""
-        # get bar
+        # get bar and set the choros working
         current_bar = self.calc_bar()
-        current_bar = current_bar % self.turnaround
 
-        # todo - align bass calc to new matrix!!!
-        # calc root of current sequence & play
+        # current position in progression = the chord type
+        pos = self.progression[current_bar - 1]
+
+        # calc position of root (1st position) for each chord in progression
+        root_of_this_chord = pos[1] + self.master_key
+
+        # go get its name from alphabet
+        if root_of_this_chord <= 11:
+            root_note_name = self.note_alphabet[root_of_this_chord]
+        else:
+            root_note_name = self.note_alphabet[root_of_this_chord - 12]
+
         # on bar change
         if current_bar != self._last_bar:
-            if current_bar == 0:
-                root_note_name = "D"
-            elif current_bar == 1:
-                root_note_name = "G"
-            else:
-                root_note_name = "C"
-
-            # play the root
-            # self.play_note(Note(root_note_name, self.bass_octave))
+            # package the note to a dict
             bass = dict(note_name=root_note_name,
                         octave=self.bass_octave,
                         endtime=time() + 1,
                         dynamic=40)
 
-            # print (f'current time = {time()},  note data =   {note_to_play}')
-            # add note, octave, duration (from visual processing)
+            # and send to queue if active
             if self.bass_line:
                 self.incoming_note_queue.append(bass)
 
@@ -180,7 +179,7 @@ class Piano:
             self.bar += 1
             self.beat = 1
 
-        if self.bar > len(self.progression):
+        if self.bar > self.turnaround_bar_length:
             self.bar = 1
 
         self.harmony_dict['bar'] = self.bar
@@ -275,8 +274,7 @@ class Piano:
                 print("major shapes")
 
             # get the current bar position to align to harmonic progression
-            bar_position = self.harmony_dict.get('bar') - 1
-            print(bar_position)
+            bar_position = self.harmony_dict.get('bar')
 
             # # what is length of progression? is it 4 bars or under?
             # progression_length = len(self.progression)
@@ -287,8 +285,7 @@ class Piano:
             #     bar_position = progression_length
 
             # current position in progression = the chord type
-            pos = self.progression[bar_position]
-            print(pos)
+            pos = self.progression[bar_position - 1]
 
             # calc position of root (1st position) for each chord in progression
             root_of_this_chord = pos[1] + self.master_key
