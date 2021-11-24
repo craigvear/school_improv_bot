@@ -28,7 +28,7 @@ class Piano:
         # list the notes in the master key of C Maj;
         # including the "add whole tone" to 1, 3, 5 of each chord tones
         # giving us lydian #11 and tritone/ dom #13 5th last
-        self.note_list = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"]
+        # self.note_list = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"]
 
         # alt method using full 12 note alphabet: 0 - 11
         self.note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
@@ -36,28 +36,50 @@ class Piano:
         # set up harmonic matrix with weighting adding to 100%
         # offset by starting tonic of master key
 
-        # minor 7th = ii in the 2-5-1
-        self.min7 = [(0, 20), (3, 40), (7, 10), (10, 30)]  # 1, 3, 5, 7 of minor scale
-        self.min7_sharp11_13 = [(0, 15), (3, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]  # 1, 3, 5, 7, 9, #11, 13 of minor scale
+        # # minor 7th = ii in the 2-5-1
+        # self.min7 = [(0, 20), (3, 40), (7, 10), (10, 30)]  # 1, 3, 5, 7 of minor scale
+        # self.min7_sharp11_13 = [(0, 15), (3, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]  # 1, 3, 5, 7, 9, #11, 13 of minor scale
+        #
+        # # major dom 9th - V in the 2-5-1
+        # self.dom9 = [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)] # flat 7
+        # self.dom9_sharp11_13 = [(0, 15), (4, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]
+        #
+        # # major dom 9th - V in the 2-5-1
+        # self.maj7 = [(0, 20), (4, 40), (7, 10), (11, 30)]
+        # self.maj7_sharp11_13 = [(0, 15), (4, 20), (7, 5), (11, 15), (2, 15), (5, 20), (9, 10)]
+        #
+        # # set up harmonic matrix with weighting adding to 100%
+        # self.dmin7 = [(3, 20), (5, 40), (0, 10), (2, 30)]
+        # self.g9 = [(6, 15), (1, 35), (3, 5), (5, 20), (0, 25)]
+        # self.cM7 = [(2, 20), (4, 40), (6, 10), (1, 30)]
+        #
+        # # set up the lydian + whole step extention to chordal tone
+        # self.dmin7_lyd = [(4, 34), (6, 33), (1, 33)]
+        # self.g9_lyd = [(7, 34), (9, 33), (3, 33)]
+        # self.cM7_lyd = [(5, 34), (8, 33), (0, 33)]
 
-        # major dom 9th - V in the 2-5-1
-        self.dom9 = [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)] # flat 7
-        self.dom9_sharp11_13 = [(0, 15), (4, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]
+        # chord types are 1: tonic Maj7; 2: minor 7th; 4: sub dom maj7; 5: dom 7th etc
+        self.chord_shapes = {"1": [(0, 20), (4, 40), (7, 10), (11, 30)],
+                             "2": [(0, 20), (3, 40), (7, 10), (10, 30)],
+                             "5": [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)],
+                             "6": [[(0, 20), (3, 40), (7, 10), (10, 30)]]
+                             }
 
-        # major dom 9th - V in the 2-5-1
-        self.maj7 = [(0, 20), (4, 40), (7, 10), (11, 30)]
-        self.maj7_sharp11_13 = [(0, 15), (4, 20), (7, 5), (11, 15), (2, 15), (5, 20), (9, 10)]
+        # same as above but with lyd + whole tone extensions to core triad chord tones
+        # e.g. 9th, #11, 13
+        self.lyd_chord_shapes = {"1": [(0, 15), (4, 20), (7, 5), (11, 15),
+                                  (2, 15), (6, 20), (9, 10)],
+                                 "2": [(0, 15), (3, 20), (7, 5), (10, 15),
+                                  (2, 15), (5, 20), (9, 10)],
+                                 "5": [(0, 15), (4, 20), (7, 5), (10, 15),
+                                  (2, 15), (5, 20), (9, 10)],
+                                 "6": [(0, 15), (3, 20), (7, 5), (10, 15),
+                                  (2, 15), (5, 20), (9, 10)]
+                                 }
 
-        # todo - tramsform these into Dicts for multiple transpositions and turnaround keys.
-        # set up harmonic matrix with weighting adding to 100%
-        self.dmin7 = [(3, 20), (5, 40), (0, 10), (2, 30)]
-        self.g9 = [(6, 15), (1, 35), (3, 5), (5, 20), (0, 25)]
-        self.cM7 = [(2, 20), (4, 40), (6, 10), (1, 30)]
-
-        # set up the lydian + whole step extention to chordal tone
-        self.dmin7_lyd = [(4, 34), (6, 33), (1, 33)]
-        self.g9_lyd = [(7, 34), (9, 33), (3, 33)]
-        self.cM7_lyd = [(5, 34), (8, 33), (0, 33)]
+        # list the name and note alphabet position for each progression
+        self.progression251 = [("2", 2), ("5", 7), ("1", 0)]  # ii-V-1
+        self.progression6251 = [("6", 6), ("2", 2), ("5", 7), ("1", 0)] # 6-ii-V-1
 
         self.masterkey = 3  # which is C on the note alphabet
 
@@ -134,7 +156,8 @@ class Piano:
         playingThread.start()
 
     def chronos(self):
-        """coordinate the master tempo and behaviours using BPM and root notes in bass LH"""
+        """coordinate the master tempo and behaviours
+        using BPM and root notes in bass LH"""
         # get bar
         current_bar = self.calc_bar()
         current_bar = current_bar % self.turnaround
