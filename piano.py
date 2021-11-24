@@ -25,13 +25,15 @@ class Piano:
         self.OCTAVES = 5  # number of octaves to show
         self.LOWEST = 3  # lowest octave to show
 
+
+        ##############################################################
+        # old matrix here
+        ##############################################################
+
         # list the notes in the master key of C Maj;
         # including the "add whole tone" to 1, 3, 5 of each chord tones
         # giving us lydian #11 and tritone/ dom #13 5th last
         # self.note_list = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"]
-
-        # alt method using full 12 note alphabet: 0 - 11
-        self.note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
 
         # set up harmonic matrix with weighting adding to 100%
         # offset by starting tonic of master key
@@ -58,28 +60,42 @@ class Piano:
         # self.g9_lyd = [(7, 34), (9, 33), (3, 33)]
         # self.cM7_lyd = [(5, 34), (8, 33), (0, 33)]
 
+        ##############################################################
+        # new matrix here
+        ##############################################################
+
+        # alt method using full 12 note alphabet: 0 - 11
+        self.note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
+
         # chord types are 1: tonic Maj7; 2: minor 7th; 4: sub dom maj7; 5: dom 7th etc
-        self.chord_shapes = {"1": [(0, 20), (4, 40), (7, 10), (11, 30)],
+        self.major_key_chord_shapes = {"1": [(0, 20), (4, 40), (7, 10), (11, 30)],
+                             "3": [(0, 20), (3, 40), (7, 10), (10, 30)],
                              "2": [(0, 20), (3, 40), (7, 10), (10, 30)],
                              "5": [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)],
-                             "6": [[(0, 20), (3, 40), (7, 10), (10, 30)]]
-                             }
+                             "6": [(0, 20), (3, 40), (7, 10), (10, 30)]
+                                       }
 
         # same as above but with lyd + whole tone extensions to core triad chord tones
         # e.g. 9th, #11, 13
         self.lyd_chord_shapes = {"1": [(0, 15), (4, 20), (7, 5), (11, 15),
-                                  (2, 15), (6, 20), (9, 10)],
+                                       (2, 15), (6, 20), (9, 10)],
                                  "2": [(0, 15), (3, 20), (7, 5), (10, 15),
-                                  (2, 15), (5, 20), (9, 10)],
+                                       (2, 15), (5, 20), (9, 10)],
+                                 "3": [(0, 15), (3, 20), (7, 5), (10, 15),
+                                       (2, 15), (5, 20), (9, 10)],
                                  "5": [(0, 15), (4, 20), (7, 5), (10, 15),
-                                  (2, 15), (5, 20), (9, 10)],
+                                       (2, 15), (5, 20), (9, 10)],
                                  "6": [(0, 15), (3, 20), (7, 5), (10, 15),
-                                  (2, 15), (5, 20), (9, 10)]
+                                       (2, 15), (5, 20), (9, 10)]
                                  }
 
         # list the name and note alphabet position for each progression
-        self.progression251 = [("2", 2), ("5", 7), ("1", 0)]  # ii-V-1
-        self.progression6251 = [("6", 6), ("2", 2), ("5", 7), ("1", 0)] # 6-ii-V-1
+        progression251 = [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7")]
+        progression1625 = [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
+        progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
+
+        # which progression
+        self.progression = progression251
 
         self.masterkey = 3  # which is C on the note alphabet
 
@@ -253,34 +269,77 @@ class Piano:
     def which_note(self, incoming_data, rhythm_rate):
         """receives raw data from robot controller and converts into piano note"""
 
-        # decide to make sound or not
+        # decide to make sound or not based on project %
         if random() <= self.note_played_or_not:
             print('play')
 
             bar_position = self.harmony_dict.get('bar')
+
+
+            # # which chord & is it root or lyd
+            # # normal chord notes or jazz/ lyd notes
+            # if getrandbits(1) == 1:
+            #     if bar_position == 0:
+            #         chord = self.dmin7
+            #         self.harmony_dict['chord'] = "Dmin7"
+            #     elif bar_position == 1:
+            #         chord = self.g9
+            #         self.harmony_dict['chord'] = "G9"
+            #     else:
+            #         chord = self.cM7
+            #         self.harmony_dict['chord'] = "Cmaj7"
+            #
+            # else:
+            #     if bar_position == 0:
+            #         chord = self.dmin7_lyd
+            #         self.harmony_dict['chord'] = "Dmin7 lydian"
+            #     elif bar_position == 1:
+            #         chord = self.g9_lyd
+            #         self.harmony_dict['chord'] = "G9 lydian"
+            #     else:
+            #         chord = self.cM7_lyd
+            #         self.harmony_dict['chord'] = "Cmaj7 lydian"
+
+
             # which chord & is it root or lyd
             # normal chord notes or jazz/ lyd notes
             if getrandbits(1) == 1:
-                if bar_position == 0:
-                    chord = self.dmin7
-                    self.harmony_dict['chord'] = "Dmin7"
-                elif bar_position == 1:
-                    chord = self.g9
-                    self.harmony_dict['chord'] = "G9"
-                else:
-                    chord = self.cM7
-                    self.harmony_dict['chord'] = "Cmaj7"
-
+                # major chord shapes
+                chord_shapes = self.lyd_chord_shapes
             else:
-                if bar_position == 0:
-                    chord = self.dmin7_lyd
-                    self.harmony_dict['chord'] = "Dmin7 lydian"
-                elif bar_position == 1:
-                    chord = self.g9_lyd
-                    self.harmony_dict['chord'] = "G9 lydian"
+                chord_shapes = self.major_key_chord_shapes
+
+            progression_length = len(self.progression)
+            print(progression_length)
+
+            if bar_position > progression_length:
+                bar_position = progression_length
+
+            pos = self.progression[bar_position]
+
+            # calc position of root (1st position) for each chord in progression
+            root_of_this_chord = pos[1] + self.masterkey
+            # go get its name from alphabet
+            if root_of_this_chord <= 11:
+                chord_root = self.note_alphabet[root_of_this_chord]
+            else:
+                chord_root = self.note_alphabet[root_of_this_chord - 12]
+            print('chord is ', chord_root)
+
+            # get its shape of chordtones from chord shapes dict
+            chordtones = chord_shapes.get(pos[0])
+            print('chord shape is', chordtones)
+
+            # for each of chord tones this shape calc the actual note
+            for chordtone in chordtones:
+                # add the master key & print the chordtone as iterated from note alphabet
+                chord_note_position = root_of_this_chord + chordtone[0]
+                if chord_note_position <= 11:
+                    chord_note = self.note_alphabet[chord_note_position]
                 else:
-                    chord = self.cM7_lyd
-                    self.harmony_dict['chord'] = "Cmaj7 lydian"
+                    chord_note = self.note_alphabet[chord_note_position - 12]
+                print(
+                    f'\t {pos[0]} chord {chord_root}{pos[2]} in master key {self.note_alphabet[master_key]}  = {chord_note}, with weighting {chordtone[1]}%')
 
             # shufle chord seq --- too much random???
             shuffle(chord)
