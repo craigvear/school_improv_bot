@@ -304,10 +304,10 @@ class AiDataEngine():
                     # might make a sound emission
                     # todo - add percentage here
                     if getrandbits(1) == 1:
-                        print('emmission bang A')
+                        # print('emmission bang A')
                         self.emitter(affect_listen)
-                    else:
-                        print('no emmission bang A')
+                    # else:
+                        # print('no emmission bang A')
 
                     # calc affect on behaviour
                     # if input stream is LOUD then smash a random fill and break out to Daddy cycle...
@@ -338,10 +338,10 @@ class AiDataEngine():
                         # emit at various points in the affect cycle
                         # might make a sound emission
                         if getrandbits(1) == 1:
-                            print('emmission bang B')
+                            # print('emmission bang B')
                             self.emitter(affect_listen)
-                        else:
-                            print('no emmission bang B')
+                        # else:
+                            # print('no emmission bang B')
 
                         # refill dict with random
                         self.dict_fill()

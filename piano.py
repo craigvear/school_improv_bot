@@ -90,14 +90,14 @@ class Piano:
                                  }
 
         # list the name and note alphabet position for each progression
-        progression251 = [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7")]
+        progression2511 = [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("1", 0, "Maj7")]
         progression1625 = [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
         progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
 
         # which progression
-        self.progression = progression251
+        self.progression = progression3625
 
-        self.masterkey = 3  # which is C on the note alphabet
+        self.master_key = 3  # which is C on the note alphabet
 
         # piano range vars
         self.octave = 4
@@ -266,14 +266,139 @@ class Piano:
     def stop_note(self, note_to_stop):
         fluidsynth.stop_Note(note_to_stop, self.channel)
 
+    def which_octave(self):
+        """determines the octave to be played by the piano
+         and includes a drunk walk"""
+        # which octave? Drunk walk
+        drunk_octave = randrange(4)
+
+        # drunk move down octave
+        if drunk_octave == 0:
+            self.octave -= 1
+
+        # drunk move up an octave
+        elif drunk_octave == 1:
+            self.octave += 1
+
+        # drunk reset to octave 4
+        elif drunk_octave == 3:
+            self.octave = 4
+
     def which_note(self, incoming_data, rhythm_rate):
-        """receives raw data from robot controller and converts into piano note"""
+        """receives raw data from robot controller
+        and converts into piano note"""
 
         # decide to make sound or not based on project %
         if random() <= self.note_played_or_not:
             print('play')
 
-            bar_position = self.harmony_dict.get('bar')
+            # which harmonic set - major of lydian
+            # todo - build this to include Russell's scales
+            #  & build complexity vs duration
+            if getrandbits(1) == 1:
+                # lydian chord shapes
+                chord_shapes = self.lyd_chord_shapes
+                print("lydian shapes")
+            else:
+                # major chord shapes
+                chord_shapes = self.major_key_chord_shapes
+                print("major shapes")
+
+            # get the current bar position to align to harmonic progression
+            bar_position = self.harmony_dict.get('bar') - 1
+            print(bar_position)
+
+            # # what is length of progression? is it 4 bars or under?
+            # progression_length = len(self.progression)
+            # print(progression_length)
+            #
+            # # if its less than 4 bars, repeat last bar
+            # if bar_position > progression_length:
+            #     bar_position = progression_length
+
+            # current position in progression = the chord type
+            pos = self.progression[bar_position]
+            print(pos)
+
+            # calc position of root (1st position) for each chord in progression
+            root_of_this_chord = pos[1] + self.master_key
+
+            # go get its name from alphabet
+            if root_of_this_chord <= 11:
+                chord_root = self.note_alphabet[root_of_this_chord]
+            else:
+                chord_root = self.note_alphabet[root_of_this_chord - 12]
+            # print('chord is ', chord_root, pos[2])
+            self.harmony_dict['chord'] = chord_root + pos[2]
+
+            # get its shape of chordtones from chord shapes dict
+            chord = chord_shapes.get(pos[0])
+            # print('chord shape is', chord)
+
+            # add the scale to the harmony dict for GUI
+            scale_list = []
+            for this_note in chord:
+                scale_note = this_note[0] + root_of_this_chord
+                if scale_note <= 11:
+                    scale_note_name = self.note_alphabet[scale_note]
+                else:
+                    scale_note_name = self.note_alphabet[scale_note - 12]
+                scale_list.append(scale_note_name)
+
+            # self.harmony_dict['scale'] = scale_list
+            # print("scale = ", scale_list)
+
+            # shufle chord seq
+            shuffle(chord)
+
+            # rough random for weighting
+            which_weight = random() * 100
+            current_sum = 0
+
+            # find note to play using weighting
+            for note_pos, weight in chord:
+                # print(note_pos, weight)
+
+                # which note depending on weighting
+                current_sum += weight
+                if current_sum > which_weight:
+
+                    # work out note name from chord and master key offset
+                    note_name = root_of_this_chord + note_pos
+                    if note_name <= 11:
+                        chord_note = self.note_alphabet[note_name]
+                    else:
+                        chord_note = self.note_alphabet[note_name - 12]
+
+                    # print(which_weight, chord_note)
+
+                    # create note to play event
+                    # random generate a dynamic
+                    dynamic = 90 + randrange(1, 30)
+
+                    # package into dict for queue
+                    note_to_play = dict(note_name=chord_note,
+                                        octave=self.octave,
+                                        endtime=time() + rhythm_rate,
+                                        dynamic=dynamic)
+
+                    self.incoming_note_queue.append(note_to_play)
+
+                    # add final dictionary details
+                    print('playing', chord_note)
+                    self.harmony_dict['note'] = chord_note
+
+                    break
+
+
+
+
+
+
+
+
+
+
 
 
             # # which chord & is it root or lyd
@@ -300,108 +425,108 @@ class Piano:
             #         chord = self.cM7_lyd
             #         self.harmony_dict['chord'] = "Cmaj7 lydian"
 
-
-            # which chord & is it root or lyd
-            # normal chord notes or jazz/ lyd notes
-            if getrandbits(1) == 1:
-                # major chord shapes
-                chord_shapes = self.lyd_chord_shapes
-            else:
-                chord_shapes = self.major_key_chord_shapes
-
-            progression_length = len(self.progression)
-            print(progression_length)
-
-            if bar_position > progression_length:
-                bar_position = progression_length
-
-            pos = self.progression[bar_position]
-
-            # calc position of root (1st position) for each chord in progression
-            root_of_this_chord = pos[1] + self.masterkey
-            # go get its name from alphabet
-            if root_of_this_chord <= 11:
-                chord_root = self.note_alphabet[root_of_this_chord]
-            else:
-                chord_root = self.note_alphabet[root_of_this_chord - 12]
-            print('chord is ', chord_root)
-
-            # get its shape of chordtones from chord shapes dict
-            chordtones = chord_shapes.get(pos[0])
-            print('chord shape is', chordtones)
-
-            # for each of chord tones this shape calc the actual note
-            for chordtone in chordtones:
-                # add the master key & print the chordtone as iterated from note alphabet
-                chord_note_position = root_of_this_chord + chordtone[0]
-                if chord_note_position <= 11:
-                    chord_note = self.note_alphabet[chord_note_position]
-                else:
-                    chord_note = self.note_alphabet[chord_note_position - 12]
-                print(
-                    f'\t {pos[0]} chord {chord_root}{pos[2]} in master key {self.note_alphabet[master_key]}  = {chord_note}, with weighting {chordtone[1]}%')
-
-            # shufle chord seq --- too much random???
-            shuffle(chord)
-
-            # # which note
-            # len_of_chord = len(chord)
-            # which_note = randrange(len_of_chord)
-            # this_note, this_weight = chord[which_note]
-            # print(this_note, this_weight)
-
-            # rough random for weighting
-            which_weight = random() * 100
-
-            # which octave? Drunk walk
-            drunk_octave = randrange(4)
-
-            # drunk move down octave
-            if drunk_octave == 0:
-                self.octave -= 1
-
-            # drunk move up an octave
-            elif drunk_octave == 1:
-                self.octave += 1
-
-            # drunk reset to octave 4
-            elif drunk_octave == 3:
-                self.octave = 4
-
-            # check its in range
-            if self.octave < self.LOWEST:
-                self.octave = 3
-            elif self.octave > self.OCTAVES:
-                self.octave = 4
-
-            # get note and play
-            current_sum = 0
-            for note_pos, weight in chord:
-                note_name = self.note_list[note_pos]
-                # print(f'original note name = {self.note_list[note_pos]}; '
-                #       f'adjusted note name = {note_name}, weight = {weight}')
-
-                # which note depending on weighting
-                current_sum += weight
-                if current_sum > which_weight:
-                    print('playing', note_name)
-                    self.harmony_dict['note'] = note_name
-
-                    # random generate a dynamic
-                    dynamic = 90 + randrange(1, 30)
-
-                    # package into dict for queue
-                    note_to_play = dict(note_name=note_name,
-                                        octave=self.octave,
-                                        endtime=time() + rhythm_rate,
-                                        dynamic=dynamic)
-
-                    # print (f'current time = {time()},  note data =   {note_to_play}')
-                    # add note, octave, duration (from visual processing)
-                    self.incoming_note_queue.append(note_to_play)
-                    # self.play_note(Note(note_name, self.octave))
-                    # self.played_note = note_name
-                    break
+            #
+            # # which chord & is it root or lyd
+            # # normal chord notes or jazz/ lyd notes
+            # if getrandbits(1) == 1:
+            #     # major chord shapes
+            #     chord_shapes = self.lyd_chord_shapes
+            # else:
+            #     chord_shapes = self.major_key_chord_shapes
+            #
+            # progression_length = len(self.progression)
+            # print(progression_length)
+            #
+            # if bar_position > progression_length:
+            #     bar_position = progression_length
+            #
+            # pos = self.progression[bar_position]
+            #
+            # # calc position of root (1st position) for each chord in progression
+            # root_of_this_chord = pos[1] + self.masterkey
+            # # go get its name from alphabet
+            # if root_of_this_chord <= 11:
+            #     chord_root = self.note_alphabet[root_of_this_chord]
+            # else:
+            #     chord_root = self.note_alphabet[root_of_this_chord - 12]
+            # print('chord is ', chord_root)
+            #
+            # # get its shape of chordtones from chord shapes dict
+            # chordtones = chord_shapes.get(pos[0])
+            # print('chord shape is', chordtones)
+            #
+            # # for each of chord tones this shape calc the actual note
+            # for chordtone in chordtones:
+            #     # add the master key & print the chordtone as iterated from note alphabet
+            #     chord_note_position = root_of_this_chord + chordtone[0]
+            #     if chord_note_position <= 11:
+            #         chord_note = self.note_alphabet[chord_note_position]
+            #     else:
+            #         chord_note = self.note_alphabet[chord_note_position - 12]
+            #     print(
+            #         f'\t {pos[0]} chord {chord_root}{pos[2]} in master key {self.note_alphabet[master_key]}  = {chord_note}, with weighting {chordtone[1]}%')
+            #
+            # # shufle chord seq --- too much random???
+            # shuffle(chord)
+            #
+            # # # which note
+            # # len_of_chord = len(chord)
+            # # which_note = randrange(len_of_chord)
+            # # this_note, this_weight = chord[which_note]
+            # # print(this_note, this_weight)
+            #
+            # # rough random for weighting
+            # which_weight = random() * 100
+            #
+            # # which octave? Drunk walk
+            # drunk_octave = randrange(4)
+            #
+            # # drunk move down octave
+            # if drunk_octave == 0:
+            #     self.octave -= 1
+            #
+            # # drunk move up an octave
+            # elif drunk_octave == 1:
+            #     self.octave += 1
+            #
+            # # drunk reset to octave 4
+            # elif drunk_octave == 3:
+            #     self.octave = 4
+            #
+            # # check its in range
+            # if self.octave < self.LOWEST:
+            #     self.octave = 3
+            # elif self.octave > self.OCTAVES:
+            #     self.octave = 4
+            #
+            # # get note and play
+            # current_sum = 0
+            # for note_pos, weight in chord:
+            #     note_name = self.note_list[note_pos]
+            #     # print(f'original note name = {self.note_list[note_pos]}; '
+            #     #       f'adjusted note name = {note_name}, weight = {weight}')
+            #
+            #     # which note depending on weighting
+            #     current_sum += weight
+            #     if current_sum > which_weight:
+            #         print('playing', note_name)
+            #         self.harmony_dict['note'] = note_name
+            #
+            #         # random generate a dynamic
+            #         dynamic = 90 + randrange(1, 30)
+            #
+            #         # package into dict for queue
+            #         note_to_play = dict(note_name=note_name,
+            #                             octave=self.octave,
+            #                             endtime=time() + rhythm_rate,
+            #                             dynamic=dynamic)
+            #
+            #         # print (f'current time = {time()},  note data =   {note_to_play}')
+            #         # add note, octave, duration (from visual processing)
+            #         self.incoming_note_queue.append(note_to_play)
+            #         # self.play_note(Note(note_name, self.octave))
+            #         # self.played_note = note_name
+            #         break
 
 
 if __name__ == "__main__":
