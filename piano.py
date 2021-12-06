@@ -60,7 +60,7 @@ class Piano:
         progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
 
         # which progression
-        self.progression = progression3625
+        self.progression = progression1625
 
         self.master_key = 3  # which is C on the note alphabet
 
@@ -89,7 +89,7 @@ class Piano:
         self.time_sig = 4
 
         # state how many sub divides to a beat. 4=16ths, 12 = semi trips
-        self.subdivision = 12
+        self.subdivision = 3
 
         # which turnaround
         self.turnaround_bar_length = len(self.progression)
@@ -183,7 +183,7 @@ class Piano:
             self.bar = 1
 
         self.harmony_dict['bar'] = self.bar
-        print('bar =', self.bar)
+        # print('bar =', self.bar)
         return self.bar
 
     def parse_queues(self):
