@@ -51,7 +51,7 @@ class SoundBot:
         #
 
         # send make sound signal to piano
-        self.piano.which_note(incoming_raw_data, rhythm_rate)
+        self.piano.note_to_play(incoming_raw_data, rhythm_rate)
 
         # move bot
         if self.robot_connected:

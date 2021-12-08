@@ -183,6 +183,9 @@ class Piano:
             self.bar = 1
 
         self.harmony_dict['bar'] = self.bar
+
+        # todo calc chord in progression here too
+
         # print('bar =', self.bar)
         return self.bar
 
@@ -253,112 +256,117 @@ class Piano:
         elif drunk_octave == 3:
             self.octave = 4
 
-    def which_note(self, incoming_data, rhythm_rate):
-        """receives raw data from robot controller
+    def note_to_play(self, incoming_data, rhythm_rate):
+        """receives raw data from soundbot controller
         and converts into piano note"""
-
         # decide to make sound or not based on project %
         if random() <= self.note_played_or_not:
             print('play')
 
-            # which harmonic set - major of lydian
-            # todo - build this to include Russell's scales
-            #  & build complexity vs duration
-            if getrandbits(1) == 1:
-                # lydian chord shapes
-                chord_shapes = self.lyd_chord_shapes
-                print("lydian shapes")
+            chord_note = self.which_note(num_of_notes=1)
+
+            # extract the note value
+            chord_note = chord_note[0]
+
+            # create note to play event
+            # random generate a dynamic
+            dynamic = 90 + randrange(1, 30)
+
+            # variable duration
+            duration = rhythm_rate * (randrange(10, 30) / 10)
+
+            # package into dict for queue
+            note_to_play = dict(note_name=chord_note,
+                                octave=self.octave,
+                                endtime=time() + duration,
+                                dynamic=dynamic)
+
+            self.incoming_note_queue.append(note_to_play)
+
+            # add final dictionary details
+            print('playing', chord_note)
+            self.harmony_dict['note'] = chord_note
+
+
+    def which_note(self, num_of_notes=1):
+        """calcs a note from current harmony matrix"""
+
+        # setup list for returning note values
+        chord_note = []
+
+        # which harmonic set - major of lydian
+        # todo - build this to include Russell's scales
+        #  & build complexity vs duration
+        if getrandbits(1) == 1:
+            # lydian chord shapes
+            chord_shapes = self.lyd_chord_shapes
+            print("lydian shapes")
+        else:
+            # major chord shapes
+            chord_shapes = self.major_key_chord_shapes
+            print("major shapes")
+
+        # get the current bar position to align to harmonic progression
+        bar_position = self.harmony_dict.get('bar')
+
+        # current position in progression = the chord type
+        pos = self.progression[bar_position - 1]
+
+        # calc position of root (1st position) for each chord in progression
+        root_of_this_chord = pos[1] + self.master_key
+
+        # go get its name from alphabet
+        if root_of_this_chord <= 11:
+            chord_root = self.note_alphabet[root_of_this_chord]
+        else:
+            chord_root = self.note_alphabet[root_of_this_chord - 12]
+        # print('chord is ', chord_root, pos[2])
+        self.harmony_dict['chord'] = chord_root + pos[2]
+
+        # get its shape of chordtones from chord shapes dict
+        chord = chord_shapes.get(pos[0])
+        # print('chord shape is', chord)
+
+        # add the scale to the harmony dict for GUI
+        scale_list = []
+        for this_note in chord:
+            scale_note = this_note[0] + root_of_this_chord
+            if scale_note <= 11:
+                scale_note_name = self.note_alphabet[scale_note]
             else:
-                # major chord shapes
-                chord_shapes = self.major_key_chord_shapes
-                print("major shapes")
+                scale_note_name = self.note_alphabet[scale_note - 12]
+            scale_list.append(scale_note_name)
 
-            # get the current bar position to align to harmonic progression
-            bar_position = self.harmony_dict.get('bar')
+        # self.harmony_dict['scale'] = scale_list
+        # print("scale = ", scale_list)
 
-            # # what is length of progression? is it 4 bars or under?
-            # progression_length = len(self.progression)
-            # print(progression_length)
-            #
-            # # if its less than 4 bars, repeat last bar
-            # if bar_position > progression_length:
-            #     bar_position = progression_length
+        # shufle chord seq
+        shuffle(chord)
 
-            # current position in progression = the chord type
-            pos = self.progression[bar_position - 1]
+        # rough random for weighting
+        which_weight = random() * 100
+        current_sum = 0
 
-            # calc position of root (1st position) for each chord in progression
-            root_of_this_chord = pos[1] + self.master_key
+        # find note to play using weighting
+        for note_pos, weight in chord:
+            # print(note_pos, weight)
 
-            # go get its name from alphabet
-            if root_of_this_chord <= 11:
-                chord_root = self.note_alphabet[root_of_this_chord]
-            else:
-                chord_root = self.note_alphabet[root_of_this_chord - 12]
-            # print('chord is ', chord_root, pos[2])
-            self.harmony_dict['chord'] = chord_root + pos[2]
+            # which note depending on weighting
+            current_sum += weight
+            if current_sum > which_weight:
 
-            # get its shape of chordtones from chord shapes dict
-            chord = chord_shapes.get(pos[0])
-            # print('chord shape is', chord)
-
-            # add the scale to the harmony dict for GUI
-            scale_list = []
-            for this_note in chord:
-                scale_note = this_note[0] + root_of_this_chord
-                if scale_note <= 11:
-                    scale_note_name = self.note_alphabet[scale_note]
+                # work out note name from chord and master key offset
+                note_name = root_of_this_chord + note_pos
+                if note_name <= 11:
+                    chord_note.append(self.note_alphabet[note_name])
                 else:
-                    scale_note_name = self.note_alphabet[scale_note - 12]
-                scale_list.append(scale_note_name)
+                    chord_note.append(self.note_alphabet[note_name - 12])
 
-            # self.harmony_dict['scale'] = scale_list
-            # print("scale = ", scale_list)
+                # break out of loop
+                break
 
-            # shufle chord seq
-            shuffle(chord)
-
-            # rough random for weighting
-            which_weight = random() * 100
-            current_sum = 0
-
-            # find note to play using weighting
-            for note_pos, weight in chord:
-                # print(note_pos, weight)
-
-                # which note depending on weighting
-                current_sum += weight
-                if current_sum > which_weight:
-
-                    # work out note name from chord and master key offset
-                    note_name = root_of_this_chord + note_pos
-                    if note_name <= 11:
-                        chord_note = self.note_alphabet[note_name]
-                    else:
-                        chord_note = self.note_alphabet[note_name - 12]
-
-                    # print(which_weight, chord_note)
-
-                    # create note to play event
-                    # random generate a dynamic
-                    dynamic = 90 + randrange(1, 30)
-
-                    # variable duration
-                    duration = rhythm_rate * (randrange(10, 30) / 10)
-
-                    # package into dict for queue
-                    note_to_play = dict(note_name=chord_note,
-                                        octave=self.octave,
-                                        endtime=time() + duration,
-                                        dynamic=dynamic)
-
-                    self.incoming_note_queue.append(note_to_play)
-
-                    # add final dictionary details
-                    print('playing', chord_note)
-                    self.harmony_dict['note'] = chord_note
-
-                    break
+        print(f'chrod note  ============== {chord_note}')
+        return chord_note
 
 
 if __name__ == "__main__":
