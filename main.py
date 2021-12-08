@@ -22,7 +22,7 @@ from GotAISignal import GotAISignal
 from GotMusicSignal import GotMusicSignal
 from AIData import AIData
 from processVisualImages import ProcessVisuals
-# from notes import Notes
+from image_generator import ImageGen
 
 
 class MyWidget(QWidget):
@@ -44,8 +44,8 @@ class MyWidget(QWidget):
         # init the harmony dict
         self.harmony_dict = {}
 
-        # init the piano class to get notes for bespoke images
-        # self.notes = Notes()
+        # init the image generator to get notes for bespoke images
+        self.image_gen = ImageGen()
 
         # start the ball rolling with all data generation and parsing
         self._ai_data_engine = AIData(ai_signal, harmony_signal)
@@ -94,7 +94,7 @@ class MyWidget(QWidget):
                     painter.drawRect(x, y, x + size, y + size)
                 elif element_type == "image":
                     # todo generate an image using piano.which_note
-
+                    self.image_gen.make_image()
                     image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
                     painter.setOpacity(i["image_transparency"])
                     painter.compositionMode = i["image_composition_mode"]
@@ -113,10 +113,12 @@ class MyWidget(QWidget):
 
     def create_telemetry(self):
         # start a painter
-        bpm, chord, note, bar = itemgetter("BPM",
-                                            "chord",
-                                            "note",
-                                            "bar")(self.harmony_dict)
+        bpm, chord, note, bar, pos, root_name = itemgetter("BPM",
+                                                           "chord",
+                                                           "note",
+                                                           "bar",
+                                                           "pos",
+                                                           "root_name")(self.harmony_dict)
 
         harmonypainter = QPainter(self)
         harmonypainter.setRenderHint(QPainter.Antialiasing, True)
@@ -126,19 +128,19 @@ class MyWidget(QWidget):
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
         harmonypainter.drawText(10, 20, "BPM:")
         harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
-        harmonypainter.drawText(40, 20, str(bpm))
+        harmonypainter.drawText(40, 20, f"{str(bpm)}: {str(bar)}")
 
         # print Bar
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
-        harmonypainter.drawText(70, 20, "Bar:")
+        harmonypainter.drawText(70, 20, "Pos:")
         harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
-        harmonypainter.drawText(100, 20, str(bar))
+        harmonypainter.drawText(100, 20, str(pos))
 
         # print chord
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
         harmonypainter.drawText(10, 30, "Chord:")
         harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
-        harmonypainter.drawText(50, 30, chord)
+        harmonypainter.drawText(50, 30, f"{chord}: {root_name}")
 
         # print note
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))

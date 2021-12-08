@@ -38,13 +38,13 @@ note5 = Chordrest(Mm(50), staff, ["a'", "bs"], Beat(2, 4))
 slur = Slur((Mm(0), Mm(0), note1),
             (Mm(0), Mm(0), note5))
 
-# image_path = os.path.join(os.path.dirname(__file__), 'vtests/output',
-#                            'vtest_image.png')
-# brown.render_image((Mm(0), Mm(0), Inch(2), Inch(2)), image_path,
-#                    bg_color=Color(0, 120, 185, 0),
-#                    autocrop=True)
+image_path = os.path.join(os.path.dirname(__file__), 'vtests/output',
+                           'vtest_image.png')
+brown.render_image((Mm(0), Mm(0), Inch(2), Inch(2)), image_path,
+                   bg_color=Color(0, 120, 185, 0),
+                   autocrop=True)
 
 
 
-
-brown.show()
+#
+# brown.show()
