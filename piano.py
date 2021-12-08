@@ -343,10 +343,13 @@ class Piano:
                     # random generate a dynamic
                     dynamic = 90 + randrange(1, 30)
 
+                    # variable duration
+                    duration = rhythm_rate * (randrange(10, 30) / 10)
+
                     # package into dict for queue
                     note_to_play = dict(note_name=chord_note,
                                         octave=self.octave,
-                                        endtime=time() + rhythm_rate,
+                                        endtime=time() + duration,
                                         dynamic=dynamic)
 
                     self.incoming_note_queue.append(note_to_play)
