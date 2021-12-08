@@ -76,6 +76,10 @@ class ProcessVisuals:
                 # if not lifespan:
                 if lifespan <= 0:
                     del self.queue[i]
+                    #
+                    # if self.queue[i]["type"] == 'image':
+                    #     # todo delete image from folder once completed
+                    #     pass
 
                 else:
                     self.queue[i]["lifespan"] = lifespan

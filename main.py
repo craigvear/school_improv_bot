@@ -22,6 +22,7 @@ from GotAISignal import GotAISignal
 from GotMusicSignal import GotMusicSignal
 from AIData import AIData
 from processVisualImages import ProcessVisuals
+# from notes import Notes
 
 
 class MyWidget(QWidget):
@@ -42,6 +43,9 @@ class MyWidget(QWidget):
 
         # init the harmony dict
         self.harmony_dict = {}
+
+        # init the piano class to get notes for bespoke images
+        # self.notes = Notes()
 
         # start the ball rolling with all data generation and parsing
         self._ai_data_engine = AIData(ai_signal, harmony_signal)
@@ -89,6 +93,8 @@ class MyWidget(QWidget):
                     painter.setBrush(color)
                     painter.drawRect(x, y, x + size, y + size)
                 elif element_type == "image":
+                    # todo generate an image using piano.which_note
+
                     image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
                     painter.setOpacity(i["image_transparency"])
                     painter.compositionMode = i["image_composition_mode"]
