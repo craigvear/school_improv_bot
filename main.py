@@ -8,15 +8,15 @@ from operator import itemgetter
 PLATFORM = platform.machine()
 
 if PLATFORM == "x86_64":
-    from PySide2 import QtCore
-    from PySide2.QtCore import Slot
-    from PySide2.QtGui import QPainter, Qt, QPen, QColor, QImage, QFont
-    from PySide2.QtWidgets import (QApplication, QWidget)
-else:
-    from PySide2 import QtCore
-    from PySide2.QtCore import Slot
-    from PySide2.QtGui import QPainter, QPen, QColor, QImage, QFont
-    from PySide2.QtWidgets import (QApplication, QWidget)
+    from PyQt5.Qt import Qt
+    from PyQt5.QtCore import pyqtSlot as Slot
+    from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
+    from PyQt5.QtWidgets import (QApplication, QWidget)
+# else:
+#     from PySide2 import QtCore
+#     from PySide2.QtCore import Slot
+#     from PySide2.QtGui import QPainter, QPen, QColor, QImage, QFont
+#     from PySide2.QtWidgets import (QApplication, QWidget)
 
 from GotAISignal import GotAISignal
 from GotMusicSignal import GotMusicSignal
@@ -114,7 +114,7 @@ class MyWidget(QWidget):
 
         harmonypainter = QPainter(self)
         harmonypainter.setRenderHint(QPainter.Antialiasing, True)
-        harmonypainter.setPen(QPen(Qt.black, 10))
+        harmonypainter.setPen(QPen(QColor(Qt.black), 20, Qt.SolidLine))
 
         # print BPM
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
@@ -141,13 +141,13 @@ class MyWidget(QWidget):
         harmonypainter.drawText(50, 40, note)
 
     def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_F:
+        if event.key() == Qt.Key_F:
             if self.isFullScreen():
                 self.showNormal()
             else:
                 self.showFullScreen()
 
-        if event.key() == QtCore.Qt.Key_Escape:
+        if event.key() == Qt.Key_Escape:
             self.terminate()
 
     def terminate(self):
@@ -187,8 +187,8 @@ if __name__ == "__main__":
     widget.setWindowTitle("visual robotic score")
     widget.setStyleSheet("background-color:white;")
 
-    if PLATFORM == "x86_64":
-        widget.setCursor(Qt.BlankCursor)
+    # if PLATFORM == "x86_64":
+    #     widget.setCursor(Qt.BlankCursor)
 
     widget.show()
 

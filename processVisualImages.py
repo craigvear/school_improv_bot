@@ -1,7 +1,7 @@
 import glob
 import random
 from operator import itemgetter
-from PySide2.QtGui import QImage, QPainter
+from PyQt5.QtGui import QImage, QPainter
 
 MAX_SIZE = 500
 MAX_LIFESPAN = 100
