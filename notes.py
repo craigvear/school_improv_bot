@@ -27,10 +27,10 @@ class Notes:
 
         # Todo: transposition for different instrument tunings HERE
 
-
         # add the scale to the harmony dict for GUI
         scale_list = []
         for this_note in self.chord:
+            print(this_note[0], root_of_this_chord)
             scale_note = this_note[0] + root_of_this_chord
             if scale_note <= 11:
                 scale_note_name = harmony.note_alphabet[scale_note]

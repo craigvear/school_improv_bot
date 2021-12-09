@@ -1,17 +1,33 @@
-from brown.common import *
+# import python modules
 import os
-import random
+from random import randrange
 from time import time
+from operator import itemgetter
+
+# import project modules
 from notes import Notes
+from brown.common import *
 
 
 class ImageGen:
     def __init__(self):
         self.notes = Notes()
-        brown.setup()
+        # brown.setup()
+        self.staff_unit = 8
 
-    def make_image(self):
-        number_of_notes = random.randrange(1, 5)
+    def make_image(self, harmony_dict):
+        """generate a random seq of notes on a staff
+        using current harmonic seq as guide"""
+        brown.setup()
+        bpm, chord, note, bar, pos, root_name = itemgetter("BPM",
+                                                           "chord",
+                                                           "note",
+                                                           "bar",
+                                                           "pos",
+                                                           "root_name")(harmony_dict)
+
+        # how many notes?
+        number_of_notes = randrange(1, 5)
         print (f'IMAGE MAKER: number_of_notes == {number_of_notes}')
 
         # create coordinate space container
@@ -19,31 +35,43 @@ class ImageGen:
 
         # generate a staff in the container
         # staff = Staff((Mm(0), Mm(0)), Mm(20), flowable)
-        staff = Staff((Mm(0), Mm(0)), Mm((number_of_notes + 1) * 10), flow, Mm(1))
+        staff = Staff((Mm(0), Mm(0)), Mm((number_of_notes + 1) * self.staff_unit), flow, Mm(1))
 
-        upper_staff_clef = Clef(staff, Mm(0), 'treble')
-        upper_staff_key_signature = KeySignature(Mm(0), staff, 'af_major')
+        # populate it with music furniture
+        # todo get ket and current chord from harmony_dict
 
+        Clef(staff, Mm(0), 'treble')
+        KeySignature(Mm(0), staff, 'af_major')
+
+        # todo get current chord from harmony_dict
         chord_name = 'BbMaj9'
-        # sfz = Dynamic.sfz((Mm(10), staff.unit(6)), staff)
+
+        Text((Mm(3), staff.unit(-2)), chord_name)
+
+        note_list = self.notes.get_note(harmony_dict, chord, number_of_notes)
+
+        for n, note in enumerate(note_list):
+
+            printed_note = note.lower()+"'"
+            Chordrest(Mm((n+1) * self.staff_unit), staff, [printed_note], Beat(2, 4))
 
 
-        clef = Clef(staff, Mm(0), 'treble')
-        text = Text((Mm(3), staff.unit(-2)), chord_name)
-        # musictext = MusicText(staff, Mm(1), 'G')
-        # note1 = Notehead(Mm(10), "g'", (1, 2), staff)
-        # line = Stem(100, 30, staff)
-        note1 = Chordrest(Mm(10), staff, ["c'"], Beat(2, 4))
-        note2 = Chordrest(Mm(20), staff, ["a'", "bs"], Beat(2, 4))
+            #
+            #
+            # # musictext = MusicText(staff, Mm(1), 'G')
+            # # note1 = Notehead(Mm(10), "g'", (1, 2), staff)
+            # # line = Stem(100, 30, staff)
+            # note = Chordrest(Mm(10), staff, ["c'"], Beat(2, 4))
+            # note2 = Chordrest(Mm(20), staff, ["a'", "bs"], Beat(2, 4))
+            #
+            #
+            # note3 = Chordrest(Mm(30), staff, ["a'", "bs"], Beat(2, 4))
+            # note4 = Chordrest(Mm(40), staff, ["a'", "bs"], Beat(2, 4))
+            #
+            # note5 = Chordrest(Mm(50), staff, ["a'", "bs"], Beat(2, 4))
 
-
-        note3 = Chordrest(Mm(30), staff, ["a'", "bs"], Beat(2, 4))
-        note4 = Chordrest(Mm(40), staff, ["a'", "bs"], Beat(2, 4))
-
-        note5 = Chordrest(Mm(50), staff, ["a'", "bs"], Beat(2, 4))
-
-        slur = Slur((Mm(0), Mm(0), note1),
-                    (Mm(0), Mm(0), note5))
+        # slur = Slur((Mm(0), Mm(0), note1),
+        #             (Mm(0), Mm(0), (number_of_notes + 1) * 10))
 
         image_path = os.path.join(os.path.dirname(__file__), 'images',
                                   f'{time()}.png')
