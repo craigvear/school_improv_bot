@@ -3,6 +3,9 @@ import random
 from operator import itemgetter
 from PyQt5.QtGui import QImage, QPainter
 
+# import project modules
+from image_generator import ImageGen
+
 MAX_SIZE = 500
 MAX_LIFESPAN = 100
 
@@ -15,8 +18,12 @@ class ProcessVisuals:
                              "rect",
                              "image")
 
-        # todo - replace temp content.
-        #  Currently 2-5-1 images taken from https://www.jazzguitar.be/blog/ii-v-i-jazz-guitar-licks/
+        # this is a fix that generates 20 images before the playing starts
+        # todo - can this be done in realtime in main.py?
+        # self.image_gen = ImageGen()
+        # for n in range(20):
+        #     self.image_gen.make_image(self.harmony_dict)
+
         self.external_images = [QImage(image_to_load) for image_to_load in glob.glob("images/*.png")]
 
         self.image_composition_modes = (QPainter.CompositionMode_HardLight,

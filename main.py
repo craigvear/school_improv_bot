@@ -94,7 +94,7 @@ class MyWidget(QWidget):
                     painter.drawRect(x, y, x + size, y + size)
                 elif element_type == "image":
                     # todo generate an image using piano.which_note
-                    # self.image_gen.make_image(self.harmony_dict)
+                    self.image_gen.make_image(self.harmony_dict)
 
                     # original code here
                     image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
