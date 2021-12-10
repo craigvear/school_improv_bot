@@ -111,11 +111,12 @@ class Piano:
         # init the harmony dictionary for emission to GUI
         self.harmony_dict = {"BPM": bpm,
                              "bar": "none",
-                             "pos": 0,
-                             "chord": "none",
+                             "prog_pos": 0,
+                             "chord_name": "none",
                              "note": "none",
-                             "root": "none",
-                             "root_name": "none"}
+                             "root_number": "none",
+                             "root_name": "none",
+                             "key": self.master_key}
 
         # init the note machine
         self.notes = Notes()
@@ -147,25 +148,27 @@ class Piano:
     def chronos(self):
         """coordinate the master tempo and behaviours
         using BPM and root notes in bass LH"""
-        # get bar and set the choros working
+        # get bar e.g. 2
         current_bar = self.calc_bar()
 
-        # current position in progression = the chord type
-        pos = self.progression[current_bar - 1]
+        # current position in progression e.g. ("2", 2, "min7")
+        # = "2" 2 chord in 251, 2 on A major progression (before master key transposition) , chord type
+        current_progression_pos = self.progression[current_bar - 1]
 
-        # calc position of root (1st position) for each chord in progression
-        root_of_this_chord = pos[1] + self.master_key
+        # calc position of root (1st position) for this chord in the progression
+        # and add master key transposition e.g. 2 + 6 = 8
+        root_number_of_this_chord = current_progression_pos[1] + self.master_key
 
-        # go get its name from alphabet
-        if root_of_this_chord <= 11:
-            root_note_name = self.note_alphabet[root_of_this_chord]
+        # go get its name from alphabet e.g. 'F'
+        if root_number_of_this_chord <= 11:
+            root_note_name = self.note_alphabet[root_number_of_this_chord]
         else:
-            root_note_name = self.note_alphabet[root_of_this_chord - 12]
+            root_note_name = self.note_alphabet[root_number_of_this_chord - 12]
 
-        # fill the harmony dict with current data and emit
-        self.harmony_dict['chord'] = root_note_name + pos[2]
-        self.harmony_dict['pos'] = pos
-        self.harmony_dict['root'] = root_of_this_chord
+        # fill the harmony dict with current data every cycle and emit
+        self.harmony_dict['chord_name'] = root_note_name + current_progression_pos[2]
+        self.harmony_dict['prog_pos'] = current_progression_pos
+        self.harmony_dict['root_number'] = root_number_of_this_chord
         self.harmony_dict['root_name'] = root_note_name
         self.send_harmony_dict()
 
@@ -277,15 +280,19 @@ class Piano:
         and converts into piano note"""
         # decide to make sound or not based on project %
         if random() <= self.note_played_or_not:
+            # create note to add event to queue
             print('play')
 
             # what is the current chord in the harmonic prog?
-            chord_note = self.which_chord()
+            chord_note = self.notes.which_note(self.harmony_dict)
 
-            # extract the note value
+            # extract the note value (it returns a
+            # list as image generator also calls this
             chord_note = chord_note[0]
 
-            # create note to play event
+            # which octave?
+            self.which_octave()
+
             # random generate a dynamic
             dynamic = 90 + randrange(1, 30)
 
@@ -305,50 +312,50 @@ class Piano:
             self.harmony_dict['note'] = chord_note
 
 
-    def which_chord(self):
-        """calcs a note from current harmony matrix"""
-
-        # setup list for returning note values
-        chord_note = []
-
-        # extract data from harmony dict
-        root_of_this_chord, pos = itemgetter("root",
-                                                "pos")(self.harmony_dict)
-
-        # which harmonic set - major of lydian
-        # todo - build this to include Russell's scales
-        #  & build complexity vs duration
-        if getrandbits(1) == 1:
-            # lydian chord shapes
-            chord_shapes = self.lyd_chord_shapes
-            print("lydian shapes")
-        else:
-            # major chord shapes
-            chord_shapes = self.major_key_chord_shapes
-            print("major shapes")
-
-        # # get the current bar position to align to harmonic progression
-        # bar_position = self.harmony_dict.get('bar')
-
-        # # current position in progression = the chord type
-        # pos = self.progression[bar_position - 1]
-
-        # # calc position of root (1st position) for each chord in progression
-        # root_of_this_chord = pos[1] + self.master_key
-        #
-        # # go get its name from alphabet
-        # if root_of_this_chord <= 11:
-        #     chord_root = self.note_alphabet[root_of_this_chord]
-        # else:
-        #     chord_root = self.note_alphabet[root_of_this_chord - 12]
-        # # print('chord is ', chord_root, pos[2])
-        # self.harmony_dict['chord'] = chord_root + pos[2]
-
-        # get its shape of chordtones from chord shapes dict
-        chord = chord_shapes.get(pos[0])
-        # print('chord shape is', chord)
-
-        return self.notes.get_note(self.harmony_dict, chord, num_of_notes)
+    # def which_chord(self):
+    #     """calcs a note from current harmony matrix"""
+    #
+    #     # setup list for returning note values
+    #     chord_note = []
+    #
+    #     # extract data from harmony dict
+    #     root_of_this_chord, pos = itemgetter("root",
+    #                                             "pos")(self.harmony_dict)
+    #
+    #     # which harmonic set - major of lydian
+    #     # todo - build this to include Russell's scales
+    #     #  & build complexity vs duration
+    #     if getrandbits(1) == 1:
+    #         # lydian chord shapes
+    #         chord_shapes = self.lyd_chord_shapes
+    #         print("lydian shapes")
+    #     else:
+    #         # major chord shapes
+    #         chord_shapes = self.major_key_chord_shapes
+    #         print("major shapes")
+    #
+    #     # # get the current bar position to align to harmonic progression
+    #     # bar_position = self.harmony_dict.get('bar')
+    #
+    #     # # current position in progression = the chord type
+    #     # pos = self.progression[bar_position - 1]
+    #
+    #     # # calc position of root (1st position) for each chord in progression
+    #     # root_of_this_chord = pos[1] + self.master_key
+    #     #
+    #     # # go get its name from alphabet
+    #     # if root_of_this_chord <= 11:
+    #     #     chord_root = self.note_alphabet[root_of_this_chord]
+    #     # else:
+    #     #     chord_root = self.note_alphabet[root_of_this_chord - 12]
+    #     # # print('chord is ', chord_root, pos[2])
+    #     # self.harmony_dict['chord'] = chord_root + pos[2]
+    #
+    #     # get its shape of chordtones from chord shapes dict
+    #     chord = chord_shapes.get(pos[0])
+    #     # print('chord shape is', chord)
+    #
+    #     return self.notes.get_note(self.harmony_dict, chord, num_of_notes)
 
     #
     #     # add the scale to the harmony dict for GUI

@@ -116,10 +116,10 @@ class MyWidget(QWidget):
     def create_telemetry(self):
         # start a painter
         bpm, chord, note, bar, pos, root_name = itemgetter("BPM",
-                                                           "chord",
+                                                           "chord_name",
                                                            "note",
                                                            "bar",
-                                                           "pos",
+                                                           "prog_pos",
                                                            "root_name")(self.harmony_dict)
 
         harmonypainter = QPainter(self)

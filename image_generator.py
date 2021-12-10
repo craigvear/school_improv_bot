@@ -20,10 +20,10 @@ class ImageGen:
         using current harmonic seq as guide"""
         brown.setup()
         bpm, chord, note, bar, pos, root_name = itemgetter("BPM",
-                                                           "chord",
+                                                           "chord_name",
                                                            "note",
                                                            "bar",
-                                                           "pos",
+                                                           "prog_pos",
                                                            "root_name")(harmony_dict)
 
         # how many notes?
@@ -48,7 +48,7 @@ class ImageGen:
 
         Text((Mm(3), staff.unit(-2)), chord_name)
 
-        note_list = self.notes.get_note(harmony_dict, pos[1], number_of_notes)
+        note_list = self.notes.which_note(harmony_dict, number_of_notes)
 
         for n, note in enumerate(note_list):
 
