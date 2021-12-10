@@ -48,7 +48,7 @@ class ImageGen:
 
         Text((Mm(3), staff.unit(-2)), chord_name)
 
-        note_list = self.notes.get_note(harmony_dict, chord, number_of_notes)
+        note_list = self.notes.get_note(harmony_dict, pos[1], number_of_notes)
 
         for n, note in enumerate(note_list):
 

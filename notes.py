@@ -22,8 +22,16 @@ class Notes:
         chord_note = []
 
         # extract data from harmony dict
-        root_of_this_chord, pos = itemgetter("root",
-                                             "pos")(harmony_dict)
+        BPM, bar, pos, chord, note, root_of_this_chord, root_name = itemgetter("BPM",
+                             "bar",
+                             "pos",
+                             "chord",
+                             "note",
+                             "root",
+                             "root_name")(harmony_dict)
+
+
+        print(BPM, bar, pos, chord, note, root_of_this_chord, root_name )
 
         # Todo: transposition for different instrument tunings HERE
 

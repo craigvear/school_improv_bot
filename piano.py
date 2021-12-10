@@ -279,7 +279,8 @@ class Piano:
         if random() <= self.note_played_or_not:
             print('play')
 
-            chord_note = self.which_note(num_of_notes=1)
+            # what is the current chord in the harmonic prog?
+            chord_note = self.which_chord()
 
             # extract the note value
             chord_note = chord_note[0]
@@ -304,7 +305,7 @@ class Piano:
             self.harmony_dict['note'] = chord_note
 
 
-    def which_note(self, num_of_notes=1):
+    def which_chord(self):
         """calcs a note from current harmony matrix"""
 
         # setup list for returning note values
@@ -398,5 +399,5 @@ class Piano:
 if __name__ == "__main__":
     piano = Piano()
     for x in range(10):
-        piano.which_note(x, random())
+        piano.which_chord(x, random())
         sleep(1)
