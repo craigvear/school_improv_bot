@@ -44,8 +44,8 @@ class Notes:
         # progression1625 = [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
         # progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
 
-        # which progression
-        self.progression = harmony.progression["1625"]
+        # # which progression
+        # self.progression = harmony.progression["1625"]
 
         self.master_key = 3  # which is C on the note alphabet
 
@@ -196,6 +196,9 @@ class Notes:
                         chord_note.append(harmony.note_alphabet[note_num])
                     else:
                         chord_note.append(harmony.note_alphabet[note_num - 12])
+
+                    # # extract the note name for fluidsynth
+                    # root_note_name = root_note_name[0]
 
                     # break out of loop
                     break

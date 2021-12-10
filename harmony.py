@@ -1,7 +1,10 @@
 """all the harmonic language"""
 
-
-note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
+# alphabet of tuples (fluidsynth note name, brown note name)
+note_alphabet = [("A", "a"), ("Bb", "bf"), ("B", "b"),
+                 ("C", "c"), ("C#", "cs"), ("D", "d"),
+                 ("Eb", "ef"), ("E", "e"), ("F", "f"),
+                 ("F#", "fs"), ("G", "g"), ("G#", "gs")]
 
 # chord types are 1: tonic Maj7; 2: minor 7th; 4: sub dom maj7; 5: dom 7th etc
 major_key_chord_shapes = {"1": [(0, 20), (4, 40), (7, 10), (11, 30)],
@@ -30,3 +33,4 @@ progression = {"2511": [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("
                "1625": [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")],
                "3625": [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
                }
+

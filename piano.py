@@ -63,7 +63,8 @@ class Piano:
         # progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
 
         # which progression
-        self.progression = harmony.progression["1625"]
+        harmonic_prog = "1625"
+        self.progression = harmony.progression[harmonic_prog]
 
         self.master_key = 3  # which is C on the note alphabet
 
@@ -111,6 +112,7 @@ class Piano:
         # init the harmony dictionary for emission to GUI
         self.harmony_dict = {"BPM": bpm,
                              "bar": "none",
+                             "progression": harmonic_prog,
                              "prog_pos": 0,
                              "chord_name": "none",
                              "note": "none",
@@ -161,9 +163,12 @@ class Piano:
 
         # go get its name from alphabet e.g. 'F'
         if root_number_of_this_chord <= 11:
-            root_note_name = self.note_alphabet[root_number_of_this_chord]
+            root_note_name = self.note_alphabet[root_number_of_this_chord][0]
         else:
-            root_note_name = self.note_alphabet[root_number_of_this_chord - 12]
+            root_note_name = self.note_alphabet[root_number_of_this_chord - 12][0]
+
+        # # extract the note name for fluidsynth
+        # root_note_name = root_note_name[0]
 
         # fill the harmony dict with current data every cycle and emit
         self.harmony_dict['chord_name'] = root_note_name + current_progression_pos[2]
@@ -288,7 +293,8 @@ class Piano:
 
             # extract the note value (it returns a
             # list as image generator also calls this
-            chord_note = chord_note[0]
+            # returns tuple (fluidsynth_note_name, brown_note_name)
+            chord_note = chord_note[0][0]
 
             # which octave?
             self.which_octave()

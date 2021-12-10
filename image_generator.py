@@ -7,6 +7,7 @@ from operator import itemgetter
 # import project modules
 from notes import Notes
 from brown.common import *
+import harmony
 
 
 class ImageGen:
@@ -52,7 +53,10 @@ class ImageGen:
 
         for n, note in enumerate(note_list):
 
-            printed_note = note.lower()+"'"
+            # use the 2nd part of note alphabet tuple
+            printed_note = note[1]+"'"
+
+            print(f'printed note  ===== {printed_note}')
             Chordrest(Mm((n+1) * self.staff_unit), staff, [printed_note], Beat(2, 4))
 
 
