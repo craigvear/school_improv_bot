@@ -79,17 +79,17 @@ class Notes:
         if getrandbits(1) == 1:
             # lydian chord shapes
             chord_shapes = self.lyd_chord_shapes
-            print("lydian shapes")
+            # print("lydian shapes")
         else:
             # major chord shapes
             chord_shapes = self.major_key_chord_shapes
-            print("major shapes")
+            # print("major shapes")
 
 
         # 3 get its shape of chordtones from chord shapes dict
         # e.g."2": [(0, 15), (3, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]
         this_chord_array = chord_shapes.get(self.prog_pos[0])
-        print('this chord shape is', this_chord_array)
+        # print('this chord shape is', this_chord_array)
 
         # 4 generate a note from this shape using weightings
         chord_note = self.get_note(this_chord_array, num_of_notes)
@@ -151,7 +151,7 @@ class Notes:
         """
 
         # current chord for process is
-        print('chord shape is', this_chord_array)
+        # print('chord shape is', this_chord_array)
 
         # setup list for returning note values
         chord_note = []

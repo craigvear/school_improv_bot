@@ -314,7 +314,7 @@ class Piano:
             self.incoming_note_queue.append(note_to_play)
 
             # add final dictionary details
-            print('playing', chord_note)
+            # print('playing', chord_note)
             self.harmony_dict['note'] = chord_note
 
 

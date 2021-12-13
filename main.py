@@ -93,10 +93,6 @@ class MyWidget(QWidget):
                     painter.setBrush(color)
                     painter.drawRect(x, y, x + size, y + size)
                 elif element_type == "image":
-                    # todo generate an image using piano.which_note
-                    # self.image_gen.make_image(self.harmony_dict)
-
-                    # original code here
                     image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
                     painter.setOpacity(i["image_transparency"])
                     painter.compositionMode = i["image_composition_mode"]
@@ -179,9 +175,7 @@ class MyWidget(QWidget):
 
         # print("main {}".format(str(ai_msg)))
 
-        # todo get bespoke image from imageGen here ????
-
-        self.process_AI_signal.add_to_queue(ai_msg)
+        self.process_AI_signal.add_to_queue(ai_msg, self.harmony_dict)
 
     @Slot(object)
     def got_harmony_signal(self, harmony_msg):

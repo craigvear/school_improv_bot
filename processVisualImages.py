@@ -18,12 +18,10 @@ class ProcessVisuals:
                              "rect",
                              "image")
 
-        # this is a fix that generates 20 images before the playing starts
-        # todo - can this be done in realtime in main.py?
-        # self.image_gen = ImageGen()
-        # for n in range(20):
-        #     self.image_gen.make_image(self.harmony_dict)
+        # instantiate image generator class
+        self.image_gen = ImageGen()
 
+        # todo: this is redundant as changing to a path format
         self.external_images = [QImage(image_to_load) for image_to_load in glob.glob("images/*.png")]
 
         self.image_composition_modes = (QPainter.CompositionMode_HardLight,
@@ -33,11 +31,11 @@ class ProcessVisuals:
                                         QPainter.CompositionMode_Multiply,
                                         QPainter.CompositionMode_SoftLight)
 
-    def add_to_queue(self, ai_signal_dict):
+    def add_to_queue(self, ai_signal_dict, harmony_dict):
         # if len(self.queue) < 10:
-        self.process_AI_signal(ai_signal_dict)
+        self.process_AI_signal(ai_signal_dict, harmony_dict)
 
-    def process_AI_signal(self, ai_signal_dict):
+    def process_AI_signal(self, ai_signal_dict, harmony_dict):
         # print("processing signal")
 
         master_output, rhythm_rate, width, height = itemgetter("master_output",
@@ -45,14 +43,22 @@ class ProcessVisuals:
                                                              "width",
                                                              "height")(ai_signal_dict)
 
+        image_type = random.choice(self.visual_types)
 
-        final_visual = dict(type=random.choice(self.visual_types),
+        if image_type == "image":
+            generated_image_path = self.image_gen.make_image(harmony_dict)
+            print(generated_image_path)
+            generated_image = random.randint(0, len(self.external_images) - 1)
+        else:
+            generated_image = 0
+
+        final_visual = dict(type=image_type,
                             lifespan=self.lifespan(rhythm_rate),
                             color={"r": random.randint(0, 255),
                                    "g": random.randint(0, 255),
                                    "b": random.randint(0, 255),
                                    "a": random.randint(0, 255)},
-                            image=random.randint(0, len(self.external_images) - 1),
+                            image=generated_image,
                             image_transparency=random.random(),
                             image_composition_mode=random.choice(self.image_composition_modes),
                             pen=random.randint(1, MAX_SIZE),
