@@ -16,7 +16,6 @@ class ImageGen:
         self.staff_unit = 8
         self.first_note_offset = self.staff_unit / 2
 
-
     def make_image(self, harmony_dict):
         """generate a random seq of notes on a staff
         using current harmonic seq as guide"""
@@ -29,9 +28,9 @@ class ImageGen:
 
         # how many notes?
         number_of_notes = randrange(1, 5)
-        print (f'IMAGE MAKER: number_of_notes == {number_of_notes}')
+        # print (f'IMAGE MAKER: number_of_notes == {number_of_notes}')
 
-        manuscript_width = (number_of_notes + 2) * self.staff_unit + self.first_note_offset
+        manuscript_width = (number_of_notes + 1) * self.staff_unit # + self.first_note_offset
 
         # create coordinate space container
         flow = Flowable((Mm(0), Mm(0)), Mm(manuscript_width), Mm(30))
@@ -46,45 +45,31 @@ class ImageGen:
         KeySignature(Mm(0), staff, 'af_major')
 
         # todo get current chord from harmony_dict
-        Text((Mm(3), staff.unit(-2)), chord)
+        text = Text((Mm(3), staff.unit(-2)), chord)
 
         note_list = self.notes.which_note(harmony_dict, number_of_notes)
-        print('note list = ', note_list)
+        # print('note list = ', note_list)
 
         for n, note in enumerate(note_list):
 
             # use the 2nd part of note alphabet tuple
-            printed_note = note[1]+"'"
+            printed_note = note[1] + "'"
 
-            print(f'printed note  ===== {printed_note}')
-            Chordrest(Mm(self.first_note_offset + ((n + 1) * self.staff_unit)), staff, [printed_note], Beat(1, 4))
+            # print(f'printed note  ===== {printed_note}')
+            Chordrest(Mm(self.first_note_offset + ((n + 1) * self.staff_unit)), staff, ["c", printed_note], Beat(1, 4))
 
+        # save as a png render
+        image_path = os.path.join(os.path.dirname(__file__), 'images',
+                                  f'{time()}.png')
+        brown.render_image((Mm(0), Mm(0), Inch(2), Inch(2)), image_path,
+                           bg_color=Color(0, 120, 185, 0),
+                           autocrop=True)
 
-            #
-            #
-            # # musictext = MusicText(staff, Mm(1), 'G')
-            # # note1 = Notehead(Mm(10), "g'", (1, 2), staff)
-            # # line = Stem(100, 30, staff)
-            # note = Chordrest(Mm(10), staff, ["c'"], Beat(2, 4))
-            # note2 = Chordrest(Mm(20), staff, ["a'", "bs"], Beat(2, 4))
-            #
-            #
-            # note3 = Chordrest(Mm(30), staff, ["a'", "bs"], Beat(2, 4))
-            # note4 = Chordrest(Mm(40), staff, ["a'", "bs"], Beat(2, 4))
-            #
-            # note5 = Chordrest(Mm(50), staff, ["a'", "bs"], Beat(2, 4))
+        # brown.show()
 
-        # slur = Slur((Mm(0), Mm(0), note1),
-        #             (Mm(0), Mm(0), (number_of_notes + 1) * 10))
+        # reset the notation renderer
+        text.remove()
+        staff.remove()
+        flow.remove()
 
-        # image_path = os.path.join(os.path.dirname(__file__), 'images',
-        #                           f'{time()}.png')
-        # brown.render_image((Mm(0), Mm(0), Inch(2), Inch(2)), image_path,
-        #                    bg_color=Color(0, 120, 185, 0),
-        #                    autocrop=True)
-
-        # todo clear all notes to reset
-
-
-        #
-        brown.show()
+        return image_path

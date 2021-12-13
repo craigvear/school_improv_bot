@@ -44,8 +44,8 @@ class MyWidget(QWidget):
         # init the harmony dict
         self.harmony_dict = {}
 
-        # init the image generator to get notes for bespoke images
-        self.image_gen = ImageGen()
+        # # init the image generator to get notes for bespoke images
+        # self.image_gen = ImageGen()
 
         # start the ball rolling with all data generation and parsing
         self._ai_data_engine = AIData(ai_signal, harmony_signal)
@@ -94,7 +94,7 @@ class MyWidget(QWidget):
                     painter.drawRect(x, y, x + size, y + size)
                 elif element_type == "image":
                     # todo generate an image using piano.which_note
-                    self.image_gen.make_image(self.harmony_dict)
+                    # self.image_gen.make_image(self.harmony_dict)
 
                     # original code here
                     image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
@@ -178,6 +178,8 @@ class MyWidget(QWidget):
         ai_msg["height"] = height
 
         # print("main {}".format(str(ai_msg)))
+
+        # todo get bespoke image from imageGen here ????
 
         self.process_AI_signal.add_to_queue(ai_msg)
 
