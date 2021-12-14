@@ -2,6 +2,7 @@ import glob
 import random
 from operator import itemgetter
 from PyQt5.QtGui import QImage, QPainter
+import os
 
 # import project modules
 from image_generator import ImageGen
@@ -21,8 +22,7 @@ class ProcessVisuals:
         # instantiate image generator class
         self.image_gen = ImageGen()
 
-        # todo: this is redundant as changing to a path format
-        self.external_images = [QImage(image_to_load) for image_to_load in glob.glob("images/*.png")]
+        # self.external_images = [QImage(image_to_load) for image_to_load in glob.glob("images/*.png")]
 
         self.image_composition_modes = (QPainter.CompositionMode_HardLight,
                                         QPainter.CompositionMode_Difference,
@@ -32,12 +32,12 @@ class ProcessVisuals:
                                         QPainter.CompositionMode_SoftLight)
 
     def add_to_queue(self, ai_signal_dict, harmony_dict):
-        # if len(self.queue) < 10:
-        self.process_AI_signal(ai_signal_dict, harmony_dict)
+        if len(self.queue) < 10:
+            print(f'\t\t\t\t\t ADDING PAINT EVENT TO QUEUE')
+            self.process_AI_signal(ai_signal_dict, harmony_dict)
 
     def process_AI_signal(self, ai_signal_dict, harmony_dict):
         # print("processing signal")
-
         master_output, rhythm_rate, width, height = itemgetter("master_output",
                                                              "rhythm_rate",
                                                              "width",
@@ -46,9 +46,9 @@ class ProcessVisuals:
         image_type = random.choice(self.visual_types)
 
         if image_type == "image":
-            generated_image_path = self.image_gen.make_image(harmony_dict)
-            print(generated_image_path)
-            generated_image = random.randint(0, len(self.external_images) - 1)
+            generated_image = self.image_gen.make_image(harmony_dict)
+            # print('generated_image_path')
+            # generated_image = random.randint(0, len(self.external_images) - 1)
         else:
             generated_image = 0
 
@@ -68,7 +68,7 @@ class ProcessVisuals:
                             direction=random.randint(1, 11),
                             zoom=random.randrange(1, 4))
 
-        # print(final_visual)
+        print(final_visual)
         self.queue.append(final_visual)
         # print('length of queue = ', len(self.queue))
 
@@ -88,11 +88,12 @@ class ProcessVisuals:
                 lifespan = val["lifespan"] - 1
                 # if not lifespan:
                 if lifespan <= 0:
+                    # if event is an image: remove .png from folder
+                    if self.queue[i]["type"] == 'image':
+                        # print("DDDDDDDEEEEEELLLLLLLLTTTTTTTEEEEEEEEEE")
+                        os.remove(self.queue[i]["image"])
                     del self.queue[i]
-                    #
-                    # if self.queue[i]["type"] == 'image':
-                    #     # todo delete image from folder once completed
-                    #     pass
+
 
                 else:
                     self.queue[i]["lifespan"] = lifespan

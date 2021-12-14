@@ -1,6 +1,7 @@
 import sys
 import threading
 import platform
+import atexit
 
 from ast import literal_eval
 from operator import itemgetter
@@ -28,6 +29,8 @@ from image_generator import ImageGen
 class MyWidget(QWidget):
     def __init__(self):
         QWidget.__init__(self)
+
+        # todo: atexit clear out the image folder & terminate threads properly
 
         # open a signal streamer for AI emissions
         ai_signal = GotAISignal()
@@ -93,11 +96,12 @@ class MyWidget(QWidget):
                     painter.setBrush(color)
                     painter.drawRect(x, y, x + size, y + size)
                 elif element_type == "image":
-                    image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
+                    # image_to_display = QImage(self.process_AI_signal.external_images[i["image"]])
+                    image_to_display = QImage(i["image"])
                     painter.setOpacity(i["image_transparency"])
                     painter.compositionMode = i["image_composition_mode"]
-                    zoom_factor = i["zoom"]
-                    painter.scale(zoom_factor, zoom_factor)
+                    # zoom_factor = i["zoom"]
+                    # painter.scale(zoom_factor, zoom_factor / 4)
                     painter.drawImage(x, y, image_to_display)
 
         # pass painter to harmony telemetry and draw text
@@ -173,7 +177,7 @@ class MyWidget(QWidget):
         ai_msg["width"] = width
         ai_msg["height"] = height
 
-        # print("main {}".format(str(ai_msg)))
+        # print("adding to Queue : main {}".format(str(ai_msg)))
 
         self.process_AI_signal.add_to_queue(ai_msg, self.harmony_dict)
 

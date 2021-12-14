@@ -13,7 +13,7 @@ class ImageGen:
     def __init__(self):
         self.notes = Notes()
         brown.setup()
-        self.staff_unit = 8
+        self.staff_unit = 10
         self.first_note_offset = self.staff_unit / 2
 
     def make_image(self, harmony_dict):
@@ -27,10 +27,10 @@ class ImageGen:
                                                            "root_name")(harmony_dict)
 
         # how many notes?
-        number_of_notes = randrange(1, 5)
+        number_of_notes = randrange(1, 10)
         # print (f'IMAGE MAKER: number_of_notes == {number_of_notes}')
 
-        manuscript_width = (number_of_notes + 1) * self.staff_unit # + self.first_note_offset
+        manuscript_width = (number_of_notes + 1) * self.staff_unit + self.first_note_offset
 
         # create coordinate space container
         flow = Flowable((Mm(0), Mm(0)), Mm(manuscript_width), Mm(30))
@@ -44,7 +44,7 @@ class ImageGen:
         Clef(staff, Mm(0), 'treble')
         KeySignature(Mm(0), staff, 'af_major')
 
-        # todo get current chord from harmony_dict
+        # get current chord from harmony_dict
         text = Text((Mm(3), staff.unit(-2)), chord)
 
         note_list = self.notes.which_note(harmony_dict, number_of_notes)
@@ -56,12 +56,13 @@ class ImageGen:
             printed_note = note[1] + "'"
 
             # print(f'printed note  ===== {printed_note}')
-            Chordrest(Mm(self.first_note_offset + ((n + 1) * self.staff_unit)), staff, ["c", printed_note], Beat(1, 4))
+            Chordrest(Mm(self.first_note_offset + ((n + 1) * self.staff_unit)), staff, [printed_note], Beat(1, 4))
 
         # save as a png render
         image_path = os.path.join(os.path.dirname(__file__), 'images',
                                   f'{time()}.png')
-        brown.render_image((Mm(0), Mm(0), Inch(2), Inch(2)), image_path,
+        brown.render_image((Mm(0), Mm(0), Mm(manuscript_width), Mm(30)), image_path,
+                           dpi=200,
                            bg_color=Color(0, 120, 185, 0),
                            autocrop=True)
 
