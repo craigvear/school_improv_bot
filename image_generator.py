@@ -61,6 +61,8 @@ class ImageGen:
         # save as a png render
         image_path = os.path.join(os.path.dirname(__file__), 'images',
                                   f'{time()}.png')
+
+        # todo: rendered image is offset!!!
         brown.render_image((Mm(0), Mm(0), Mm(manuscript_width), Mm(30)), image_path,
                            dpi=200,
                            bg_color=Color(0, 120, 185, 0),
