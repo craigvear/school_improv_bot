@@ -67,6 +67,7 @@ class Piano:
         self.progression = harmony.progression[harmonic_prog]
 
         self.master_key = 3  # which is C on the note alphabet
+        master_key_name = self.note_alphabet[3]
 
         # piano range vars
         self.octave = 4
@@ -118,7 +119,7 @@ class Piano:
                              "note": "none",
                              "root_number": "none",
                              "root_name": "none",
-                             "key": self.master_key}
+                             "key": master_key_name}
 
         # init the note machine
         self.notes = Notes()

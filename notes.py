@@ -190,6 +190,7 @@ class Notes:
                 current_sum += weight
                 if current_sum > which_weight:
 
+                    # todo: fix this as it only works in C major
                     # work out note name from chord and master key offset
                     note_num = self.root_number + note_pos + self.transposition
                     if note_num <= 11:

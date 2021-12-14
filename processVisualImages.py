@@ -33,7 +33,7 @@ class ProcessVisuals:
 
     def add_to_queue(self, ai_signal_dict, harmony_dict):
         if len(self.queue) < 10:
-            print(f'\t\t\t\t\t ADDING PAINT EVENT TO QUEUE')
+            # print(f'\t\t\t\t\t ADDING PAINT EVENT TO QUEUE')
             self.process_AI_signal(ai_signal_dict, harmony_dict)
 
     def process_AI_signal(self, ai_signal_dict, harmony_dict):
@@ -68,7 +68,7 @@ class ProcessVisuals:
                             direction=random.randint(1, 11),
                             zoom=random.randrange(1, 4))
 
-        print(final_visual)
+        # print(final_visual)
         self.queue.append(final_visual)
         # print('length of queue = ', len(self.queue))
 

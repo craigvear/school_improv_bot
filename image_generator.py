@@ -20,11 +20,12 @@ class ImageGen:
         """generate a random seq of notes on a staff
         using current harmonic seq as guide"""
         # brown.setup()
-        chord, note, bar, pos, root_name = itemgetter("chord_name",
+        chord, note, bar, pos, root_name, key = itemgetter("chord_name",
                                                            "note",
                                                            "bar",
                                                            "prog_pos",
-                                                           "root_name")(harmony_dict)
+                                                           "root_name",
+                                                                "key")(harmony_dict)
 
         # how many notes?
         number_of_notes = randrange(1, 10)
@@ -42,7 +43,7 @@ class ImageGen:
         # populate it with music furniture
         # todo get ket and current chord from harmony_dict
         Clef(staff, Mm(0), 'treble')
-        KeySignature(Mm(0), staff, 'af_major')
+        KeySignature(Mm(0), staff, f'{key[1]}_major')
 
         # get current chord from harmony_dict
         text = Text((Mm(3), staff.unit(-2)), chord)
@@ -63,7 +64,7 @@ class ImageGen:
                                   f'{time()}.png')
 
         # todo: rendered image is offset!!!
-        brown.render_image((Mm(0), Mm(0), Mm(manuscript_width), Mm(30)), image_path,
+        brown.render_image((Mm(0), Mm(0), Mm(manuscript_width * 2), Mm(75)), image_path,
                            dpi=200,
                            bg_color=Color(0, 120, 185, 0),
                            autocrop=True)
