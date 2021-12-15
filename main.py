@@ -13,11 +13,11 @@ if PLATFORM == "x86_64":
     from PyQt5.QtCore import pyqtSlot as Slot
     from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
     from PyQt5.QtWidgets import (QApplication, QWidget)
-# else:
-#     from PySide2 import QtCore
-#     from PySide2.QtCore import Slot
-#     from PySide2.QtGui import QPainter, QPen, QColor, QImage, QFont
-#     from PySide2.QtWidgets import (QApplication, QWidget)
+else:
+    from PyQt5 import QtCore
+    from PyQt5.QtCore import Slot
+    from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
+    from PyQt5.QtWidgets import (QApplication, QWidget)
 
 from GotAISignal import GotAISignal
 from GotMusicSignal import GotMusicSignal
