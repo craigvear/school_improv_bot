@@ -8,16 +8,16 @@ from operator import itemgetter
 
 PLATFORM = platform.machine()
 
-if PLATFORM == "x86_64":
-    from PyQt5.Qt import Qt
-    from PyQt5.QtCore import pyqtSlot as Slot
-    from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
-    from PyQt5.QtWidgets import (QApplication, QWidget)
-else:
-    from PyQt5 import QtCore
-    from PyQt5.QtCore import Slot
-    from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
-    from PyQt5.QtWidgets import (QApplication, QWidget)
+# if PLATFORM == "x86_64":
+from PyQt5.Qt import Qt
+from PyQt5.QtCore import pyqtSlot as Slot
+from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
+from PyQt5.QtWidgets import (QApplication, QWidget)
+# else:
+#     from PyQt5 import QtCore
+#     from PyQt5.QtCore import pyqtSlot as Slot
+#     from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
+#     from PyQt5.QtWidgets import (QApplication, QWidget)
 
 from GotAISignal import GotAISignal
 from GotMusicSignal import GotMusicSignal
