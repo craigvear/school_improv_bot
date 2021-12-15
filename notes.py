@@ -1,4 +1,6 @@
 import harmony
+import config
+
 from random import getrandbits, shuffle, random
 from operator import itemgetter
 
@@ -47,14 +49,14 @@ class Notes:
         # # which progression
         # self.progression = harmony.progression["1625"]
 
-        self.master_key = 3  # which is C on the note alphabet
+        self.master_key = config.master_key  # which is C on the note alphabet
 
         # piano range vars
         self.octave = 4
         self.channel = 1
 
         # transposition
-        self.transposition = 0
+        self.transposition = config.transposition
 
     def which_note(self, harmony_dict, num_of_notes=1):
         """calcs a note from current harmony matrix.

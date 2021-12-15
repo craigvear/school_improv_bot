@@ -14,6 +14,7 @@ from threading import Thread, Timer
 # import project modules
 import harmony
 from notes import Notes
+import config
 
 PLATFORM = platform.machine()
 
@@ -63,10 +64,10 @@ class Piano:
         # progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
 
         # which progression
-        harmonic_prog = "1625"
+        harmonic_prog = config.harmonic_prog
         self.progression = harmony.progression[harmonic_prog]
 
-        self.master_key = 3  # which is C on the note alphabet
+        self.master_key = config.master_key  # which is C on the note alphabet
         master_key_name = self.note_alphabet[3]
 
         # piano range vars
@@ -90,8 +91,8 @@ class Piano:
         self.note_played_or_not = 0.5
 
         # state BPM
-        bpm = 120
-        self.time_sig = 4
+        bpm = config.bpm
+        self.time_sig = config.time_sig
 
         # state how many sub divides to a beat. 4=16ths, 12 = semi trips
         self.subdivision = 3

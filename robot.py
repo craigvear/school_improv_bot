@@ -9,7 +9,7 @@ class Robot(SingletonConfigurable):
     left_motor = traitlets.Instance(Motor)
     right_motor = traitlets.Instance(Motor)
 
-    # config
+    # config.py
     i2c_bus = traitlets.Integer(default_value=1).tag(config=True)
     left_motor_channel = traitlets.Integer(default_value=1).tag(config=True)
     left_motor_alpha = traitlets.Float(default_value=1.0).tag(config=True)
