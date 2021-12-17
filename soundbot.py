@@ -2,11 +2,12 @@ from robot import Robot
 from piano import Piano
 from random import random, randrange, getrandbits
 from time import sleep
+import config
 
 class SoundBot:
     def __init__(self, harmony_signal):
         # is the robot connected
-        self.robot_connected = False
+        self.robot_connected = config.robot_connected
         self.direction = 1
         self.speed_factor = 0.3
 
