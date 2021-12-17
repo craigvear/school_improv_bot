@@ -193,7 +193,7 @@ if __name__ == "__main__":
 
     widget = MyWidget()
     widget.resize(800, 600)
-    # widget.showFullScreen()
+    widget.showFullScreen()
     widget.setWindowTitle("visual robotic score")
     widget.setStyleSheet("background-color:white;")
 
