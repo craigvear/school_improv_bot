@@ -51,7 +51,7 @@ class MyWidget(QWidget):
         # self.image_gen = ImageGen()
 
         # start the ball rolling with all data generation and parsing
-        self._ai_data_engine = AIData(ai_signal, harmony_signal)
+        # self._ai_data_engine = AIData(ai_signal, harmony_signal)
 
         # instantiate the visual processing object
         self.process_AI_signal = ProcessVisuals()
