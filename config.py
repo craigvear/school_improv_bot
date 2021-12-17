@@ -21,4 +21,4 @@ time_sig = 4
 transposition = 0
 
 # robot connected?
-robot_connected = True
+robot_connected = False
