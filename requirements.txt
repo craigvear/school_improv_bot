@@ -1,10 +1,7 @@
 numpy==1.18.5
 pyaudio==0.2.11
-pydub==0.25.1
 tensorflow==2.0.0
 
 traitlets~=5.1.0
-pyside2~=5.15.2
 mingus~=0.6.1
-python-osc~=1.8.0
-scipy~=1.6.2
+pyqt5~=5.15.4
