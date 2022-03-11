@@ -23,4 +23,4 @@ transposition = 0
 # robot connected?
 robot_connected = False
 
-arm_connected = True
+arm_connected = False
