@@ -1,5 +1,5 @@
-from robots.robot import Robot
-from robots.arm import Arm
+# from robots.robot import Robot
+# from robots.arm import Arm
 from piano import Piano
 from random import randrange, getrandbits
 from time import sleep

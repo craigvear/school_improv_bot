@@ -9,10 +9,10 @@ master_key = 3 # 3 = C
 # progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
 
 # which progression?
-harmonic_prog = "3625"
+harmonic_prog = "1625"
 
 # what tempo?
-bpm=180
+bpm=100
 
 # what time sig?
 time_sig = 4

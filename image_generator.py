@@ -6,20 +6,19 @@ from operator import itemgetter
 
 # import project modules
 from notes import Notes
-from brown.common import *
+from neoscore.common import *
 
 
 class ImageGen:
     def __init__(self):
         self.notes = Notes()
-        brown.setup()
+        neoscore.setup()
         self.staff_unit = 10
         self.first_note_offset = self.staff_unit / 2
 
     def make_image(self, harmony_dict):
         """generate a random seq of notes on a staff
         using current harmonic seq as guide"""
-        # brown.setup()
         chord, note, bar, pos, root_name, key = itemgetter("chord_name",
                                                            "note",
                                                            "bar",
@@ -34,19 +33,19 @@ class ImageGen:
         manuscript_width = (number_of_notes + 1) * self.staff_unit + self.first_note_offset
 
         # create coordinate space container
-        flow = Flowable((Mm(0), Mm(0)), Mm(manuscript_width), Mm(30))
+        flow = Flowable(ORIGIN, None, Mm(manuscript_width), Mm(30))
 
         # generate a staff in the container
         # staff = Staff((Mm(0), Mm(0)), Mm(100), flow)
-        staff = Staff((Mm(0), Mm(0)), Mm(manuscript_width), flow, Mm(1))
+        staff = Staff(ORIGIN, flow, Mm(manuscript_width))
 
         # populate it with music furniture
         # todo get ket and current chord from harmony_dict
-        Clef(staff, Mm(0), 'treble')
+        Clef(ZERO, staff, 'treble')
         KeySignature(Mm(0), staff, f'{key[1]}_major')
 
         # get current chord from harmony_dict
-        text = Text((Mm(3), staff.unit(-2)), chord)
+        text = Text((Mm(3), staff.unit(-2)), staff, chord)
 
         note_list = self.notes.which_note(harmony_dict, number_of_notes)
         # print('note list = ', note_list)
@@ -57,19 +56,20 @@ class ImageGen:
             printed_note = note[1] + "'"
 
             # print(f'printed note  ===== {printed_note}')
-            Chordrest(Mm(self.first_note_offset + ((n + 1) * self.staff_unit)), staff, [printed_note], Beat(1, 4))
+            Chordrest(Mm(self.first_note_offset + ((n + 1) * self.staff_unit)),
+                      staff, [printed_note],
+                      (1, 4))
 
         # save as a png render
         image_path = os.path.join(os.path.dirname(__file__), 'images',
                                   f'{time()}.png')
 
         # todo: rendered image is offset!!!
-        brown.render_image((Mm(0), Mm(0), Mm(manuscript_width * 2), Mm(75)), image_path,
-                           dpi=200,
-                           bg_color=Color(0, 120, 185, 0),
-                           autocrop=True)
+        neoscore.render_image(None,
+                              image_path,
+                              200)
 
-        # brown.show()
+        # neoscore.show()
 
         # reset the notation renderer
         text.remove()

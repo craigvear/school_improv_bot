@@ -17,7 +17,9 @@ class ProcessVisuals:
         self.visual_types = ("line",
                              "ellipse",
                              "rect",
-                             "image")
+                             "image",
+                             "image",
+                             "complex")
 
         # instantiate image generator class
         self.image_gen = ImageGen()
@@ -51,6 +53,9 @@ class ProcessVisuals:
             # generated_image = random.randint(0, len(self.external_images) - 1)
         else:
             generated_image = 0
+
+        if image_type == "complex":
+            image_type = random.choice(self.visual_types[:3])
 
         final_visual = dict(type=image_type,
                             lifespan=self.lifespan(rhythm_rate),
