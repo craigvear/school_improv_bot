@@ -67,11 +67,19 @@ class Notes:
 
         # 1. what is current harmonic data
         # extract data from harmony dict
-        self.prog_pos, self.chord_name, self.note, self.root_number, self.root_name = itemgetter("prog_pos",
-                                                                             "chord_name",
-                                                                             "note",
-                                                                             "root_number",
-                                                                             "root_name")(harmony_dict)
+        # self.prog_pos, self.chord_name, self.note, self.root_number, self.root_name = itemgetter("prog_pos",
+        #                                                                      "chord_name",
+        #                                                                      "note",
+        #                                                                      "root_number",
+        #                                                                      "root_name")(harmony_dict)
+
+        bpm = harmony_dict.bpm
+        self.chord_name = harmony_dict.chord_name
+        self.note = harmony_dict.note
+        bar = harmony_dict.bar
+        self.prog_pos = harmony_dict.prog_pos
+        self.root_number = harmony_dict.root_number
+        self.root_name = harmony_dict.root_name
 
         print(self.prog_pos, self.chord_name, self.note, self.root_number, self.root_name)
 

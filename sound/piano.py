@@ -15,6 +15,7 @@ from threading import Timer
 from sound import harmony
 from sound.notes import Notes
 import config
+from sound.harmony import Harmony
 
 PLATFORM = platform.machine()
 
@@ -112,15 +113,17 @@ class Piano:
         self.sleep_dur = (bpm_to_ms / self.subdivision) / 1000
 
         # init the harmony dictionary for emission to GUI
-        self.harmony_dict = {"BPM": bpm,
-                             "bar": "none",
-                             "progression": harmonic_prog,
-                             "prog_pos": 0,
-                             "chord_name": "none",
-                             "note": "none",
-                             "root_number": "none",
-                             "root_name": "none",
-                             "key": master_key_name}
+        # self.harmony_dict = {"BPM": bpm,
+        #                      "bar": "none",
+        #                      "progression": harmonic_prog,
+        #                      "prog_pos": 0,
+        #                      "chord_name": "none",
+        #                      "note": "none",
+        #                      "root_number": "none",
+        #                      "root_name": "none",
+        #                      "key": master_key_name}
+
+        self.harmony_dict = Harmony
 
         # init the note machine
         self.notes = Notes()
@@ -173,10 +176,10 @@ class Piano:
         # root_note_name = root_note_name[0]
 
         # fill the harmony dict with current data every cycle and emit
-        self.harmony_dict['chord_name'] = root_note_name + current_progression_pos[2]
-        self.harmony_dict['prog_pos'] = current_progression_pos
-        self.harmony_dict['root_number'] = root_number_of_this_chord
-        self.harmony_dict['root_name'] = root_note_name
+        self.harmony_dict.chord_name = root_note_name + current_progression_pos[2]
+        self.harmony_dict.prog_pos = current_progression_pos
+        self.harmony_dict.root_number = root_number_of_this_chord
+        self.harmony_dict.root_name = root_note_name
         self.send_harmony_dict()
 
         # on bar change play a bass note
@@ -208,7 +211,7 @@ class Piano:
         if self.bar > self.turnaround_bar_length:
             self.bar = 1
 
-        self.harmony_dict['bar'] = self.bar
+        self.harmony_dict.bar = self.bar
 
         # todo calc chord in progression here too
 

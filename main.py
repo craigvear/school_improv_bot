@@ -120,12 +120,12 @@ class MyWidget(QWidget):
         #                                                    "prog_pos",
         #                                                    "root_name")(self.harmony_dict)
 
-        bpm, chord, note, bar, pos, root_name = self.harmony_dict.bpm, \
-                                                self.harmony_dict.chord_name, \
-                                                self.harmony_dict.note, \
-                                                self.harmony_dict.bar, \
-                                                self.harmony_dict.prog_pos, \
-                                                self.harmony_dict.root_name
+        bpm = self.harmony_dict.bpm
+        chord = self.harmony_dict.chord_name
+        note = self.harmony_dict.note
+        bar = self.harmony_dict.bar
+        pos = self.harmony_dict.prog_pos
+        root_name = self.harmony_dict.root_name
 
         harmonypainter = QPainter(self)
         harmonypainter.setRenderHint(QPainter.Antialiasing, True)

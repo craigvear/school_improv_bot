@@ -26,6 +26,13 @@ class ImageGen:
                                                            "root_name",
                                                                 "key")(harmony_dict)
 
+        chord = harmony_dict.chord_name
+        note = harmony_dict.note
+        bar = harmony_dict.bar
+        pos = harmony_dict.prog_pos
+        root_name = harmony_dict.root_name
+        key = harmony_dict.key
+
         # how many notes?
         number_of_notes = randrange(1, 10)
         # print (f'IMAGE MAKER: number_of_notes == {number_of_notes}')

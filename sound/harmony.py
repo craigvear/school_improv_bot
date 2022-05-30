@@ -1,13 +1,12 @@
 from dataclasses import dataclass
+import config
 
-"""all the harmonic language"""
+"""a dataclass containing all the harmonic language
+and harmonic decision made by the AI"""
 
 @dataclass
 class Harmony:
     """Current harmony data"""
-
-    bpm: int
-    """tempo in bpm"""
 
     chord_name: str
     """current chord name"""
@@ -24,6 +23,17 @@ class Harmony:
     root_name: str
     """root name of current chord in harmonic progression"""
 
+    root_number: str
+    """number of the root in relation to note alphabet"""
+
+    progression: str = config.harmonic_prog
+    """the harmonic progression of the session"""
+
+    bpm: int = config.bpm
+    """tempo in bpm"""
+
+    key: str = config.master_key
+    """Master key of whole session"""
 
 # alphabet of tuples (fluidsynth note name, brown note name)
 note_alphabet = [("A", "a"), ("Bb", "bf"), ("B", "b"),
