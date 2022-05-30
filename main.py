@@ -1,32 +1,30 @@
 import sys
 import threading
 import platform
-import atexit
 
 from ast import literal_eval
 from operator import itemgetter
 
 PLATFORM = platform.machine()
 
-# if PLATFORM == "x86_64":
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import pyqtSlot as Slot
 from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
 from PyQt5.QtWidgets import (QApplication, QWidget)
-# else:
-#     from PyQt5 import QtCore
-#     from PyQt5.QtCore import pyqtSlot as Slot
-#     from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
-#     from PyQt5.QtWidgets import (QApplication, QWidget)
 
-from GotAISignal import GotAISignal
-from GotMusicSignal import GotMusicSignal
-from AIData import AIData
-from processVisualImages import ProcessVisuals
-from image_generator import ImageGen
+from nebula.GotAISignal import GotAISignal
+from nebula.GotMusicSignal import GotMusicSignal
+from nebula.AIDataThreader import AIData
+from visuals.processVisualImages import ProcessVisuals
+from sound.harmony import Harmony
 
+"""The main script for controlling the visual widget and all
+AI, sound and generation processes"""
 
 class MyWidget(QWidget):
+    """A QT class that initialises the project and sets
+    up the UI"""
+
     def __init__(self):
         QWidget.__init__(self)
 
@@ -45,7 +43,7 @@ class MyWidget(QWidget):
         harmony_signal.harmony_str.connect(self.got_harmony_signal)
 
         # init the harmony dict
-        self.harmony_dict = {}
+        self.harmony_dict = Harmony
 
         # # init the image generator to get notes for bespoke images
         # self.image_gen = ImageGen()
@@ -115,12 +113,19 @@ class MyWidget(QWidget):
 
     def create_telemetry(self):
         # start a painter
-        bpm, chord, note, bar, pos, root_name = itemgetter("BPM",
-                                                           "chord_name",
-                                                           "note",
-                                                           "bar",
-                                                           "prog_pos",
-                                                           "root_name")(self.harmony_dict)
+        # bpm, chord, note, bar, pos, root_name = itemgetter("BPM",
+        #                                                    "chord_name",
+        #                                                    "note",
+        #                                                    "bar",
+        #                                                    "prog_pos",
+        #                                                    "root_name")(self.harmony_dict)
+
+        bpm, chord, note, bar, pos, root_name = self.harmony_dict.bpm, \
+                                                self.harmony_dict.chord_name, \
+                                                self.harmony_dict.note, \
+                                                self.harmony_dict.bar, \
+                                                self.harmony_dict.prog_pos, \
+                                                self.harmony_dict.root_name
 
         harmonypainter = QPainter(self)
         harmonypainter.setRenderHint(QPainter.Antialiasing, True)
@@ -194,7 +199,7 @@ if __name__ == "__main__":
     widget = MyWidget()
     widget.resize(800, 600)
     # widget.showFullScreen()
-    widget.setWindowTitle("visual robotic score")
+    widget.setWindowTitle("jazz_bot")
     widget.setStyleSheet("background-color:white;")
 
     if PLATFORM == "x86_64":
