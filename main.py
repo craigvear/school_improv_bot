@@ -50,8 +50,8 @@ class MyWidget(QWidget):
         # self.image_gen = ImageGen()
 
         # start the ball rolling with all data generation and parsing
-        threading.Thread(target=AIData(ai_signal, harmony_signal)).start()
-        # self._ai_data_engine = AIData(ai_signal, harmony_signal)
+        # threading.Thread(target=AIData(ai_signal, harmony_signal)).start()
+        self._ai_data_engine = AIData(ai_signal, harmony_signal)
 
         print('here')
         # instantiate the visual processing object

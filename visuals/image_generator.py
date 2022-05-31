@@ -7,6 +7,7 @@ from operator import itemgetter
 # import project modules
 from sound.notes import Notes
 from neoscore.common import *
+import sound.harmony as harmony
 
 
 class ImageGen:
@@ -19,12 +20,12 @@ class ImageGen:
     def make_image(self, harmony_dict):
         """generate a random seq of notes on a staff
         using current harmonic seq as guide"""
-        chord, note, bar, pos, root_name, key = itemgetter("chord_name",
-                                                           "note",
-                                                           "bar",
-                                                           "prog_pos",
-                                                           "root_name",
-                                                                "key")(harmony_dict)
+        # chord, note, bar, pos, root_name, key = itemgetter("chord_name",
+        #                                                    "note",
+        #                                                    "bar",
+        #                                                    "prog_pos",
+        #                                                    "root_name",
+        #                                                         "key")(harmony_dict)
 
         chord = harmony_dict.chord_name
         note = harmony_dict.note
@@ -49,7 +50,8 @@ class ImageGen:
         # populate it with music furniture
         # todo get ket and current chord from harmony_dict
         Clef(ZERO, staff, 'treble')
-        KeySignature(Mm(0), staff, f'{key[1]}_major')
+        key_name = harmony.note_alphabet[key][0]
+        KeySignature(Mm(0), staff, f'{key_name}_major')
 
         # get current chord from harmony_dict
         text = Text((Mm(3), staff.unit(-2)), staff, chord)

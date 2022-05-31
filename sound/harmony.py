@@ -8,22 +8,22 @@ and harmonic decision made by the AI"""
 class Harmony:
     """Current harmony data"""
 
-    chord_name: str
+    chord_name: str = "none"
     """current chord name"""
 
-    note: str
+    note: str = "none"
     """name chosen note"""
 
-    bar: int
+    bar: int = 0
     """bar position"""
 
-    prog_pos: int
+    prog_pos: int = 0
     """position in harmonic progression"""
 
-    root_name: str
+    root_name: str = "none"
     """root name of current chord in harmonic progression"""
 
-    root_number: str
+    root_number: str = "none"
     """number of the root in relation to note alphabet"""
 
     progression: str = config.harmonic_prog
