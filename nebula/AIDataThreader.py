@@ -27,23 +27,19 @@ class AIData:
 
     async def flywheel(self):
         print("parent: started!")
-        while True:
-            # print("parent: connecting to 127.0.0.1:{}".format(self.PORT))
-            # client_stream = await trio.open_tcp_stream(self.IP_ADDR, self.PORT)
-            # async with client_stream:
-            #     # self.interrupt_bang = True
-            async with trio.open_nursery() as nursery:
-                # spawning all the data making
-                print("parent: spawning affect module")
-                nursery.start_soon(self.nebula_engine.affect)
+        async with trio.open_nursery() as nursery:
 
-                # spawning affect listener and master clocks
-                print("parent: spawning making data ...")
-                nursery.start_soon(self.nebula_engine.make_data)
+            # spawning affect listener and master clocks
+            print("parent: spawning affect listener and clocks ...")
+            nursery.start_soon(self.audio_engine.snd_listen)
 
-                # spawning affect listener and master clocks
-                print("parent: spawning affect listener and clocks ...")
-                nursery.start_soon(self.audio_engine.snd_listen)
+            # spawning all the data making
+            print("parent: spawning affect module")
+            nursery.start_soon(self.nebula_engine.affect)
+
+            # spawning affect listener and master clocks
+            print("parent: spawning making data ...")
+            nursery.start_soon(self.nebula_engine.make_data)
 
 
 
