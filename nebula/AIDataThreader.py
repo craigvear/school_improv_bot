@@ -1,5 +1,6 @@
 # import python libs
 from threading import Thread
+import trio
 
 # import project libs
 from sound.audio_control import AudioEngine
@@ -15,24 +16,52 @@ class AIData:
         self.harmony_signal = harmony_signal
 
         # instantiate the AI server
-        nebula_engine = NebulaDataEngine(self.ai_signal, self.harmony_signal, speed=1)
+        self.nebula_engine = NebulaDataEngine(self.ai_signal, self.harmony_signal, speed=1)
 
         # instantiate the controller client and pass AI engine
-        audio_engine = AudioEngine(nebula_engine)
+        self.audio_engine = AudioEngine(self.nebula_engine)
 
-        # declares all threads
-        t1 = Thread(target=nebula_engine.make_data)
-        t2 = Thread(target=nebula_engine.affect)
-        t3 = Thread(target=audio_engine.snd_listen)
+        trio.run(self.flywheel)
+        print('I got here daddy')
 
-        # assigns them all daemons
-        t1.daemon = True
-        t2.daemon = True
 
-        # starts them all
-        t1.start()
-        t2.start()
-        t3.start()
+    async def flywheel(self):
+        print("parent: started!")
+        while True:
+            # print("parent: connecting to 127.0.0.1:{}".format(self.PORT))
+            # client_stream = await trio.open_tcp_stream(self.IP_ADDR, self.PORT)
+            # async with client_stream:
+            #     # self.interrupt_bang = True
+            async with trio.open_nursery() as nursery:
+                # spawning all the data making
+                print("parent: spawning affect module")
+                nursery.start_soon(self.nebula_engine.affect)
+
+                # spawning affect listener and master clocks
+                print("parent: spawning making data ...")
+                nursery.start_soon(self.nebula_engine.make_data)
+
+                # spawning affect listener and master clocks
+                print("parent: spawning affect listener and clocks ...")
+                nursery.start_soon(self.audio_engine.snd_listen)
+
+
+
+        #
+        #
+        # # declares all threads
+        # t1 = Thread(target=nebula_engine.make_data)
+        # t2 = Thread(target=nebula_engine.affect)
+        # t3 = Thread(target=audio_engine.snd_listen)
+        #
+        # # assigns them all daemons
+        # t1.daemon = True
+        # t2.daemon = True
+        #
+        # # starts them all
+        # t1.start()
+        # t2.start()
+        # t3.start()
 
 
 
