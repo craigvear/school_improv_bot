@@ -27,6 +27,7 @@ class AIData:
 
     async def flywheel(self):
         print("parent: started!")
+
         async with trio.open_nursery() as nursery:
 
             # spawning affect listener and master clocks
