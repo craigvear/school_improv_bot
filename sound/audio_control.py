@@ -48,7 +48,7 @@ class AudioEngine:
                                                   exception_on_overflow = False),
                                  dtype=np.int16)
             peak = np.average(np.abs(data)) * 2
-            if peak > 2000:
+            if peak > 1000:
                 bars = "#" * int(50 * peak / 2 ** 16)
 
                 # Calculates the frequency from with the peak ws

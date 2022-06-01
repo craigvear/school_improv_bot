@@ -19,8 +19,12 @@ from nebula.AIDataThreader import AIData
 from visuals.processVisualImages import ProcessVisuals
 from sound.harmony import Harmony
 
-"""The main script for controlling the visual widget and all
-AI, sound and generation processes"""
+"""The main script for controlling the visual widget from which
+ all AI, sound and generation processes are signalled and initiated.
+ 
+ The setup parameters are listed in config.py.
+ 
+ """
 
 class MyWidget(QWidget):
     """A QT class that initialises the project and sets
@@ -28,10 +32,12 @@ class MyWidget(QWidget):
 
     def __init__(self):
         QWidget.__init__(self)
+        """This init, establishes the emmisions slots for passing gernbative
+        data between the functions."""
 
         # todo: atexit clear out the image folder & terminate threads properly
 
-        # open a signal streamer for AI emissions
+        # open a signal streamer for Nebula emissions
         ai_signal = GotAISignal()
 
         # and connect to emitting stream
@@ -43,17 +49,12 @@ class MyWidget(QWidget):
         # and connect to emitting stream
         harmony_signal.harmony_str.connect(self.got_harmony_signal)
 
-        # init the harmony dict
+        # init the harmony dict to be shared
         self.harmony_dict = Harmony
 
-        # # init the image generator to get notes for bespoke images
-        # self.image_gen = ImageGen()
-
         # start the ball rolling with all data generation and parsing
-        # threading.Thread(target=AIData(ai_signal, harmony_signal)).start()
         self._ai_data_engine = AIData(ai_signal, harmony_signal)
 
-        print('here')
         # instantiate the visual processing object
         self.process_AI_signal = ProcessVisuals()
 
@@ -63,12 +64,14 @@ class MyWidget(QWidget):
         self.update_gui()
 
     def update_gui(self):
+        """Threading event that updates the UI"""
         # print("-------- updating gui")
         self.update()
         self.gui_thread = threading.Timer(0.1, self.update_gui)
         self.gui_thread.start()
 
     def paintEvent(self, paint_event):
+        """QT func that paints when recieves an emmission"""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing, True)
 
@@ -115,13 +118,9 @@ class MyWidget(QWidget):
         # print("UPDATED")
 
     def create_telemetry(self):
-        # start a painter
-        # bpm, chord, note, bar, pos, root_name = itemgetter("BPM",
-        #                                                    "chord_name",
-        #                                                    "note",
-        #                                                    "bar",
-        #                                                    "prog_pos",
-        #                                                    "root_name")(self.harmony_dict)
+        """Updates the onscreen telemetry"""
+
+        #todo : add telemetry for AI assement & condition
 
         bpm = self.harmony_dict.bpm
         chord = self.harmony_dict.chord_name
@@ -138,13 +137,13 @@ class MyWidget(QWidget):
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
         harmonypainter.drawText(10, 20, "BPM:")
         harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
-        harmonypainter.drawText(40, 20, f"{str(bpm)}: {str(bar)}")
+        harmonypainter.drawText(40, 20, str(bpm))
 
         # print Bar
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
         harmonypainter.drawText(70, 20, "Pos:")
         harmonypainter.setFont(QFont("Arial", 10, QFont.Normal))
-        harmonypainter.drawText(100, 20, str(pos))
+        harmonypainter.drawText(100, 20, f"{str(bar)}: {str(pos)}")
 
         # print chord
         harmonypainter.setFont(QFont("Arial", 10, QFont.Bold))
@@ -159,6 +158,7 @@ class MyWidget(QWidget):
         harmonypainter.drawText(50, 40, note)
 
     def keyPressEvent(self, event):
+        """Keyboard functions e.g. fullscreen and escape"""
         if event.key() == Qt.Key_F:
             if self.isFullScreen():
                 self.showNormal()
@@ -169,6 +169,7 @@ class MyWidget(QWidget):
             self.terminate()
 
     def terminate(self):
+        """safely quit all threads and emissions etc"""
         # todo - crash all threads
         # self._ai_data_engine
         self.gui_thread.cancel()
@@ -176,6 +177,7 @@ class MyWidget(QWidget):
 
     @Slot(str)
     def got_ai_signal(self, ai_msg):
+        """recieves and amends AI signals from Nebula"""
         ai_msg = literal_eval(ai_msg)
 
         screen_resolution = self.geometry()
@@ -191,6 +193,7 @@ class MyWidget(QWidget):
 
     @Slot(object)
     def got_harmony_signal(self, harmony_msg):
+        """recieves emissions from harmony controller"""
         # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', harmony_msg)
 
         self.harmony_dict = harmony_msg

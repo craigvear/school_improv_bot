@@ -19,6 +19,9 @@ bpm=100
 # what time sig?
 time_sig = 4
 
+# subdivision of beat
+subdivision = 3
+
 # instrumental transposition?
 transposition = 0
 

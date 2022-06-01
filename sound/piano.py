@@ -96,7 +96,7 @@ class Piano:
         self.time_sig = config.time_sig
 
         # state how many sub divides to a beat. 4=16ths, 12 = semi trips
-        self.subdivision = 3
+        self.subdivision = config.subdivision
 
         # which turnaround
         self.turnaround_bar_length = len(self.progression)
@@ -111,17 +111,6 @@ class Piano:
 
         # find the ms wait for subdivide
         self.sleep_dur = (bpm_to_ms / self.subdivision) / 1000
-
-        # init the harmony dictionary for emission to GUI
-        # self.harmony_dict = {"BPM": bpm,
-        #                      "bar": "none",
-        #                      "progression": harmonic_prog,
-        #                      "prog_pos": 0,
-        #                      "chord_name": "none",
-        #                      "note": "none",
-        #                      "root_number": "none",
-        #                      "root_name": "none",
-        #                      "key": master_key_name}
 
         self.harmony_dict = Harmony
 
@@ -293,6 +282,8 @@ class Piano:
             # create note to add event to queue
             print('play')
 
+
+            # todo - 2 or 3 notes every now and then?
             # what is the current chord in the harmonic prog?
             chord_note = self.notes.which_note(self.harmony_dict)
 

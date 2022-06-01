@@ -16,45 +16,12 @@ class AIData:
         self.ai_signal = ai_signal_obj
         self.harmony_signal = harmony_signal
 
-        # instantiate the AI server
+        # instantiate the Nebula server
         nebula_engine = NebulaDataEngine(self.ai_signal, self.harmony_signal, speed=1)
 
-        # instantiate the controller client and pass AI engine
+        # instantiate the audio engine and pass AI/nebula engine
         audio_engine = AudioEngine(nebula_engine)
-        #
-        # tasks = [self.audio_engine.snd_listen,
-        #          self.nebula_engine.affect,
-        #          self.nebula_engine.make_data]
-        #
-        # with ThreadPoolExecutor(max_workers=3) as executor:
-        #     futures = {executor.submit(task): task for task in tasks}
 
-
-    #     trio.run(self.flywheel)
-    #     print('I got here daddy')
-    #
-    #
-    # async def flywheel(self):
-    #     print("parent: started!")
-    #
-    #     async with trio.open_nursery() as nursery:
-    #
-    #         # spawning affect listener and master clocks
-    #         print("parent: spawning affect listener and clocks ...")
-    #         nursery.start_soon(self.audio_engine.snd_listen)
-    #
-    #         # spawning all the data making
-    #         print("parent: spawning affect module")
-    #         nursery.start_soon(self.nebula_engine.affect)
-    #
-    #         # spawning affect listener and master clocks
-    #         print("parent: spawning making data ...")
-    #         nursery.start_soon(self.nebula_engine.make_data)
-
-
-
-        #
-        #
         # declares all threads
         t1 = Thread(target=nebula_engine.make_data)
         t2 = Thread(target=nebula_engine.affect)
