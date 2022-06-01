@@ -374,13 +374,13 @@ class NebulaDataEngine():
 
     # parses the incoming dictionary and vars from the client
     def parse_got_dict(self, got_dict):
-        self.datadict['user_in'] = got_dict['mic_level']
+        self.datadict['user_in'] = got_dict.mic_level
 
         # user change the overall speed of the engine
-        self.global_speed = got_dict['speed']
+        self.global_speed = got_dict.speed
 
         # user change tempo of outputs and parsing
-        self.rhythm_rate = got_dict['tempo']
+        self.rhythm_rate = got_dict.baudrate
 
     def quit(self):
         self.running = False

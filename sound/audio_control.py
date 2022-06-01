@@ -6,6 +6,7 @@ controls microphone stream"""
 import pyaudio
 import numpy as np
 import math
+from sound.audio_data import LiveAudioData
 
 
 class AudioEngine:
@@ -26,20 +27,19 @@ class AudioEngine:
                                   frames_per_buffer=self.CHUNK)
 
         # build send data dict
-        self.send_data_dict = {'mic_level': 0,
-                               'speed': 1,
-                               'tempo': 0.1,
-                               'freq': 0,
-                               'midinote': ("z", 0)
-                               }
+        # self.send_data_dict = {'mic_level': 0,
+        #                        'speed': 1,
+        #                        'tempo': 0.1,
+        #                        'freq': 0,
+        #                        'midinote': ("z", 0)
+        #                        }
+
+        self.send_data_dict = LiveAudioData()
 
         self.notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 
         # own the AI data server
         self.engine = ai_engine
-
-        # # init got dict
-        # self.got_dict = self.engine.datadict
 
     def snd_listen(self):
         print("mic listener: started!")
@@ -65,9 +65,9 @@ class AudioEngine:
                 # Shows the peak frequency and the bars for the amplitude
                 print(f"peak frequency: {freqPeak} Hz, mididnote {midinote}:\t {bars}")
 
-                self.send_data_dict['mic_level'] = peak # / 30000
-                self.send_data_dict['freq'] = freqPeak
-                self.send_data_dict['midinote'] = midinote
+                self.send_data_dict.mic_level = peak # / 30000
+                self.send_data_dict.freq = freqPeak
+                self.send_data_dict.midinote = midinote
                 self.engine.parse_got_dict(self.send_data_dict)
 
     def freq_to_note(self, freq):

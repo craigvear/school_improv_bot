@@ -27,42 +27,13 @@ class Piano:
         self.OCTAVES = 5  # number of octaves to show
         self.LOWEST = 3  # lowest octave to show
 
-        ##############################################################
-        # new matrix here
-        ##############################################################
-
-        # alt method using full 12 note alphabet: 0 - 11
-        # self.note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
         self.note_alphabet = harmony.note_alphabet
 
-        # chord types are 1: tonic Maj7; 2: minor 7th; 4: sub dom maj7; 5: dom 7th etc
-        # self.major_key_chord_shapes = {"1": [(0, 20), (4, 40), (7, 10), (11, 30)],
-        #                      "3": [(0, 20), (3, 40), (7, 10), (10, 30)],
-        #                      "2": [(0, 20), (3, 40), (7, 10), (10, 30)],
-        #                      "5": [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)],
-        #                      "6": [(0, 20), (3, 40), (7, 10), (10, 30)]
-        #                                }
         self.major_key_chord_shapes = harmony.major_key_chord_shapes
 
         # same as above but with lyd + whole tone extensions to core triad chord tones
         # e.g. 9th, #11, 13
-        # self.lyd_chord_shapes = {"1": [(0, 15), (4, 20), (7, 5), (11, 15),
-        #                                (2, 15), (6, 20), (9, 10)],
-        #                          "2": [(0, 15), (3, 20), (7, 5), (10, 15),
-        #                                (2, 15), (5, 20), (9, 10)],
-        #                          "3": [(0, 15), (3, 20), (7, 5), (10, 15),
-        #                                (2, 15), (5, 20), (9, 10)],
-        #                          "5": [(0, 15), (4, 20), (7, 5), (10, 15),
-        #                                (2, 15), (5, 20), (9, 10)],
-        #                          "6": [(0, 15), (3, 20), (7, 5), (10, 15),
-        #                                (2, 15), (5, 20), (9, 10)]
-        #                          }
         self.lyd_chord_shapes = harmony.lyd_chord_shapes
-
-        # list the name and note alphabet position for each progression
-        # progression2511 = [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("1", 0, "Maj7")]
-        # progression1625 = [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
-        # progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
 
         # which progression
         harmonic_prog = config.harmonic_prog
@@ -282,7 +253,6 @@ class Piano:
             # create note to add event to queue
             print('play')
 
-
             # todo - 2 or 3 notes every now and then?
             # what is the current chord in the harmonic prog?
             chord_note = self.notes.which_note(self.harmony_dict)
@@ -312,4 +282,3 @@ class Piano:
             # add final dictionary details
             # print('playing', chord_note)
             self.harmony_dict.note = chord_note
-
