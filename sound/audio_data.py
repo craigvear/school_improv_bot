@@ -11,7 +11,7 @@ class LiveAudioData:
     mic_level: float = 0.0
     """current level of live mic"""
 
-    speed: float = 1.0
+    speed: float = 0.5
     """calling the speed of Nebula"""
 
     baudrate: float = 0.1

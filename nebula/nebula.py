@@ -30,47 +30,47 @@ from robot.robot_move import Bot
 #
 # --------------------------------------------------
 
-
-"""The hive of neural nets - this is only the beginning of the singularity!"""
-class MoveRNN:
-    def __init__(self):
-        print('MoveRNN initialization')
-        self.move_rnn = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_skeleton_data.nose.x.h5')
-
-    def predict(self, in_val):
-        # predictions and input with localval
-        self.pred = self.move_rnn.predict(in_val)
-        return self.pred
-
-class AffectRNN:
-    def __init__(self):
-        print('AffectRNN initialization')
-        self.affect_rnn = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_bitalino.h5')
-
-    def predict(self, in_val):
-        # predictions and input with localval
-        self.pred = self.affect_rnn.predict(in_val)
-        return self.pred
-
-class MoveAffectCONV2:
-    def __init__(self):
-        print('MoveAffectCONV2 initialization')
-        self.move_affect_conv2 = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_move-affect.h5')
-
-    def predict(self, in_val):
-        # predictions and input with localval
-        self.pred = self.move_affect_conv2.predict(in_val)
-        return self.pred
-
-class AffectMoveCONV2:
-    def __init__(self):
-        print('AffectMoveCONV2 initialization')
-        self.affect_move_conv2 = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_affect-move.h5')
-
-    def predict(self, in_val):
-        # predictions and input with localval
-        self.pred = self.affect_move_conv2.predict(in_val)
-        return self.pred
+#
+# """The hive of neural nets - this is only the beginning of the singularity!"""
+# class MoveRNN:
+#     def __init__(self):
+#         print('MoveRNN initialization')
+#         self.move_rnn = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_skeleton_data.nose.x.h5')
+#
+#     def predict(self, in_val):
+#         # predictions and input with localval
+#         self.pred = self.move_rnn.predict(in_val)
+#         return self.pred
+#
+# class AffectRNN:
+#     def __init__(self):
+#         print('AffectRNN initialization')
+#         self.affect_rnn = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_bitalino.h5')
+#
+#     def predict(self, in_val):
+#         # predictions and input with localval
+#         self.pred = self.affect_rnn.predict(in_val)
+#         return self.pred
+#
+# class MoveAffectCONV2:
+#     def __init__(self):
+#         print('MoveAffectCONV2 initialization')
+#         self.move_affect_conv2 = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_move-affect.h5')
+#
+#     def predict(self, in_val):
+#         # predictions and input with localval
+#         self.pred = self.move_affect_conv2.predict(in_val)
+#         return self.pred
+#
+# class AffectMoveCONV2:
+#     def __init__(self):
+#         print('AffectMoveCONV2 initialization')
+#         self.affect_move_conv2 = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_affect-move.h5')
+#
+#     def predict(self, in_val):
+#         # predictions and input with localval
+#         self.pred = self.affect_move_conv2.predict(in_val)
+#         return self.pred
 
 """
 # --------------------------------------------------
@@ -127,11 +127,22 @@ class NebulaDataEngine():
         print(self.datadict)
 
         # instantiate nets as objects and make  models
-        self.move_net = MoveRNN()
-        self.affect_net = AffectRNN()
-        self.move_affect_net = MoveAffectCONV2()
-        self.affect_move_net = AffectMoveCONV2()
-        self.affect_perception = MoveAffectCONV2()
+        # self.move_net = MoveRNN()
+        # self.affect_net = AffectRNN()
+        # self.move_affect_net = MoveAffectCONV2()
+        # self.affect_move_net = AffectMoveCONV2()
+        # self.affect_perception = MoveAffectCONV2()
+
+        print('MoveRNN initialization')
+        self.move_net = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_skeleton_data.nose.x.h5')
+        print('AffectRNN initialization')
+        self.affect_net = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_bitalino.h5')
+        print('MoveAffectCONV2 initialization')
+        self.move_affect_net = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_move-affect.h5')
+        print('AffectMoveCONV2 initialization')
+        self.affect_move_net = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_affect-move.h5')
+        print('MoveAffectCONV2 initialization')
+        self.affect_perception = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_move-affect.h5')
 
         # logging on/off switches
         self.net_logging = False
@@ -145,6 +156,8 @@ class NebulaDataEngine():
 
         # own the sound bot object and send harmony emitter
         self.soundbot = Bot(self.harmony_signal)
+
+        # todo: start threads here?
 
     """
     # --------------------------------------------------
@@ -211,6 +224,7 @@ class NebulaDataEngine():
         # get the current value and reshape ready for input for prediction
         input_val = self.datadict.get(self.netnames[which_dict])
         input_val = np.reshape(input_val, (1, 1, 1))
+        input_val = tf.convert_to_tensor(input_val,  np.float32)
         return input_val
 
     # function to put prediction value from net into dictionary

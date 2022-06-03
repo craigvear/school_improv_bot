@@ -14,7 +14,7 @@ master_key = 3 # 3 = C
 harmonic_prog = "1625"
 
 # what tempo?
-bpm=100
+bpm = 120
 
 # what time sig?
 time_sig = 4
