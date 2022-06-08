@@ -7,7 +7,8 @@ import os
 from visuals.image_generator import ImageGen
 
 MAX_SIZE = 500
-MAX_LIFESPAN = 100
+MAX_LIFESPAN = 2000
+MIN_LIFESPAN = 20
 
 class ProcessVisuals:
     def __init__(self):
@@ -15,10 +16,10 @@ class ProcessVisuals:
         self.queue = []
         self.visual_types = ("line",
                              "ellipse",
-                             "rect",
+                             "rect"
                              "image",
-                             "image",
-                             "complex")
+                             "image")
+                             # "complex")
 
         # instantiate image generator class
         self.image_gen = ImageGen()
@@ -53,11 +54,11 @@ class ProcessVisuals:
         else:
             generated_image = 0
 
-        if image_type == "complex":
-            image_type = random.choice(self.visual_types[:3])
+        # if image_type == "complex":
+        #     image_type = random.choice(self.visual_types[:3])
 
         final_visual = dict(type=image_type,
-                            lifespan=self.lifespan(rhythm_rate),
+                            lifespan=self.lifespan(rhythm_rate * 2),
                             color={"r": random.randint(0, 255),
                                    "g": random.randint(0, 255),
                                    "b": random.randint(0, 255),
@@ -80,8 +81,10 @@ class ProcessVisuals:
         lifespan = rate * random.randint(10, 100)
         if lifespan < 0:
             lifespan *= -1
-        while lifespan > MAX_LIFESPAN:
-            lifespan /= random.randint(2, 10)
+        elif lifespan > MAX_LIFESPAN:
+            lifespan = MAX_LIFESPAN
+        elif lifespan < MIN_LIFESPAN:
+            lifespan = MIN_LIFESPAN
 
         # print('////////////////             lifespan = ', lifespan)
         return int(lifespan)
@@ -94,7 +97,7 @@ class ProcessVisuals:
                 if lifespan <= 0:
                     # if event is an image: remove .png from folder
                     if self.queue[i]["type"] == 'image':
-                        # print("DDDDDDDEEEEEELLLLLLLLTTTTTTTEEEEEEEEEE")
+                        # print("DDDDDDDEEEEEELLLLLLLLEEEEEEEETTTTTTTEEEEEEEEEE")
                         os.remove(self.queue[i]["image"])
                     del self.queue[i]
 
@@ -102,6 +105,7 @@ class ProcessVisuals:
                 else:
                     self.queue[i]["lifespan"] = lifespan
                     direction = self.queue[i]["direction"]
+                    move_factor = random.randrange(1, 10)
                     if direction == 0:
                         self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - 1
                     elif direction == 1:
@@ -125,11 +129,11 @@ class ProcessVisuals:
                     elif direction >= 10:
                         if bool(random.getrandbits(1)):
                             if bool(random.getrandbits(1)):
-                                self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] - 1
+                                self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] - move_factor
                             else:
-                                self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - 1
+                                self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - move_factor
                         else:
                             if bool(random.getrandbits(1)):
-                                self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] + 1
+                                self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] + move_factor
                             else:
-                                self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] + 1
+                                self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] + move_factor

@@ -54,7 +54,7 @@ class ImageGen:
         KeySignature(Mm(0), staff, f'{key_name}_major')
 
         # get current chord from harmony_dict
-        text = Text((Mm(3), staff.unit(-2)), staff, chord)
+        # text = Text((Mm(3), staff.unit(-2)), staff, chord)
 
         note_list = self.notes.which_note(harmony_dict, number_of_notes)
         # print('note list = ', note_list)
@@ -81,7 +81,7 @@ class ImageGen:
         # neoscore.show()
 
         # reset the notation renderer
-        text.remove()
+        # text.remove()
         staff.remove()
         flow.remove()
 

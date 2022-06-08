@@ -7,6 +7,7 @@ import pyaudio
 import numpy as np
 import math
 from sound.audio_data import LiveAudioData
+from threading import Thread
 
 
 class AudioEngine:
@@ -41,6 +42,9 @@ class AudioEngine:
         # own the AI data server
         self.engine = ai_engine
 
+        t3 = Thread(target=self.snd_listen)
+        t3.start()
+
     def snd_listen(self):
         print("mic listener: started!")
         while self.running:
@@ -63,7 +67,7 @@ class AudioEngine:
                 midinote = self.freq_to_note(freqPeak)
 
                 # Shows the peak frequency and the bars for the amplitude
-                print(f"peak frequency: {freqPeak} Hz, mididnote {midinote}:\t {bars}")
+                # print(f"peak frequency: {freqPeak} Hz, mididnote {midinote}:\t {bars}")
 
                 self.send_data_dict.mic_level = peak # / 30000
                 self.send_data_dict.freq = freqPeak

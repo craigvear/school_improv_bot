@@ -15,9 +15,12 @@ from PyQt5.QtWidgets import (QApplication, QWidget)
 
 from nebula.GotAISignal import GotAISignal
 from nebula.GotMusicSignal import GotMusicSignal
-from nebula.AIDataThreader import AIData
+# from nebula.AIDataThreader import AIData
 from visuals.processVisualImages import ProcessVisuals
 from sound.harmony import Harmony
+from nebula.nebula import NebulaDataEngine
+from sound.audio_control import AudioEngine
+
 
 """The main script for controlling the visual widget from which
  all AI, sound and generation processes are signalled and initiated.
@@ -53,7 +56,12 @@ class MyWidget(QWidget):
         self.harmony_dict = Harmony
 
         # start the ball rolling with all data generation and parsing
-        self._ai_data_engine = AIData(ai_signal, harmony_signal)
+        # self._ai_data_engine = AIData(ai_signal, harmony_signal)
+        # instantiate the Nebula server
+        nebula_engine = NebulaDataEngine(ai_signal, harmony_signal, speed=0.5)
+
+        # instantiate the audio engine and pass AI/nebula engine
+        audio_engine = AudioEngine(nebula_engine)
 
         # instantiate the visual processing object
         self.process_AI_signal = ProcessVisuals()

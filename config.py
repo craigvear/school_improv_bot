@@ -15,6 +15,7 @@ harmonic_prog = "1625"
 
 # what tempo?
 bpm = 120
+bpm_to_ms = ((60 / bpm) * 1000)
 
 # what time sig?
 time_sig = 4

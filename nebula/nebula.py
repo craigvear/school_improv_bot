@@ -15,6 +15,7 @@
 from random import randrange
 from time import time
 import tensorflow as tf
+from threading import Thread
 # from tensorflow.keras.models import load_model
 
 import numpy as np
@@ -22,7 +23,7 @@ from random import random, getrandbits
 from time import sleep
 
 from robot.robot_move import Bot
-
+import config
 
 # --------------------------------------------------
 #
@@ -88,7 +89,9 @@ class NebulaDataEngine():
         # self.running = False
         # self.PORT = 8000
         # self.IP_ADDR = "127.0.0.1"
-        self.global_speed = speed / 10
+
+        # todo - global speed should be linked to bpm
+        self.global_speed = speed #/ 10
         self.rnd_stream = 0
 
         # make a default dict for the engine
@@ -158,6 +161,19 @@ class NebulaDataEngine():
         self.soundbot = Bot(self.harmony_signal)
 
         # todo: start threads here?
+        # declares all threads
+        t1 = Thread(target=self.make_data)
+        t2 = Thread(target=self.affect)
+        # t3 = Thread(target=audio_engine.snd_listen)
+
+        # assigns them all daemons
+        t1.daemon = True
+        # t2.daemon = True
+
+        # starts them all
+        t1.start()
+        t2.start()
+        # t3.start()
 
     """
     # --------------------------------------------------
@@ -178,7 +194,7 @@ class NebulaDataEngine():
 
             intensity = self.datadict.get('self_awareness')
             # print('////////////////////////   intensity = ', intensity)
-            self.rhythm_rate = (self.rhythm_rate * intensity) * self.global_speed
+            self.rhythm_rate = self.rhythm_rate * self.global_speed  #(self.rhythm_rate * intensity) / self.global_speed
             self.datadict['rhythm_rate'] = self.rhythm_rate
 
             # get input vars from dict (NB not always self)

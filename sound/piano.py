@@ -78,7 +78,7 @@ class Piano:
         self.tick = 0
 
         # convert bar and beat to ms
-        bpm_to_ms = ((60 / bpm) * 1000)
+        bpm_to_ms = config.bpm_to_ms
 
         # find the ms wait for subdivide
         self.sleep_dur = (bpm_to_ms / self.subdivision) / 1000
