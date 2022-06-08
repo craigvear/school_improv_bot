@@ -46,9 +46,9 @@ class ProcessVisuals:
         #                                                      "height")(ai_signal_dict)
 
         master_output = ai_signal_dict.master_output
-        rhythm_rate
-        width
-        height
+        rhythm_rate = ai_signal_dict.rhythm_rate
+        width = ai_signal_dict.width
+        height = ai_signal_dict.width
 
 
         image_type = random.choice(self.visual_types)

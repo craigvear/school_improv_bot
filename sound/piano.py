@@ -139,7 +139,7 @@ class Piano:
         self.harmony_dict.chord_name = root_note_name + current_progression_pos[2]
         self.harmony_dict.prog_pos = current_progression_pos
         self.harmony_dict.root_number = root_number_of_this_chord
-        self.harmony_dict.root_name = root_note_name
+        self.harmony_dict.root_name = [root_note_name]
         self.send_harmony_dict()
 
         # on bar change play a bass note
@@ -221,7 +221,8 @@ class Piano:
         and sends a request to play the note to the fluidsynth server"""
 
         # dynamic = 90 + randrange(1, 30)
-        fluidsynth.play_Note(note=note_to_play, channel=self.channel, velocity=dynamic)
+        # n = NoteContainer(["A-3", "C-5", "E-5"])
+        fluidsynth.play_NoteContainer(nc=note_to_play, channel=self.channel, velocity=dynamic)
         print(f'\t\t\t\t\tplaying {note_to_play}, channel {self.channel}, velocity {dynamic}')
 
     def stop_note(self, note_to_stop):
@@ -254,13 +255,19 @@ class Piano:
             print('play')
 
             # todo - 2 or 3 notes every now and then?
-            # what is the current chord in the harmonic prog?
-            chord_note = self.notes.which_note(self.harmony_dict)
 
-            # extract the note value (it returns a
-            # list as image generator also calls this
-            # returns tuple (fluidsynth_note_name, brown_note_name)
-            chord_note = chord_note[0][0]
+            # chord, intrval or note?
+            note_amount = randrange(3)
+
+            chord_note = []
+            for note in note_amount:
+                # what is the current chord in the harmonic prog?
+                chord_note = self.notes.which_note(self.harmony_dict)
+
+                # extract the note value (it returns a
+                # list as image generator also calls this
+                # returns tuple (fluidsynth_note_name, brown_note_name)
+                chord_note.append(chord_note[0][0])
 
             # which octave?
             self.which_octave()
