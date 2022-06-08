@@ -1,3 +1,12 @@
-import tensorflow as tf
+import nebula.nebula_data
 
-test = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_skeleton_data.nose.x.h5')
+out_pred_val = pred[0][randrange(4)]
+
+# save to data dict and master move out ONLY 1st data
+self.datadict[self.netnames[which_dict]] = out_pred_val
+self.datadict.master_output = out_pred_val
+
+setattr()
+
+
+field.name: getattr(self, field.name)

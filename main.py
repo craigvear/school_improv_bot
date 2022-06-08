@@ -35,7 +35,7 @@ class MyWidget(QWidget):
 
     def __init__(self):
         QWidget.__init__(self)
-        """This init, establishes the emmisions slots for passing gernbative
+        """This init, establishes the emmisions slots for passing generative
         data between the functions."""
 
         # todo: atexit clear out the image folder & terminate threads properly
@@ -185,15 +185,15 @@ class MyWidget(QWidget):
 
     @Slot(str)
     def got_ai_signal(self, ai_msg):
-        """recieves and amends AI signals from Nebula"""
-        ai_msg = literal_eval(ai_msg)
+        """receives and amends AI signals from Nebula"""
+        # ai_msg = literal_eval(ai_msg)
 
         screen_resolution = self.geometry()
         height = screen_resolution.height()
         width = screen_resolution.width()
 
-        ai_msg["width"] = width
-        ai_msg["height"] = height
+        ai_msg.width = width
+        ai_msg.height = height
 
         # print("adding to Queue : main {}".format(str(ai_msg)))
 

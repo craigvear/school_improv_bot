@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 
-# set up signal based emitter for harmony telemetry
+"""set up a PyQT signal based emitter for harmony generation
+"""
 class GotMusicSignal(QObject):
     harmony_str = pyqtSignal(object)
 
