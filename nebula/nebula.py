@@ -22,7 +22,9 @@ import numpy as np
 from random import random, getrandbits
 from time import sleep
 
-from robot.robot_move import Bot
+# from robot.robot_move import Bot
+from sound.piano import Piano
+
 import config
 
 # --------------------------------------------------
@@ -158,7 +160,8 @@ class NebulaDataEngine():
         self.harmony_signal = harmony_signal
 
         # own the sound bot object and send harmony emitter
-        self.soundbot = Bot(self.harmony_signal)
+        # self.soundbot = Bot(self.harmony_signal)
+        self.piano = Piano(self.harmony_signal)
 
         # todo: start threads here?
         # declares all threads
@@ -397,8 +400,10 @@ class NebulaDataEngine():
             self.ai_signal.ai_str.emit(str(self.datadict))
             #print('//////////////////                   EMITTING and making sound')
 
-            # make sound/ move robot?
-            self.soundbot.make_sound(incoming_affect_listen, self.rhythm_rate)
+            # # make sound/ move robot?
+            # self.soundbot.make_sound(incoming_affect_listen, self.rhythm_rate)
+            # send make sound signal to piano
+            self.piano.note_to_play(incoming_affect_listen, self.rhythm_rate)
 
         self.old_val = incoming_affect_listen
 

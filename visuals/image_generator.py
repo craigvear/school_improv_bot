@@ -1,6 +1,6 @@
 # import python modules
 import os
-from random import randrange
+from random import randrange, getrandbits
 from time import time
 from operator import itemgetter
 
@@ -15,7 +15,7 @@ class ImageGen:
         self.notes = Notes()
         neoscore.setup()
         self.staff_unit = 10
-        self.first_note_offset = self.staff_unit / 2
+        # self.first_note_offset = self.staff_unit / 2
 
     def make_image(self, harmony_dict):
         """generate a random seq of notes on a staff
@@ -38,7 +38,7 @@ class ImageGen:
         number_of_notes = randrange(1, 10)
         # print (f'IMAGE MAKER: number_of_notes == {number_of_notes}')
 
-        manuscript_width = (number_of_notes + 1) * self.staff_unit + self.first_note_offset
+        manuscript_width = (number_of_notes + 1) * self.staff_unit # + self.first_note_offset
 
         # create coordinate space container
         flow = Flowable(ORIGIN, None, Mm(manuscript_width), Mm(30))
@@ -62,12 +62,23 @@ class ImageGen:
         for n, note in enumerate(note_list):
 
             # use the 2nd part of note alphabet tuple
-            printed_note = note[1] + "'"
+            printed_note = note[1] # + "'"
 
             # print(f'printed note  ===== {printed_note}')
-            Chordrest(Mm(self.first_note_offset + ((n + 1) * self.staff_unit)),
+            # todo- add complexity here depending on GEARS
+            rnd_duration = randrange(4)
+            if rnd_duration == 0:
+                note_dur = 4
+            elif rnd_duration == 1:
+                note_dur = 8
+            elif rnd_duration == 2:
+                note_dur = 2
+            else:
+                note_dur = 16
+
+            Chordrest(Mm((n + 1) * self.staff_unit),
                       staff, [printed_note],
-                      (1, 4))
+                      (1, note_dur))
 
         # save as a png render
         image_path = os.path.join(os.path.dirname(__file__), '../images',

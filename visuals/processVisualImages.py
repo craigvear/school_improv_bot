@@ -7,8 +7,8 @@ import os
 from visuals.image_generator import ImageGen
 
 MAX_SIZE = 500
-MAX_LIFESPAN = 2000
-MIN_LIFESPAN = 20
+MAX_LIFESPAN = 200 # 20 seconds
+MIN_LIFESPAN = 10 # 1 second
 
 class ProcessVisuals:
     def __init__(self):
@@ -58,7 +58,7 @@ class ProcessVisuals:
         #     image_type = random.choice(self.visual_types[:3])
 
         final_visual = dict(type=image_type,
-                            lifespan=self.lifespan(rhythm_rate * 2),
+                            lifespan=self.lifespan(rhythm_rate * 10),
                             color={"r": random.randint(0, 255),
                                    "g": random.randint(0, 255),
                                    "b": random.randint(0, 255),

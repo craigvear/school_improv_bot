@@ -58,7 +58,7 @@ class MyWidget(QWidget):
         # start the ball rolling with all data generation and parsing
         # self._ai_data_engine = AIData(ai_signal, harmony_signal)
         # instantiate the Nebula server
-        nebula_engine = NebulaDataEngine(ai_signal, harmony_signal, speed=0.5)
+        nebula_engine = NebulaDataEngine(ai_signal, harmony_signal, speed=1)
 
         # instantiate the audio engine and pass AI/nebula engine
         audio_engine = AudioEngine(nebula_engine)
