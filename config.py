@@ -11,7 +11,7 @@ progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7
 master_key = 3 # 3 = C
 
 # which progression?
-harmonic_prog = "1625"
+harmonic_prog = "all of me"
 
 # what tempo?
 bpm = 120
