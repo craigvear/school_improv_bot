@@ -1,4 +1,4 @@
-
+"""
 # --------------------------------------------------
 #
 # Embodied AI Engine Prototype v0.10
@@ -10,7 +10,7 @@
 #
 # Dedicated to Fabrizio Poltronieri
 #
-# --------------------------------------------------
+# --------------------------------------------------"""
 
 from random import randrange
 from time import time
@@ -27,64 +27,15 @@ from sound.piano import Piano
 
 import config
 
-# --------------------------------------------------
-#
-# instantiate an object for each neural net
-#
-# --------------------------------------------------
-
-#
-# """The hive of neural nets - this is only the beginning of the singularity!"""
-# class MoveRNN:
-#     def __init__(self):
-#         print('MoveRNN initialization')
-#         self.move_rnn = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_skeleton_data.nose.x.h5')
-#
-#     def predict(self, in_val):
-#         # predictions and input with localval
-#         self.pred = self.move_rnn.predict(in_val)
-#         return self.pred
-#
-# class AffectRNN:
-#     def __init__(self):
-#         print('AffectRNN initialization')
-#         self.affect_rnn = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_bitalino.h5')
-#
-#     def predict(self, in_val):
-#         # predictions and input with localval
-#         self.pred = self.affect_rnn.predict(in_val)
-#         return self.pred
-#
-# class MoveAffectCONV2:
-#     def __init__(self):
-#         print('MoveAffectCONV2 initialization')
-#         self.move_affect_conv2 = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_move-affect.h5')
-#
-#     def predict(self, in_val):
-#         # predictions and input with localval
-#         self.pred = self.move_affect_conv2.predict(in_val)
-#         return self.pred
-#
-# class AffectMoveCONV2:
-#     def __init__(self):
-#         print('AffectMoveCONV2 initialization')
-#         self.affect_move_conv2 = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_affect-move.h5')
-#
-#     def predict(self, in_val):
-#         # predictions and input with localval
-#         self.pred = self.affect_move_conv2.predict(in_val)
-#         return self.pred
-
-"""
-# --------------------------------------------------
-#
-# controls all thought-trains and affect responses
-#
-# --------------------------------------------------
-"""
-
 class NebulaDataEngine():
-    """speed = general tempo 0.5 ~ moderate fast, 1 ~ moderato; 2 ~ presto"""
+    """An AI engine that generates gestural thought trains.
+    This is the soul of the Jazz-Bot's jazz.
+
+    args:
+    ai_signal_obj: an emmissions object to the PyQT master renderer
+    harmony_signal: an emmissions object for all the harmony
+    speed: general tempo/ feel of Nebula's response (0.5 ~ moderate fast, 1 ~ moderato; 2 ~ presto)"""
+
     def __init__(self, ai_signal_obj, harmony_signal, speed=1):
         print('building engine server')
         self.interrupt_bang = False
@@ -139,15 +90,15 @@ class NebulaDataEngine():
         # self.affect_perception = MoveAffectCONV2()
 
         print('MoveRNN initialization')
-        self.move_net = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_skeleton_data.nose.x.h5')
+        self.move_net = tf.keras.models.load_model('nebula/models/EMR-full-sept-2021_RNN_skeleton_data.nose.x.h5')
         print('AffectRNN initialization')
-        self.affect_net = tf.keras.models.load_model('models/EMR-full-sept-2021_RNN_bitalino.h5')
+        self.affect_net = tf.keras.models.load_model('nebula/models/EMR-full-sept-2021_RNN_bitalino.h5')
         print('MoveAffectCONV2 initialization')
-        self.move_affect_net = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_move-affect.h5')
+        self.move_affect_net = tf.keras.models.load_model('nebula/models/EMR-full-sept-2021_conv2D_move-affect.h5')
         print('AffectMoveCONV2 initialization')
-        self.affect_move_net = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_affect-move.h5')
+        self.affect_move_net = tf.keras.models.load_model('nebula/models/EMR-full-sept-2021_conv2D_affect-move.h5')
         print('MoveAffectCONV2 initialization')
-        self.affect_perception = tf.keras.models.load_model('models/EMR-full-sept-2021_conv2D_move-affect.h5')
+        self.affect_perception = tf.keras.models.load_model('nebula/models/EMR-full-sept-2021_conv2D_move-affect.h5')
 
         # logging on/off switches
         self.net_logging = False
@@ -197,7 +148,7 @@ class NebulaDataEngine():
 
             intensity = self.datadict.get('self_awareness')
             # print('////////////////////////   intensity = ', intensity)
-            self.rhythm_rate = self.rhythm_rate * self.global_speed  #(self.rhythm_rate * intensity) / self.global_speed
+            self.rhythm_rate = self.rhythm_rate / self.global_speed  #(self.rhythm_rate * intensity) / self.global_speed
             self.datadict['rhythm_rate'] = self.rhythm_rate
 
             # get input vars from dict (NB not always self)

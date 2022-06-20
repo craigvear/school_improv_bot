@@ -6,8 +6,8 @@ from operator import itemgetter
 
 class Notes:
     def __init__(self):
-        self.OCTAVES = 5  # number of octaves to show
-        self.LOWEST = 3  # lowest octave to show
+        self.OCTAVES = 4  # number of octaves to show
+        self.LOWEST = 5  # lowest octave to show
 
         ##############################################################
         # new matrix here
@@ -52,7 +52,7 @@ class Notes:
         self.master_key = config.master_key  # which is C on the note alphabet
 
         # piano range vars
-        self.octave = 4
+        self.octave = 5
         self.channel = 1
 
         # transposition

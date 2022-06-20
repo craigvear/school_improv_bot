@@ -245,6 +245,13 @@ class Piano:
         elif drunk_octave == 3:
             self.octave = 4
 
+        # keep in the limits
+        if self.octave < self.LOWEST:
+            self.octave = self.LOWEST
+
+        elif self.octave > (self.LOWEST + self.OCTAVES):
+            self.octave = self.LOWEST
+
     def note_to_play(self, incoming_data, rhythm_rate):
         """receives raw data from soundbot controller
         and converts into piano note"""

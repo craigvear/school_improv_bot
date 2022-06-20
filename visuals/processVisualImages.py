@@ -4,7 +4,7 @@ from PyQt5.QtGui import QPainter
 import os
 
 # import project modules
-from visuals.image_generator import ImageGen
+from visuals.neoscore_generator import ImageGen
 
 MAX_SIZE = 500
 MAX_LIFESPAN = 200 # 20 seconds
