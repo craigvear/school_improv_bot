@@ -258,6 +258,7 @@ class Piano:
         """receives raw data from soundbot controller
         and converts into piano note"""
         # decide to make sound or not based on project %
+        # todo - increase frequency using temperature setting
         if random() <= self.note_played_or_not:
             # create note to add event to queue
             print('play')
@@ -277,6 +278,7 @@ class Piano:
             # random generate a dynamic
             dynamic = 90 + randrange(1, 30)
 
+            # todo - increase/ decrease duration using temperature
             # variable duration
             duration = rhythm_rate * (randrange(10, 30) / 10)
 
