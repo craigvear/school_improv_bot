@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-
+This class controls all the piano backing sound control and choices.
+It calculates the current bar and beat and coordinates the bass line
+It also controls all the piano note choices and rhythmical playback
 """
 # import python modules
 from mingus.containers import *
