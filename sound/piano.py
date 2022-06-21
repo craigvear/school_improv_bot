@@ -39,7 +39,10 @@ class Piano:
 
         # which progression
         harmonic_prog = config.harmonic_prog
+
+        # get progression from harmony dataclass
         self.progression = harmony.progression[harmonic_prog]
+        # print(self.progression)
 
         self.master_key = config.master_key  # which is C on the note alphabet
         master_key_name = self.note_alphabet[3]
@@ -121,7 +124,7 @@ class Piano:
         current_bar = self.calc_bar()
 
         # current position in progression e.g. ("2", 2, "min7")
-        # = "2" 2 chord in 251, 2 on A major progression (before master key transposition) , chord type
+        # = "2" 2nd chord in 251, 2 on A major progression (before master key transposition) , chord type
         current_progression_pos = self.progression[current_bar - 1]
 
         # calc position of root (1st position) for this chord in the progression

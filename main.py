@@ -1,5 +1,4 @@
 import sys
-import threading
 import platform
 
 from ast import literal_eval
@@ -15,19 +14,20 @@ from PyQt5.QtWidgets import (QApplication, QWidget)
 
 from nebula.GotAISignal import GotAISignal
 from nebula.GotMusicSignal import GotMusicSignal
-# from nebula.AIDataThreader import AIData
 from visuals.processVisualImages import ProcessVisuals
 from sound.harmony import Harmony
 from nebula.nebula import NebulaDataEngine
 from sound.audio_control import AudioEngine
+import config
 
 
-"""The main script for controlling the visual widget from which
+"""
+The main script for controlling the visual widget from which
  all AI, sound and generation processes are signalled and initiated.
  
  The setup parameters are listed in config.py.
  
- """
+"""
 
 class MyWidget(QWidget):
     """A QT class that initialises the project and sets
@@ -67,7 +67,7 @@ class MyWidget(QWidget):
         self.process_AI_signal = ProcessVisuals()
 
         # start the thread
-        self.gui_thread = None
+        # self.gui_thread = None
 
         self.update_gui()
 
@@ -130,7 +130,7 @@ class MyWidget(QWidget):
 
         #todo : add telemetry for AI assement & condition
 
-        bpm = self.harmony_dict.bpm
+        bpm = config.bpm
         chord = self.harmony_dict.chord_name
         note = self.harmony_dict.note
         bar = self.harmony_dict.bar

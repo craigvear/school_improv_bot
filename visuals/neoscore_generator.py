@@ -8,6 +8,7 @@ from operator import itemgetter
 from sound.notes import Notes
 from neoscore.common import *
 import sound.harmony as harmony
+import config
 
 
 class ImageGen:
@@ -18,25 +19,17 @@ class ImageGen:
         self.staff_unit = 10
         # self.first_note_offset = self.staff_unit / 2
 
+        # make key for neoscore notes: master key +- transposition
+        self.key = config.master_key + config.transposition
+        self.temperature = config.temperature
+
+
     def make_image(self, harmony_dict):
         """generate a random seq of notes on a staff
         using current harmonic seq as guide"""
-        # chord, note, bar, pos, root_name, key = itemgetter("chord_name",
-        #                                                    "note",
-        #                                                    "bar",
-        #                                                    "prog_pos",
-        #                                                    "root_name",
-        #                                                         "key")(harmony_dict)
-
-        # chord = harmony_dict.chord_name
-        # note = harmony_dict.note
-        # bar = harmony_dict.bar
-        # pos = harmony_dict.prog_pos
-        # root_name = harmony_dict.root_name
-        key = harmony_dict.key
 
         # how many notes?
-        number_of_notes = randrange(1, 10)
+        number_of_notes = int(randrange(1, 10) * self.temperature)
         # print (f'IMAGE MAKER: number_of_notes == {number_of_notes}')
 
         manuscript_width = (number_of_notes + 1) * self.staff_unit # + self.first_note_offset
@@ -49,9 +42,8 @@ class ImageGen:
         staff = Staff(ORIGIN, flow, Mm(manuscript_width))
 
         # populate it with music furniture
-        # todo get ket and current chord from harmony_dict
         Clef(ZERO, staff, 'treble')
-        key_name = harmony.note_alphabet[key][0]
+        key_name = harmony.note_alphabet[self.key][0]
         KeySignature(Mm(0), staff, f'{key_name}_major')
 
         # get current chord from harmony_dict
@@ -68,13 +60,20 @@ class ImageGen:
             # todo- add complexity here depending on GEARS
             rnd_duration = randrange(4)
             if rnd_duration == 0:
+                # crotchets
                 note_dur = 4
             elif rnd_duration == 1:
+                # quavers
                 note_dur = 8
             elif rnd_duration == 2:
+                # minums
                 note_dur = 2
             else:
+                # semi-quavers
                 note_dur = 16
+
+            # add temperature factor
+            note_dur = int(note_dur * self.temperature)
 
             Chordrest(Mm((n + 1) * self.staff_unit),
                       staff, [printed_note],

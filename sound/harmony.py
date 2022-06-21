@@ -26,14 +26,6 @@ class Harmony:
     root_number: str = "none"
     """number of the root in relation to note alphabet"""
 
-    progression: str = config.harmonic_prog
-    """the harmonic progression of the session"""
-
-    bpm: int = config.bpm
-    """tempo in bpm"""
-
-    key: str = config.master_key
-    """Master key of whole session"""
 
 # alphabet of tuples (fluidsynth note name, brown note name)
 note_alphabet = [("A", "a"), ("Bb", "bf"), ("B", "b"),

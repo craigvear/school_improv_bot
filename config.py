@@ -7,32 +7,34 @@ progression2511 = [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("1", 0
 progression1625 = [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
 progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
 """
-# what is the key?
-master_key = 3 # 3 = C
+# what is the key: 3 = C?
+master_key: int = 3
 
 # which progression?
-harmonic_prog = "all of me"
+harmonic_prog: str = "all of me"
 
 # what tempo?
-bpm = 120
+bpm: float = 120
 bpm_to_ms = ((60 / bpm) * 1000)
 
-# what time sig?
-time_sig = 4
+# what time sig of /4?
+time_sig: int = 4
 
 # subdivision of beat
-subdivision = 3
+# 3 = triplet quavers, 6 = trip semi
+subdivision: int = 3
 
-# instrumental transposition?
-transposition = 0
+# instrumental transposition (for notation)?
+transposition: int = 0
 
 """Style parameters"""
-temperature = 1
-density = 1
-colour = 1
+# crazyness value for AI response:
+# 0.1 is slow and cool, 1 is hot and spicy
+temperature: float = 0.5
+
+# style of jazz response from AI
+# 0.1 is cool / model, 1 is bebop / experimental
+colour: float = 0.5
 
 """Robot parameters"""
-# robot connected?
-robot_connected = False
-
-arm_connected = False
+robot_connected: bool = False

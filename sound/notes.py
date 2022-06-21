@@ -9,45 +9,11 @@ class Notes:
         self.OCTAVES = 4  # number of octaves to show
         self.LOWEST = 5  # lowest octave to show
 
-        ##############################################################
-        # new matrix here
-        ##############################################################
-
-        # alt method using full 12 note alphabet: 0 - 11
-        # self.note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
         self.note_alphabet = harmony.note_alphabet
 
-        # chord types are 1: tonic Maj7; 2: minor 7th; 4: sub dom maj7; 5: dom 7th etc
-        # self.major_key_chord_shapes = {"1": [(0, 20), (4, 40), (7, 10), (11, 30)],
-        #                      "3": [(0, 20), (3, 40), (7, 10), (10, 30)],
-        #                      "2": [(0, 20), (3, 40), (7, 10), (10, 30)],
-        #                      "5": [(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)],
-        #                      "6": [(0, 20), (3, 40), (7, 10), (10, 30)]
-        #                                }
         self.major_key_chord_shapes = harmony.major_key_chord_shapes
 
-        # same as above but with lyd + whole tone extensions to core triad chord tones
-        # e.g. 9th, #11, 13
-        # self.lyd_chord_shapes = {"1": [(0, 15), (4, 20), (7, 5), (11, 15),
-        #                                (2, 15), (6, 20), (9, 10)],
-        #                          "2": [(0, 15), (3, 20), (7, 5), (10, 15),
-        #                                (2, 15), (5, 20), (9, 10)],
-        #                          "3": [(0, 15), (3, 20), (7, 5), (10, 15),
-        #                                (2, 15), (5, 20), (9, 10)],
-        #                          "5": [(0, 15), (4, 20), (7, 5), (10, 15),
-        #                                (2, 15), (5, 20), (9, 10)],
-        #                          "6": [(0, 15), (3, 20), (7, 5), (10, 15),
-        #                                (2, 15), (5, 20), (9, 10)]
-        #                          }
         self.lyd_chord_shapes = harmony.lyd_chord_shapes
-
-        # list the name and note alphabet position for each progression
-        # progression2511 = [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("1", 0, "Maj7")]
-        # progression1625 = [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
-        # progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
-
-        # # which progression
-        # self.progression = harmony.progression["1625"]
 
         self.master_key = config.master_key  # which is C on the note alphabet
 
@@ -61,19 +27,8 @@ class Notes:
     def which_note(self, harmony_dict, num_of_notes=1):
         """calcs a note from current harmony matrix.
         this function calcs the harmonic chord tones"""
-        #
-        # # setup list for returning note values
-        # chord_note = []
 
-        # 1. what is current harmonic data
-        # extract data from harmony dict
-        # self.prog_pos, self.chord_name, self.note, self.root_number, self.root_name = itemgetter("prog_pos",
-        #                                                                      "chord_name",
-        #                                                                      "note",
-        #                                                                      "root_number",
-        #                                                                      "root_name")(harmony_dict)
-
-        bpm = harmony_dict.bpm
+        # bpm = config.bpm
         self.chord_name = harmony_dict.chord_name
         self.note = harmony_dict.note
         bar = harmony_dict.bar
@@ -81,7 +36,7 @@ class Notes:
         self.root_number = harmony_dict.root_number
         self.root_name = harmony_dict.root_name
 
-        print(self.prog_pos, self.chord_name, self.note, self.root_number, self.root_name)
+        print("here", self.prog_pos, self.chord_name, self.note, self.root_number, self.root_name)
 
         # 2 which harmonic set - major of lydian
         # todo - build this to include Russell's scales
@@ -107,50 +62,6 @@ class Notes:
         # 5 return the note for piano to play
         # or notes for image generator
         return chord_note
-
-    #
-    # def which_chord(self):
-    #     # setup list for returning note values
-    #     chord_note = []
-    #
-    #     # extract data from harmony dict
-    #     root_of_this_chord, pos = itemgetter("root",
-    #                                             "pos")(self.harmony_dict)
-    #
-    #     # # which harmonic set - major of lydian
-    #     # # todo - build this to include Russell's scales
-    #     # #  & build complexity vs duration
-    #     # if getrandbits(1) == 1:
-    #     #     # lydian chord shapes
-    #     #     chord_shapes = self.lyd_chord_shapes
-    #     #     print("lydian shapes")
-    #     # else:
-    #     #     # major chord shapes
-    #     #     chord_shapes = self.major_key_chord_shapes
-    #     #     print("major shapes")
-    #
-    #     # # get the current bar position to align to harmonic progression
-    #     # bar_position = self.harmony_dict.get('bar')
-    #
-    #     # # current position in progression = the chord type
-    #     # pos = self.progression[bar_position - 1]
-    #
-    #     # # calc position of root (1st position) for each chord in progression
-    #     # root_of_this_chord = pos[1] + self.master_key
-    #     #
-    #     # # go get its name from alphabet
-    #     # if root_of_this_chord <= 11:
-    #     #     chord_root = self.note_alphabet[root_of_this_chord]
-    #     # else:
-    #     #     chord_root = self.note_alphabet[root_of_this_chord - 12]
-    #     # # print('chord is ', chord_root, pos[2])
-    #     # self.harmony_dict['chord'] = chord_root + pos[2]
-    #
-    #     # get its shape of chordtones from chord shapes dict
-    #     chord = chord_shapes.get(pos[0])
-    #     # print('chord shape is', chord)
-    #
-    #     return self.notes.get_note(self.harmony_dict, chord, num_of_notes)
 
     def get_note(self, this_chord_array, num_of_notes):
         """calcs a note from current harmony matrix
