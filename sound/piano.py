@@ -260,9 +260,13 @@ class Piano:
 
     def note_to_play(self, incoming_data, rhythm_rate):
         """receives raw data from soundbot controller
-        and converts into piano note"""
-        # decide to make sound or not based on project %
-        # todo - increase frequency using temperature setting
+        and converts into piano note.
+
+        incoming data = Nebula output from affect engine
+        rhythm rate = nebula internal clock
+        """
+
+        # decide to make sound or not based on project temperature
         if random() <= self.note_played_or_not:
             # create note to add event to queue
             print('play')
@@ -283,8 +287,8 @@ class Piano:
             dynamic = 90 + randrange(1, 30)
 
             # todo - increase/ decrease duration using temperature
-            # variable duration
-            duration = rhythm_rate * (randrange(10, 30) / 10)
+            # variable duration = nebula current rhthm rate * random factor / temperature
+            duration = (rhythm_rate * (randrange(10, 30) / 20)) / self.temperature
 
             # package into dict for queue
             note_to_play = dict(note_name=chord_note,
