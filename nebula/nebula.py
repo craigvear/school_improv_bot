@@ -290,9 +290,9 @@ class NebulaDataEngine():
                     # emit at various points in the affect cycle
                     # might make a sound emission
                     # todo - add percentage here
-                    if getrandbits(1) == 1:
+                    # if getrandbits(1) == 1:
                         # print('emmission bang A')
-                        self.emitter(affect_listen)
+                    self.emitter(affect_listen)
                     # else:
                         # print('no emmission bang A')
 
@@ -324,9 +324,9 @@ class NebulaDataEngine():
 
                         # emit at various points in the affect cycle
                         # might make a sound emission
-                        if getrandbits(1) == 1:
+                        # if getrandbits(1) == 1:
                             # print('emmission bang B')
-                            self.emitter(affect_listen)
+                        self.emitter(affect_listen)
                         # else:
                             # print('no emmission bang B')
 

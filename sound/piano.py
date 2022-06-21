@@ -42,7 +42,7 @@ class Piano:
 
         # get progression from harmony dataclass
         self.progression = harmony.progression[harmonic_prog]
-        print("PROGRESSION", self.progression)
+        # print("PROGRESSION", self.progression)
 
         self.master_key = config.master_key  # which is C on the note alphabet
         master_key_name = self.note_alphabet[3]
@@ -306,3 +306,6 @@ class Piano:
             # add final dictionary details
             # print('playing', chord_note)
             self.harmony_dict.note = chord_note
+
+        else:
+            print('skipped over this emission')
