@@ -142,7 +142,10 @@ class Piano:
         # root_note_name = root_note_name[0]
 
         # fill the harmony dict with current data every cycle and emit
+        # todo this could be replaced by changing the propgression dict so as not to replicate shape name
         self.harmony_dict.chord_name = root_note_name + current_progression_pos[2]
+
+
         self.harmony_dict.prog_pos = current_progression_pos
         self.harmony_dict.root_number = root_number_of_this_chord
         self.harmony_dict.root_name = root_note_name
@@ -178,8 +181,6 @@ class Piano:
             self.bar = 1
 
         self.harmony_dict.bar = self.bar
-
-        # todo calc chord in progression here too
 
         # print('bar =', self.bar)
         return self.bar

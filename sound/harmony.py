@@ -55,9 +55,30 @@ lyd_chord_shapes = {"1": [(0, 15), (4, 20), (7, 5), (11, 15),
                          "6": [(0, 15), (3, 20), (7, 5), (10, 15),
                                (2, 15), (5, 20), (9, 10)]
                          }
+# dict inside dicts for gears and weights of differnt chord shapes
+# e.g. "Maj7" has 2 arrays for gears 1 (major chord tones), gear 2 (lydian + whole tone)
+chord_shapes = {"Maj7": [[(0, 20), (4, 40), (7, 10), (11, 30)],
+                         [(0, 15), (4, 20), (7, 5), (11, 15),
+                          (2, 15), (6, 20), (9, 10)]
+                         ],
+                "min7": [[(0, 20), (3, 40), (7, 10), (10, 30)],
+                         [(0, 15), (3, 20), (7, 5), (10, 15),
+                          (2, 15), (5, 20), (9, 10)]
+                         ],
+                "Dom9": [[(0, 15), (4, 35), (7, 5), (10, 20), (2, 25)],
+                         [(0, 15), (4, 20), (7, 5), (10, 15),
+                          (2, 15), (5, 20), (9, 10)],
+                         ],
+                "min7b5": [[(0, 20), (3, 40), (6, 10), (10, 30)],
+                         [(0, 15), (3, 20), (6, 5), (10, 15),
+                          (2, 15), (5, 20), (8, 10)] # todo - check this!!!
+                           ]
+}
+
 
 # list the name and note alphabet position for each progression
 # format: chord shape, note alphabet for root, description
+# todo change to root of chord (from tonic); shape (e.g Maj7), slash bass note (from root??), modal shift??
 progression = {"2511": [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("1", 0, "Maj7")],
                "1625": [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")],
                "3625": [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")],
@@ -65,5 +86,33 @@ progression = {"2511": [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("
                "all of me": [("1", 0, "Maj7"), ("5", 4, "Dom7"), ("5", 9, "Dom7"), ("2", 2, "min7"),
                              ("5", 4, "Dom7"), ("2", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
                }
+# format = name of progression (key): [(root of chord), chord shape, bass substitute,
+# advanced harmony scales for each gear
+new_progression = {"2511": [(2, "min7", None, [None, None]),
+                            (7, "Dom9", None, [None, None]),
+                            (0, "Maj7", None, [None, None]),
+                            (0, "Maj7", None, [None, None])
+                            ],
+                   "2511tritone": [(2, "min7", None, [None, None]),
+                            (7, "Dom9", 1, [None, None]),
+                            (0, "Maj7", None, [None, None]),
+                            (0, "Maj7", None, [None, None])
+                            ],
+                   "2511min": [(2, "min7b5", None, [None, None]),
+                            (7, "Dom9", None, [None, None]),
+                            (0, "min7", None, [None, None]),
+                            (0, "min7", None, [None, None])
+                            ],
+                   "all of me": [(0, "Maj7", None, [(0, "maj"), (0, "maj")]),
+                                 (4, "Dom7", None, [None, None]),
+                                 (9, "Dom7", None, [None, None]),
+                                 (2, "min7", None, [None, None]),
+                                 (4, "Dom7", None, [None, None]),
+                                 (9, "min7", None, [None, None]),
+                                 (2, "min7", None, [None, None]),
+                                 (7, "Dom9", None, [None, None])
+                                 ]
+                   }
 
+# todo - calculate a scale based on key harmonic info such as parent, mode, master key etc
 
