@@ -42,6 +42,7 @@ class Piano:
 
         # get progression from harmony dataclass
         self.progression = harmony.progression[harmonic_prog]
+        print("PROGRESSION", self.progression)
 
         self.master_key = config.master_key  # which is C on the note alphabet
         master_key_name = self.note_alphabet[3]
@@ -127,10 +128,12 @@ class Piano:
         # current position in progression e.g. ("2", 2, "min7")
         # = "2" 2nd chord in 251, 2 on A major progression (before master key transposition) , chord type
         current_progression_pos = self.progression[current_bar - 1]
+        # print("current pos", current_progression_pos)
 
         # calc position of root (1st position) for this chord in the progression
         # and add master key transposition e.g. 2 + 6 = 8
-        root_number_of_this_chord = current_progression_pos[1] + self.master_key
+        root_number_of_this_chord = current_progression_pos[0] + self.master_key
+        # print("root", root_number_of_this_chord)
 
         # go get its name from alphabet e.g. 'F'
         if root_number_of_this_chord <= 11:
@@ -142,10 +145,11 @@ class Piano:
         # root_note_name = root_note_name[0]
 
         # fill the harmony dict with current data every cycle and emit
-        # todo this could be replaced by changing the propgression dict so as not to replicate shape name
-        self.harmony_dict.chord_name = root_note_name + current_progression_pos[2]
-
-
+        self.harmony_dict.chord_name = root_note_name + current_progression_pos[1]
+        self.harmony_dict.chord_shape = current_progression_pos[1]
+        # print('dict current_progression_pos[1]', current_progression_pos[1])
+        self.harmony_dict.chord_shape_list = harmony.chord_shapes.get(current_progression_pos[1])
+        # print('dict self.chord_shape_list', self.harmony_dict.chord_shape_list)
         self.harmony_dict.prog_pos = current_progression_pos
         self.harmony_dict.root_number = root_number_of_this_chord
         self.harmony_dict.root_name = root_note_name

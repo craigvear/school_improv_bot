@@ -11,9 +11,9 @@ class Notes:
 
         self.note_alphabet = harmony.note_alphabet
 
-        self.major_key_chord_shapes = harmony.major_key_chord_shapes
-
-        self.lyd_chord_shapes = harmony.lyd_chord_shapes
+        # self.major_key_chord_shapes = harmony.major_key_chord_shapes
+        self.chord_shapes = harmony.chord_shapes
+        # self.lyd_chord_shapes = harmony.lyd_chord_shapes
 
         self.master_key = config.master_key  # which is C on the note alphabet
 
@@ -24,37 +24,55 @@ class Notes:
         # transposition
         self.transposition = config.transposition
 
+        self.progression = config.harmonic_prog
+
     def which_note(self, harmony_dict, num_of_notes=1):
         """calcs a note from current harmony matrix.
         this function calcs the harmonic chord tones"""
 
         # bpm = config.bpm
         self.chord_name = harmony_dict.chord_name
+        self.chord_shape = harmony_dict.chord_shape
+        self.chord_shape_list = harmony_dict.chord_shape_list
         self.note = harmony_dict.note
         bar = harmony_dict.bar
         self.prog_pos = harmony_dict.prog_pos
         self.root_number = harmony_dict.root_number
         self.root_name = harmony_dict.root_name
 
-        print("here", self.prog_pos, self.chord_name, self.note, self.root_number, self.root_name)
+        # print(self.prog_pos, self.chord_name, self.note, self.root_number, self.root_name)
+
+        print('self.chord_shape_list', self.chord_shape_list)
 
         # 2 which harmonic set - major of lydian
         # todo - build this to include Russell's scales
         #  & build complexity vs duration
         if getrandbits(1) == 1:
+            gear = 1
             # lydian chord shapes
-            chord_shapes = self.lyd_chord_shapes
+            # chord_shapes = self.lyd_chord_shapes
             # print("lydian shapes")
         else:
             # major chord shapes
-            chord_shapes = self.major_key_chord_shapes
+            gear = 0
+
+            # chord_shapes = self.major_key_chord_shapes
             # print("major shapes")
 
 
         # 3 get its shape of chordtones from chord shapes dict
         # e.g."2": [(0, 15), (3, 20), (7, 5), (10, 15), (2, 15), (5, 20), (9, 10)]
-        this_chord_array = chord_shapes.get(self.prog_pos[0])
+
+
+        # this_chord_dict = self.chord_shapes.get(self.chord_shape)
+
+        # print('this chord shape', this_chord_dict)
+
+        # this_chord_dict = harmony.progression.get(self.progression)
+
+        this_chord_array = self.chord_shape_list[gear]
         # print('this chord shape is', this_chord_array)
+        print("chord dict", this_chord_array)
 
         # 4 generate a note from this shape using weightings
         chord_note = self.get_note(this_chord_array, num_of_notes)
@@ -76,8 +94,6 @@ class Notes:
 
         # setup list for returning note values
         chord_note = []
-
-        # Todo: transposition for different instrument tunings HERE
 
         # # add the scale to the harmony dict for GUI
         # scale_list = []

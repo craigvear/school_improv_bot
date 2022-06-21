@@ -7,7 +7,13 @@ and harmonic decision made by the AI"""
 class Harmony:
     """Current harmony data"""
 
+    chord_shape_list: list
+    """current chord shape dict"""
+
     chord_name: str = "none"
+    """current chord name"""
+
+    chord_shape: str = "none"
     """current chord name"""
 
     note: str = "none"
@@ -79,7 +85,7 @@ chord_shapes = {"Maj7": [[(0, 20), (4, 40), (7, 10), (11, 30)],
 # list the name and note alphabet position for each progression
 # format: chord shape, note alphabet for root, description
 # todo change to root of chord (from tonic); shape (e.g Maj7), slash bass note (from root??), modal shift??
-progression = {"2511": [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("1", 0, "Maj7")],
+old_progression = {"2511": [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("1", 0, "Maj7")],
                "1625": [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")],
                "3625": [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")],
                "1362": [("1", 0, "Maj7"), ("3", 4, "Dom7"), ("6", 9, "Dom7"), ("2", 2, "min7")],
@@ -88,7 +94,7 @@ progression = {"2511": [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("
                }
 # format = name of progression (key): [(root of chord), chord shape, bass substitute,
 # advanced harmony scales for each gear
-new_progression = {"2511": [(2, "min7", None, [None, None]),
+progression = {"2511": [(2, "min7", None, [None, None]),
                             (7, "Dom9", None, [None, None]),
                             (0, "Maj7", None, [None, None]),
                             (0, "Maj7", None, [None, None])
@@ -104,10 +110,10 @@ new_progression = {"2511": [(2, "min7", None, [None, None]),
                             (0, "min7", None, [None, None])
                             ],
                    "all of me": [(0, "Maj7", None, [(0, "maj"), (0, "maj")]),
-                                 (4, "Dom7", None, [None, None]),
-                                 (9, "Dom7", None, [None, None]),
+                                 (4, "Dom9", None, [None, None]),
+                                 (9, "Dom9", None, [None, None]),
                                  (2, "min7", None, [None, None]),
-                                 (4, "Dom7", None, [None, None]),
+                                 (4, "Dom9", None, [None, None]),
                                  (9, "min7", None, [None, None]),
                                  (2, "min7", None, [None, None]),
                                  (7, "Dom9", None, [None, None])
