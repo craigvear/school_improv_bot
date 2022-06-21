@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import config
 
 """a dataclass containing all the harmonic language
 and harmonic decision made by the AI"""
@@ -20,14 +19,14 @@ class Harmony:
     prog_pos: int = 0
     """position in harmonic progression"""
 
-    root_name: str = "none"
+    root_name: str = "c"
     """root name of current chord in harmonic progression"""
 
-    root_number: str = "none"
+    root_number: int = 3
     """number of the root in relation to note alphabet"""
 
 
-# alphabet of tuples (fluidsynth note name, brown note name)
+# alphabet of tuples (fluidsynth note name, Neoscore note name)
 note_alphabet = [("A", "a"), ("Bb", "bf"), ("B", "b"),
                  ("C", "c"), ("C#", "cs"), ("D", "d"),
                  ("Eb", "ef"), ("E", "e"), ("F", "f"),

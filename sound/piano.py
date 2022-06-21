@@ -42,7 +42,6 @@ class Piano:
 
         # get progression from harmony dataclass
         self.progression = harmony.progression[harmonic_prog]
-        # print(self.progression)
 
         self.master_key = config.master_key  # which is C on the note alphabet
         master_key_name = self.note_alphabet[3]
@@ -64,11 +63,13 @@ class Piano:
         # start of a played not queue to
         self.played_note = 0
 
-        # % factor if a note event is played or not
-        self.note_played_or_not = 0.5
+        # get temperature
+        self.temperature = config.temperature
 
-        # state BPM
-        bpm = config.bpm
+        # % factor if a note event is played or not
+        self.note_played_or_not = 1 * self.temperature
+
+        # state time sig
         self.time_sig = config.time_sig
 
         # state how many sub divides to a beat. 4=16ths, 12 = semi trips
