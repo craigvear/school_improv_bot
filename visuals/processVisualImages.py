@@ -21,6 +21,9 @@ class ProcessVisuals:
                              "image")
                              # "complex")
 
+        # todo - add complex (breathe) type image
+        # todo - add a note (from pre-mades) into centre of each ellipse, rect
+
         # instantiate image generator class
         self.image_gen = ImageGen()
 
@@ -105,7 +108,7 @@ class ProcessVisuals:
                 else:
                     self.queue[i]["lifespan"] = lifespan
                     direction = self.queue[i]["direction"]
-                    move_factor = random.randrange(1, 10)
+                    move_factor = random.randrange(1, 20)
                     if direction == 0:
                         self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - 10
                     elif direction == 1:
