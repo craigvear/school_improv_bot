@@ -14,10 +14,10 @@ from operator import itemgetter
 from threading import Timer
 
 # import project modules
-from sound import harmony
+from sound import harmony_data
 from sound.notes import Notes
 import config
-from sound.harmony import Harmony
+from sound.harmony_data import Harmony
 
 PLATFORM = platform.machine()
 
@@ -25,23 +25,23 @@ class Piano:
     def __init__(self, harmony_signal):
 
         self.harmony_signal = harmony_signal
-        SF2 = "media/soundfontGM.sf2"
+        SF2 = "sound/soundfontGM.sf2"
         self.OCTAVES = 5  # number of octaves to show
         self.LOWEST = 3  # lowest octave to show
 
-        self.note_alphabet = harmony.note_alphabet
+        self.note_alphabet = harmony_data.note_alphabet
 
-        self.major_key_chord_shapes = harmony.major_key_chord_shapes
+        self.major_key_chord_shapes = harmony_data.major_key_chord_shapes
 
         # same as above but with lyd + whole tone extensions to core triad chord tones
         # e.g. 9th, #11, 13
-        self.lyd_chord_shapes = harmony.lyd_chord_shapes
+        self.lyd_chord_shapes = harmony_data.lyd_chord_shapes
 
         # which progression
         harmonic_prog = config.harmonic_prog
 
         # get progression from harmony dataclass
-        self.progression = harmony.progression[harmonic_prog]
+        self.progression = harmony_data.progression[harmonic_prog]
         # print("PROGRESSION", self.progression)
 
         self.master_key = config.master_key  # which is C on the note alphabet
@@ -148,7 +148,7 @@ class Piano:
         self.harmony_dict.chord_name = root_note_name + current_progression_pos[1]
         self.harmony_dict.chord_shape = current_progression_pos[1]
         # print('dict current_progression_pos[1]', current_progression_pos[1])
-        self.harmony_dict.chord_shape_list = harmony.chord_shapes.get(current_progression_pos[1])
+        self.harmony_dict.chord_shape_list = harmony_data.chord_shapes.get(current_progression_pos[1])
         # print('dict self.chord_shape_list', self.harmony_dict.chord_shape_list)
         self.harmony_dict.prog_pos = current_progression_pos
         self.harmony_dict.root_number = root_number_of_this_chord

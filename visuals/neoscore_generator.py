@@ -7,7 +7,7 @@ from operator import itemgetter
 # import project modules
 from sound.notes import Notes
 from neoscore.common import *
-import sound.harmony as harmony
+import sound.harmony_data as harmony
 import config
 
 

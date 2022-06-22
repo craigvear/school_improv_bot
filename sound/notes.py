@@ -1,4 +1,4 @@
-from sound import harmony
+from sound import harmony_data
 import config
 
 from random import getrandbits, shuffle, random
@@ -9,10 +9,10 @@ class Notes:
         self.OCTAVES = 4  # number of octaves to show
         self.LOWEST = 5  # lowest octave to show
 
-        self.note_alphabet = harmony.note_alphabet
+        self.note_alphabet = harmony_data.note_alphabet
 
         # self.major_key_chord_shapes = harmony.major_key_chord_shapes
-        self.chord_shapes = harmony.chord_shapes
+        self.chord_shapes = harmony_data.chord_shapes
         # self.lyd_chord_shapes = harmony.lyd_chord_shapes
 
         self.master_key = config.master_key  # which is C on the note alphabet
@@ -134,9 +134,9 @@ class Notes:
 
                     note_num = self.root_number + note_pos + self.transposition
                     if note_num <= 11:
-                        chord_note.append(harmony.note_alphabet[note_num])
+                        chord_note.append(harmony_data.note_alphabet[note_num])
                     else:
-                        chord_note.append(harmony.note_alphabet[note_num - 12])
+                        chord_note.append(harmony_data.note_alphabet[note_num - 12])
 
                     # # extract the note name for fluidsynth
                     # root_note_name = root_note_name[0]

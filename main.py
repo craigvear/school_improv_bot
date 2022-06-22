@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import (QApplication, QWidget)
 from nebula.GotAISignal import GotAISignal
 from nebula.GotMusicSignal import GotMusicSignal
 from visuals.processVisualImages import ProcessVisuals
-from sound.harmony import Harmony
+from sound.harmony_data import Harmony
 from nebula.nebula import NebulaDataEngine
 from sound.audio_control import AudioEngine
 import config

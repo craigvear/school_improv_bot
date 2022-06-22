@@ -107,25 +107,25 @@ class ProcessVisuals:
                     direction = self.queue[i]["direction"]
                     move_factor = random.randrange(1, 10)
                     if direction == 0:
-                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - 1
+                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - 10
                     elif direction == 1:
-                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - 1
-                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] + 1
+                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - 10
+                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] + 10
                     elif direction == 2:
-                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] + 1
+                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] + 10
                     elif direction == 3:
-                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] + 1
-                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] + 1
+                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] + 10
+                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] + 10
                     elif direction == 4:
-                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] + 1
+                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] + 10
                     elif direction == 5:
-                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] + 1
-                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] - 1
+                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] + 10
+                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] - 10
                     elif direction == 6:
-                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] - 1
+                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] - 10
                     elif direction == 7:
-                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - 1
-                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] - 1
+                        self.queue[i]["position"]["y"] = self.queue[i]["position"]["y"] - 10
+                        self.queue[i]["position"]["x"] = self.queue[i]["position"]["x"] - 10
                     elif direction >= 10:
                         if bool(random.getrandbits(1)):
                             if bool(random.getrandbits(1)):
