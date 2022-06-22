@@ -158,6 +158,8 @@ class Piano:
         # on bar change play a bass note
         if current_bar != self._last_bar:
             # package the note to a dict
+            # todo - move this to def play_bass & get bass substitute from progression
+
             bass = dict(note_name=root_note_name,
                         octave=self.bass_octave,
                         endtime=time() + 1,
@@ -168,6 +170,9 @@ class Piano:
                 self.incoming_note_queue.append(bass)
 
         self._last_bar = current_bar
+
+    def play_bass(self):
+        pass
 
     def calc_bar(self):
         self.tick += 1
