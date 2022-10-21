@@ -49,7 +49,6 @@ class Piano:
 
         # piano range vars
         self.octave = 4
-        self.channel = 1
 
         # chronos vars
         self.bass_octave = 1
@@ -60,6 +59,12 @@ class Piano:
             fluidsynth.init(SF2)
         else:
             fluidsynth.init(SF2, "alsa")
+
+        # instrument 0 = piano, 1 = bass
+        fluidsynth.set_instrument(0, 1)
+        fluidsynth.set_instrument(1, 35)
+        self.channel_piano = 0
+        self.channel_bass = 1
 
         # start of a played not queue to
         self.played_note = 0
@@ -162,6 +167,7 @@ class Piano:
 
             bass = dict(note_name=root_note_name,
                         octave=self.bass_octave,
+                        channel=self.channel_bass,
                         endtime=time() + 1,
                         dynamic=40)
 
@@ -200,12 +206,13 @@ class Piano:
         # print('incoming note queue', self.incoming_note_queue)
         if len(self.incoming_note_queue):
             for i, event in enumerate(self.incoming_note_queue):
-                note_name, octave, dynamic = itemgetter("note_name",
+                note_name, octave, channel, dynamic = itemgetter("note_name",
                                                         "octave",
+                                                                 "channel",
                                                         "dynamic")(event)
 
                 # play note
-                self.play_note(Note(note_name, octave), dynamic)
+                self.play_note(Note(note_name, octave), channel, dynamic)
 
                 # delete from incoming queue
                 del self.incoming_note_queue[i]
@@ -215,14 +222,15 @@ class Piano:
 
         if len(self.played_note_queue):
             for i, event in enumerate(self.played_note_queue):
-                lifespan, note_name, octave = itemgetter("endtime",
+                lifespan, note_name, channel, octave = itemgetter("endtime",
                                                                   "note_name",
+                                                                  "channel",
                                                                   "octave")(event)
 
                 # if lifespan (endtime) is less than current time
                 if lifespan <= time():
                     # stop note
-                    self.stop_note(Note(note_name, octave))
+                    self.stop_note(Note(note_name, octave), channel)
 
                     # delete from played queue
                     del self.played_note_queue[i]
@@ -232,16 +240,16 @@ class Piano:
         self.harmony_signal.harmony_str.emit(self.harmony_dict)
         # print('//////////////////                   EMITTING and making sound')
 
-    def play_note(self, note_to_play, dynamic):
+    def play_note(self, note_to_play, dynamic, channel):
         """play_note determines the coordinates of a note on the keyboard image
         and sends a request to play the note to the fluidsynth server"""
 
         # dynamic = 90 + randrange(1, 30)
-        fluidsynth.play_Note(note=note_to_play, channel=self.channel, velocity=dynamic)
-        print(f'\t\t\t\t\tplaying {note_to_play}, channel {self.channel}, velocity {dynamic}')
+        fluidsynth.play_Note(note=note_to_play, channel=channel, velocity=dynamic)
+        print(f'\t\t\t\t\tplaying {note_to_play}, channel {channel}, velocity {dynamic}')
 
-    def stop_note(self, note_to_stop):
-        fluidsynth.stop_Note(note_to_stop, self.channel)
+    def stop_note(self, note_to_stop, channel):
+        fluidsynth.stop_Note(note_to_stop, channel)
 
     def which_octave(self):
         """determines the octave to be played by the piano
@@ -303,6 +311,7 @@ class Piano:
             # package into dict for queue
             note_to_play = dict(note_name=chord_note,
                                 octave=self.octave,
+                                channel=self.channel_piano,
                                 endtime=time() + duration,
                                 dynamic=dynamic)
 
