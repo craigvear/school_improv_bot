@@ -298,6 +298,7 @@ class Piano:
             # create note to add event to queue
             print('play')
 
+
             # todo - 2 or 3 notes every now and then?
             # what is the current chord in the harmonic prog?
             chord_note = self.notes.which_note(self.harmony_dict)
@@ -311,11 +312,11 @@ class Piano:
             self.which_octave()
 
             # random generate a dynamic
-            dynamic = 90 + randrange(1, 30)
+            dynamic = 70 + randrange(1, 50)
 
             # todo - increase/ decrease duration using temperature
-            # variable duration = nebula current rhthm rate * random factor / temperature
-            duration = (rhythm_rate * (randrange(10, 30) / 20)) / self.temperature
+            # variable duration = nebula current rhythm rate * random factor / temperature
+            duration = (rhythm_rate * (randrange(10, 50) / 20)) / self.temperature
 
             # package into dict for queue
             note_to_play = dict(note_name=chord_note,

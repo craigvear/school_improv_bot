@@ -1,6 +1,7 @@
 from mingus.containers import *
 from mingus.midi import fluidsynth
 from time import sleep
+from random import randrange
 
 SF2 = "sound/soundfontGM.sf2"
 fluidsynth.init(SF2)
@@ -14,22 +15,37 @@ fluidsynth.set_instrument(1, 35)
 
 
 
-def play_note(note_to_play):
-    """play_note determines the coordinates of a note on the keyboard image
-    and sends a request to play the note to the fluidsynth server"""
+def play_note(note_to_play_list):
+
+
 
     # dynamic = 90 + randrange(1, 30)
-    fluidsynth.play_Note(note=note_to_play)
+    fluidsynth.play_NoteContainer(nc=note_to_play_list)
 
 
 # play_note(Note(note_name, octave), dynamic)
 
 
-play_note(Note(name="E",
+# for n in range(10):
+#     rnd_n
+
+
+
+
+play_note([Note(name="C",
+               octave=4,
+               channel=0,
+               velocity=127),
+           Note(name="E",
+               octave=4,
+               channel=0,
+               velocity=127),
+           Note(name="G",
                octave=4,
                channel=0,
                velocity=127)
+          ]
           )
 sleep(1)
-play_note(26, 1, 127)
-sleep(1)
+# play_note(26, 1, 127)
+# sleep(1)
