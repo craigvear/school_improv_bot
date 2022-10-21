@@ -62,7 +62,7 @@ class Piano:
 
         # instrument 0 = piano, 1 = bass
         fluidsynth.set_instrument(0, 1)
-        fluidsynth.set_instrument(1, 35)
+        fluidsynth.set_instrument(1, 32)
         self.channel_piano = 0
         self.channel_bass = 1
 
@@ -169,7 +169,9 @@ class Piano:
                         octave=self.bass_octave,
                         channel=self.channel_bass,
                         endtime=time() + 1,
-                        dynamic=40)
+                        dynamic=100)
+
+            print('bass = ', bass)
 
             # and send to queue if active
             if self.bass_line:
@@ -212,7 +214,7 @@ class Piano:
                                                         "dynamic")(event)
 
                 # play note
-                self.play_note(Note(note_name, octave), channel, dynamic)
+                self.play_note(note_name, octave, channel, dynamic)
 
                 # delete from incoming queue
                 del self.incoming_note_queue[i]
@@ -230,7 +232,7 @@ class Piano:
                 # if lifespan (endtime) is less than current time
                 if lifespan <= time():
                     # stop note
-                    self.stop_note(Note(note_name, octave), channel)
+                    self.stop_note(note_name, octave, channel)
 
                     # delete from played queue
                     del self.played_note_queue[i]
@@ -240,16 +242,23 @@ class Piano:
         self.harmony_signal.harmony_str.emit(self.harmony_dict)
         # print('//////////////////                   EMITTING and making sound')
 
-    def play_note(self, note_to_play, dynamic, channel):
+    def play_note(self, note_to_play, octave, channel, dynamic):
         """play_note determines the coordinates of a note on the keyboard image
         and sends a request to play the note to the fluidsynth server"""
 
         # dynamic = 90 + randrange(1, 30)
-        fluidsynth.play_Note(note=note_to_play, channel=channel, velocity=dynamic)
+        fluidsynth.play_Note(Note(name=note_to_play,
+                                  octave=octave,
+                                  channel=channel,
+                                  velocity=dynamic)
+                             )
         print(f'\t\t\t\t\tplaying {note_to_play}, channel {channel}, velocity {dynamic}')
 
-    def stop_note(self, note_to_stop, channel):
-        fluidsynth.stop_Note(note_to_stop, channel)
+    def stop_note(self, note_to_stop, octave, channel):
+        fluidsynth.stop_Note(Note(name=note_to_stop,
+                                  octave=octave,
+                                  channel=channel)
+                             )
 
     def which_octave(self):
         """determines the octave to be played by the piano
@@ -314,6 +323,8 @@ class Piano:
                                 channel=self.channel_piano,
                                 endtime=time() + duration,
                                 dynamic=dynamic)
+
+            print('piano = ', note_to_play)
 
             self.incoming_note_queue.append(note_to_play)
 
