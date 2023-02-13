@@ -16,7 +16,7 @@ from nebula.GotAISignal import GotAISignal
 from nebula.GotMusicSignal import GotMusicSignal
 from visuals.processVisualImages import ProcessVisuals
 from sound.harmony_data import Harmony
-from nebula.nebula import NebulaDataEngine
+from nantucket.nantucket import NantucketAI
 from sound.audio_control import AudioEngine
 import config
 
@@ -58,10 +58,13 @@ class MyWidget(QWidget):
         # start the ball rolling with all data generation and parsing
         # self._ai_data_engine = AIData(ai_signal, harmony_signal)
         # instantiate the Nebula server
-        nebula_engine = NebulaDataEngine(ai_signal, harmony_signal, speed=1)
+        ai_engine = NantucketAI(ai_signal,
+                                harmony_signal,
+                                speed=1
+                                )
 
         # instantiate the audio engine and pass AI/nebula engine
-        audio_engine = AudioEngine(nebula_engine)
+        audio_engine = AudioEngine(ai_engine)
 
         # instantiate the visual processing object
         self.process_AI_signal = ProcessVisuals()

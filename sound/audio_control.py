@@ -6,8 +6,9 @@ controls microphone stream"""
 import pyaudio
 import numpy as np
 import math
-from sound.audio_data import LiveAudioData
+# from sound.audio_data import LiveAudioData
 from threading import Thread
+from random import random
 
 #  import local methods
 from nantucket.hivemind import DataBorg
@@ -38,7 +39,10 @@ class AudioEngine:
         #                        'midinote': ("z", 0)
         #                        }
 
-        self.send_data_dict = LiveAudioData()
+        # self.send_data_dict = LiveAudioData()
+
+        # plug into the hive mind data borg
+        self.hivemind = DataBorg()
 
         self.notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 
@@ -70,12 +74,12 @@ class AudioEngine:
                 midinote = self.freq_to_note(freqPeak)
 
                 # Shows the peak frequency and the bars for the amplitude
-                # print(f"peak frequency: {freqPeak} Hz, mididnote {midinote}:\t {bars}")
+                print(f"peak frequency: {freqPeak} Hz, mididnote {midinote}:\t {bars}")
 
-                self.send_data_dict.mic_level = peak # / 30000
-                self.send_data_dict.freq = freqPeak
-                self.send_data_dict.midinote = midinote
-                self.engine.parse_got_dict(self.send_data_dict)
+                self.hivemind.mic_in = peak # / 30000
+                self.hivemind.freq = freqPeak
+                self.hivemind.midinote = midinote
+                # self.engine.parse_got_dict(self.send_data_dict)
 
                 # normalise it for range 0.0 - 1.0
                 normalised_peak = ((peak - 0) / (20000 - 0)) * (1 - 0) + 0

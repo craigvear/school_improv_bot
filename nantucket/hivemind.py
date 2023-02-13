@@ -42,6 +42,12 @@ class DataBorg:
             self.eda: int = 0
             """Live data from Bitalino"""
 
+            self.freq: float = 0
+            """Fundamental freq of live mic input"""
+
+            self.midinote: int = 0
+            """Converted midi note from mic_in freq"""
+
             ######################
             # Additional streams
             ######################

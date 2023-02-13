@@ -21,103 +21,14 @@ import numpy as np
 from time import sleep
 
 # install local modules
-from hivemind import DataBorg
+from nantucket.hivemind import DataBorg
 import config
+from sound.piano import Piano
 
 # import Nebula modules
-# from nantucket.ai_factory import AIFactory
+from nantucket.affect import Affect
 
-class NantucketAI:
-    def __init__(self,
-                 ai_signal_obj,
-                 harmony_signal,
-                 speed=1,
-                 ):
-        """Nantucket is the core "director" of an AI factory.
-           It generates data in response to incoming percpts
-          from human-in-the-loop interactions, and responds
-          in-the-moment to the gestural input of live data.
-          There are 4 components:
-              Nantucket: as "director" it coordinates the overall
-                  operations of the AI Factory
-              AIFactory: builds the neural nets that form the
-                  factory, coordinates data exchange,
-                  and liases with the common data dict
-              NebulaDataClass: is the central dataclass that
-                  holds and shares all the  data exchanges
-                  in the AI factory
-              Affect: receives the live percept input from
-                  the client and produces an affectual response
-                  to it's energy input, which in turn interferes
-                  with the data generation.
 
-          Args:
-              speed: general tempo/ feel of Nebula's response (0.5 ~ moderate fast, 1 ~ moderato; 2 ~ presto)"""
-
-        print('building engine server')
-
-        # Set global vars
-        self.running = True
-
-        # Build the AI factory and pass it the data dict
-        self.AI_factory = AIFactory(speed) #, hivemind)
-
-        # todo CRAIG - get these working
-        # init the EEG and EDA percepts
-        # config_object = ConfigParser()
-        # config_object.read('config.ini')
-
-        # self.BRAINBIT_CONNECTED = config.brainbit
-        #
-        # # init brainbit reader
-        # if self.BRAINBIT_CONNECTED:
-        #     self.eeg_board = BrainbitReader()
-        #     self.eeg_board.start()
-        #     first_brain_data = self.eeg_board.read()
-        #     logging.info(f'Data from brainbit = {first_brain_data}')
-        #
-        # # # init bitalino
-        # if self.BITALINO_CONNECTED:
-        #     self.eda = BITalino(BITALINO_MAC_ADDRESS)
-        #     self.eda.start(BITALINO_BAUDRATE, BITALINO_ACQ_CHANNELS)
-        #     first_eda_data = self.eda.read(10)
-        #     logging.info(f'Data from BITalino = {first_eda_data}')
-
-    def main_loop(self):
-        """Starts the server/ AI threads
-         and gets the data rolling."""
-        print('Starting the Nebula Director')
-        # declares all threads
-        t1 = Thread(target=self.AI_factory.make_data)
-        # t2 = Thread(target=self.jess_input)
-
-        # start them all
-        t1.start()
-        # t2.start()
-
-    # def jess_input(self):
-    #     while self.running:
-    #         # read data from bitalino
-    #         if self.BITALINO_CONNECTED:
-    #             eda_data = self.eda.read()
-    #             # setattr(self.hivemind, 'eda', eda_data)
-    #             self.hivemind.eda = eda_data
-    #
-    #         # read data from brainbit
-    #         if self.BRAINBIT_CONNECTED:
-    #             eeg_data = self.eeg_board.read()
-    #             # setattr(self.hivemind, 'eeg_board', eeg_data)
-    #             self.hivemind.eeg_board = eeg_data
-    #             print(eeg_data)
-    #
-    #         sleep(0.1)
-
-    def terminate(self):
-        # self.affect.quit()
-        self.AI_factory.quit()
-        # self.eeg_board.terminate()
-        # self.eda.close()
-        self.running = False
 
 class NNet:
     def __init__(self,
@@ -154,10 +65,98 @@ class NNet:
         setattr(self.hivemind, self.name, individual_val)
         logging.debug(f"NNet {self.name} in: {in_val} predicted {individual_val}")
 
-class AIFactory:
+
+class NantucketAI:
     def __init__(self,
-                 speed: float = 1,
+                 ai_signal_obj,
+                 harmony_signal,
+                 speed=1,
                  ):
+        """Nantucket is the core "director" of an AI factory.
+           It generates data in response to incoming percpts
+          from human-in-the-loop interactions, and responds
+          in-the-moment to the gestural input of live data.
+          There are 4 components:
+              Nantucket: as "director" it coordinates the overall
+                  operations of the AI Factory
+              AIFactory: builds the neural nets that form the
+                  factory, coordinates data exchange,
+                  and liases with the common data dict
+              NebulaDataClass: is the central dataclass that
+                  holds and shares all the  data exchanges
+                  in the AI factory
+              Affect: receives the live percept input from
+                  the client and produces an affectual response
+                  to it's energy input, which in turn interferes
+                  with the data generation.
+
+          Args:
+              speed: general tempo/ feel of Nebula's response (0.5 ~ moderate fast, 1 ~ moderato; 2 ~ presto)"""
+
+        print('building engine server')
+
+        # Set global vars
+        self.running = True
+
+        # Build the AI factory and pass it the data dict
+        # self.AI_factory = AIFactory(speed) #, hivemind)
+
+        # todo CRAIG - get these working
+        # init the EEG and EDA percepts
+        # config_object = ConfigParser()
+        # config_object.read('config.ini')
+
+        # self.BRAINBIT_CONNECTED = config.brainbit
+        #
+        # # init brainbit reader
+        # if self.BRAINBIT_CONNECTED:
+        #     self.eeg_board = BrainbitReader()
+        #     self.eeg_board.start()
+        #     first_brain_data = self.eeg_board.read()
+        #     logging.info(f'Data from brainbit = {first_brain_data}')
+        #
+        # # # init bitalino
+        # if self.BITALINO_CONNECTED:
+        #     self.eda = BITalino(BITALINO_MAC_ADDRESS)
+        #     self.eda.start(BITALINO_BAUDRATE, BITALINO_ACQ_CHANNELS)
+        #     first_eda_data = self.eda.read(10)
+        #     logging.info(f'Data from BITalino = {first_eda_data}')
+
+    # def main_loop(self):
+    #     """Starts the server/ AI threads
+    #      and gets the data rolling."""
+    #     print('Starting the Nebula Director')
+    #     # declares all threads
+    #     t1 = Thread(target=self.AI_factory.make_data)
+    #     # t2 = Thread(target=self.jess_input)
+    #
+    #     # start them all
+    #     t1.start()
+    #     # t2.start()
+
+    # def jess_input(self):
+    #     while self.running:
+    #         # read data from bitalino
+    #         if self.BITALINO_CONNECTED:
+    #             eda_data = self.eda.read()
+    #             # setattr(self.hivemind, 'eda', eda_data)
+    #             self.hivemind.eda = eda_data
+    #
+    #         # read data from brainbit
+    #         if self.BRAINBIT_CONNECTED:
+    #             eeg_data = self.eeg_board.read()
+    #             # setattr(self.hivemind, 'eeg_board', eeg_data)
+    #             self.hivemind.eeg_board = eeg_data
+    #             print(eeg_data)
+    #
+    #         sleep(0.1)
+
+
+
+# class AIFactory:
+#     def __init__(self,
+#                  speed: float = 1,
+#                  ):
         """Builds the individual neural nets that constitute the AI factory.
         This will need modifying if and when a new AI factory design is implemented.
         NB - the list of netnames will also need updating"""
@@ -172,35 +171,35 @@ class AIFactory:
         # instantiate nets as objects and make models
         print('NNet1 - MoveRNN initialization')
         self.move_rnn = NNet(name="move_rnn",
-                             model='models/EMR-full-sept-2021_RNN_skeleton_data.nose.x.h5',
+                             model='nantucket/models/EMR-full-sept-2021_RNN_skeleton_data.nose.x.h5',
                              nnet_feed='move_rnn',
                              live_feed=None,
                              )
 
         print('NNet2 - AffectRNN initialization')
         self.affect_rnn = NNet(name="affect_rnn",
-                             model='models/EMR-full-sept-2021_conv2D_move-affect.h5',
+                             model='nantucket/models/EMR-full-sept-2021_conv2D_move-affect.h5',
                              nnet_feed='affect_rnn',
                              live_feed=None,
                              )
 
         print('NNet3- MoveAffectCONV2 initialization')
         self.move_affect_conv2 = NNet(name="move_affect_conv2",
-                             model='models/EMR-full-sept-2021_conv2D_move-affect.h5',
+                             model='nantucket/models/EMR-full-sept-2021_conv2D_move-affect.h5',
                              nnet_feed='move_affect_conv2',
                              live_feed=None,
                              )
 
         print('NNet4 - AffectMoveCONV2 initialization')
         self.affect_move_conv2 = NNet(name="affect_move_conv2",
-                                      model='models/EMR-full-sept-2021_conv2D_affect-move.h5',
+                                      model='nantucket/models/EMR-full-sept-2021_conv2D_affect-move.h5',
                                       nnet_feed='affect_rnn',
                                       live_feed=None,
                                       )
 
         print('NNet5 - self_awareness initialization')
         self.self_awareness = NNet(name="self_awareness",
-                             model='models/EMR-full-sept-2021_conv2D_move-affect.h5',
+                             model='nantucket/models/EMR-full-sept-2021_conv2D_move-affect.h5',
                              nnet_feed='master_stream',
                              live_feed=None,
                              )
@@ -211,6 +210,25 @@ class AIFactory:
                         self.affect_move_conv2,
                         self.self_awareness
                         ]
+
+        # own the signal object for emission
+        self.ai_signal = ai_signal_obj
+        self.harmony_signal = harmony_signal
+
+        # own the sound bot object and send harmony emitter
+        # self.soundbot = Bot(self.harmony_signal)
+        self.piano = Piano(self.harmony_signal)
+
+        self.affect = Affect(self.ai_signal,
+                             self.harmony_signal)
+
+        # todo: start threads here?
+        # declares all threads
+        t1 = Thread(target=self.make_data)
+        t2 = Thread(target=self.affect.gesture_manager)
+
+        t1.start()
+        t2.start()
 
     def make_data(self):
         """Makes a prediction for each NNet in the AI factory.
@@ -265,10 +283,18 @@ class AIFactory:
         """Quit the loop like a grown up"""
         self.running = False
 
+
+    def terminate(self):
+        # self.affect.quit()
+        self.AI_factory.quit()
+        # self.eeg_board.terminate()
+        # self.eda.close()
+        self.running = False
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     from hivemind import DataBorg
-    test = AIFactory()
+    # test = AIFactory()
     print(test.hivemind.move_rnn)
     test.make_data()
     print(test.hivemind.move_rnn)
