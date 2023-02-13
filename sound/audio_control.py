@@ -9,10 +9,13 @@ import math
 from sound.audio_data import LiveAudioData
 from threading import Thread
 
+#  import local methods
+from nantucket.hivemind import DataBorg
+
 
 class AudioEngine:
     """controls audio listening"""
-    def __init__(self, ai_engine: object):
+    def __init__(self, ai_engine):
         self.running = True
         self.connected = False
         self.logging = False
@@ -73,6 +76,21 @@ class AudioEngine:
                 self.send_data_dict.freq = freqPeak
                 self.send_data_dict.midinote = midinote
                 self.engine.parse_got_dict(self.send_data_dict)
+
+                # normalise it for range 0.0 - 1.0
+                normalised_peak = ((peak - 0) / (20000 - 0)) * (1 - 0) + 0
+                if normalised_peak > 1.0:
+                    normalised_peak = 1.0
+
+                # put normalised amplitude into Nebula's dictionary for use
+                self.hivemind.mic_in = normalised_peak
+
+                # if loud sound then 63% affect gesture manager
+                if normalised_peak > 0.8:
+                    if random() > 0.36:
+                        self.hivemind.interrupt_bang = False
+                        self.hivemind.randomiser()
+                        print("-----------------------------INTERRUPT----------------------------")
 
     def freq_to_note(self, freq):
 
