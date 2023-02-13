@@ -11,7 +11,7 @@ from sound.piano import Piano
 import config
 
 class Affect:
-    """Feels the music and  datastreams and
+    """Feels the music and datastreams and
     """
 
     def __init__(self,
@@ -63,6 +63,8 @@ class Affect:
         # names for affect listening
         stream_list = config.stream_list
         stream_list_len = len(stream_list)
+        # little val for emission control avoiding repeated vals
+        self.old_val = 0
 
         while self.running:
             # flag for breaking a phrase from big affect signal
@@ -73,15 +75,12 @@ class Affect:
             #############################
             # todo CRAIG calls the robot arm to do different modes
             # todo CRAIG global speed and self-awareness stretch
-            # # calc rhythmic intensity based on self-awareness factor & global speed
-            # intensity = getattr(self.hivemind, 'self_awareness')
-            # logging.debug(f'////////////////////////   intensity =  {intensity}')
+            # calc rhythmic intensity based on self-awareness factor & global speed
+            intensity = self.hivemind.self_awareness
+            logging.debug(f'////////////////////////   intensity =  {intensity}')
 
             phrase_length = (randrange(300, 800) / 100) # + self.global_speed
             phrase_loop_end = time() + phrase_length
-
-            # define robot mode
-            self.hivemind.robot_mode = randrange(5)
 
             logging.debug('\t\t\t\t\t\t\t\t=========AFFECT - Daddy cycle started ===========')
             logging.debug(f"                 interrupt_listener: started! Duration =  {phrase_length} seconds")
@@ -94,12 +93,17 @@ class Affect:
                     print("-----------------------------INTERRUPT----------------------------")
                     break
 
-                # todo - CRAIG sort this out.!!
+                # todo - CRAIG sort this out. think Intensity needs to be inversed!!
                 # generate rhythm rate here
-                rhythm_rate = (randrange(10,
+                self.rhythm_rate = (randrange(10,
                                          80) / 100) #* self.global_speed
-                self.hivemind.rhythm_rate = rhythm_rate
-                logging.info(f'////////////////////////   rhythm rate = {rhythm_rate}')
+
+
+                # rhythm_rate = self.rhythm_rate * intensity #) / self.global_speed
+                #
+                # # self.rhythm_rate = self.rhythm_rate / self.global_speed
+                self.hivemind.rhythm_rate = self.rhythm_rate
+                logging.info(f'////////////////////////   rhythm rate = {self.self.rhythm_rate}')
                 logging.debug('\t\t\t\t\t\t\t\t=========Hello - child cycle 1 started ===========')
 
                 ##################################################################
@@ -129,12 +133,14 @@ class Affect:
                     # make the master output the current value of the affect stream
                     # 1. go get the current value from dict
                     thought_train = getattr(self.hivemind, rnd_stream)
-                    # thought_train = self.hivemind.rnd_stream
                     logging.info(f'######################           Affect stream output {rnd_stream} == {thought_train}')
 
                     # 2. send to Master Output
                     # setattr(self.hivemind, 'master_stream', thought_train)
                     self.hivemind.master_stream = thought_train
+
+                    # emit data
+                    # self.emitter(thought_train)
                     logging.info(f'\t\t ==============  thought_train output = {thought_train}')
 
                     # 3. modify speed and accel through self awareness
@@ -142,7 +148,6 @@ class Affect:
                     # calc rhythmic intensity based on self-awareness factor & global speed
                     self_awareness = getattr(self.hivemind, 'self_awareness')
                     logging.debug(f'////////////////////////   self_awareness =  {self_awareness}')
-
 
                     ######################################
                     #
@@ -164,7 +169,6 @@ class Affect:
                         # C - emit
                         self.emitter(thought_train)
 
-
                         # D- break out of this loop, and next (cos of flag)
                         break
 
@@ -185,74 +189,90 @@ class Affect:
                         logging.info('interrupt LOW -----------')
 
                     # and wait for a cycle
-                    sleep(rhythm_rate)
+                    sleep(self.rhythm_rate)
 
-        logging.info('quitting dobot director thread')
+        logging.info('quitting gesture manager thread')
 
-    def mid_energy_response(self, peak):
-        (x, y, z, r, j1, j2, j3, j4) = self.drawbot.pose()
-        logging.debug(f'Current position: x:{x} y:{y} z:{z} j1:{j1} j2:{j2} j3:{j3} j4:{j4}')
 
-        """between 2 and 8 make shapes in situ"""
-        # randomly choose from the following c hoices
-        randchoice = randrange(6)
-        logging.debug(f'randchoice == {randchoice}')
+    def emitter(self, incoming_emission):
+        if incoming_emission != self.old_val:
+            emission_dict = {}
+            emission_dict["emission_data"] = incoming_emission
+            emission_dict["rhythm_rate"] = self.rhythm_rate
 
-        # 0= line to somewhere
-        if randchoice == 0:
-            self.drawbot.bot_move_to(x + self.rnd(peak),
-                                 y + self.rnd(peak),
-                                 z, 0,
-                                 False)
-            logging.info('Emission 3-8: draw line')
+            self.ai_signal.ai_str.emit(str(emission_dict))
+            print('//////////////////                   EMITTING and making sound')
 
-        # 1 = messy squiggles
-        if randchoice == 1:
-            squiggle_list = []
-            for n in range(randrange(2, 4)):
-                squiggle_list.append((randrange(-5, 5) / 5,
-                                      randrange(-5, 5) / 5,
-                                      randrange(-5, 5) / 5)
-                                     )
-            self.drawbot.squiggle(squiggle_list)
-            logging.info('Emission 3-8: small squiggle')
+            # send make sound signal to piano
+            self.piano.note_to_play(emission_dict)
 
-        # 2 = dot & line
-        elif randchoice == 2:
-            self.drawbot.dot()
-            self.drawbot.bot_move_to(x + self.rnd(peak),
-                                 y + self.rnd(peak),
-                                 z, 0,
-                                 False)
-            logging.info('Emission 3-8: dot')
+        self.old_val = incoming_emission
 
-        # 3 = note head
-        elif randchoice == 3:
-            note_size = randrange(5)
-            # note_shape = randrange(20)
-            self.drawbot.note_head(size=note_size)
-            logging.info('Emission 3-8: note head')
 
-        # 4 = note head and line
-        elif randchoice == 4:
-            note_size = randrange(1, 10)
-            self.drawbot.note_head(size=note_size)
-            self.drawbot.bot_move_to(x + self.rnd(peak),
-                                 y + self.rnd(peak),
-                                 z, 0,
-                                 False)
-            logging.info('Emission 3-8: note head and line')
-
-        # 5 = dot
-        elif randchoice == 5:
-            self.drawbot.dot()
-            # self.move_y_random()
-            logging.info('Emission 3-8: dot and line')
-
-    def high_energy_response(self):
-        """move to a random x, y position"""
-        self.drawbot.clear_commands()
-        self.drawbot.move_y_random()
+    # def mid_energy_response(self, peak):
+    #     (x, y, z, r, j1, j2, j3, j4) = self.drawbot.pose()
+    #     logging.debug(f'Current position: x:{x} y:{y} z:{z} j1:{j1} j2:{j2} j3:{j3} j4:{j4}')
+    #
+    #     """between 2 and 8 make shapes in situ"""
+    #     # randomly choose from the following c hoices
+    #     randchoice = randrange(6)
+    #     logging.debug(f'randchoice == {randchoice}')
+    #
+    #     # 0= line to somewhere
+    #     if randchoice == 0:
+    #         self.drawbot.bot_move_to(x + self.rnd(peak),
+    #                              y + self.rnd(peak),
+    #                              z, 0,
+    #                              False)
+    #         logging.info('Emission 3-8: draw line')
+    #
+    #     # 1 = messy squiggles
+    #     if randchoice == 1:
+    #         squiggle_list = []
+    #         for n in range(randrange(2, 4)):
+    #             squiggle_list.append((randrange(-5, 5) / 5,
+    #                                   randrange(-5, 5) / 5,
+    #                                   randrange(-5, 5) / 5)
+    #                                  )
+    #         self.drawbot.squiggle(squiggle_list)
+    #         logging.info('Emission 3-8: small squiggle')
+    #
+    #     # 2 = dot & line
+    #     elif randchoice == 2:
+    #         self.drawbot.dot()
+    #         self.drawbot.bot_move_to(x + self.rnd(peak),
+    #                              y + self.rnd(peak),
+    #                              z, 0,
+    #                              False)
+    #         logging.info('Emission 3-8: dot')
+    #
+    #     # 3 = note head
+    #     elif randchoice == 3:
+    #         note_size = randrange(5)
+    #         # note_shape = randrange(20)
+    #         self.drawbot.note_head(size=note_size)
+    #         logging.info('Emission 3-8: note head')
+    #
+    #     # 4 = note head and line
+    #     elif randchoice == 4:
+    #         note_size = randrange(1, 10)
+    #         self.drawbot.note_head(size=note_size)
+    #         self.drawbot.bot_move_to(x + self.rnd(peak),
+    #                              y + self.rnd(peak),
+    #                              z, 0,
+    #                              False)
+    #         logging.info('Emission 3-8: note head and line')
+    #
+    #     # 5 = dot
+    #     elif randchoice == 5:
+    #         self.drawbot.dot()
+    #         # self.move_y_random()
+    #         logging.info('Emission 3-8: dot and line')
+    #
+    # def high_energy_response(self):
+    #     """move to a random x, y position"""
+    #     self.drawbot.clear_commands()
+    #     self.drawbot.move_y_random()
 
     def terminate(self):
         """Smart collapse of all threads and comms"""

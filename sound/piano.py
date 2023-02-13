@@ -285,13 +285,16 @@ class Piano:
         elif self.octave > (self.LOWEST + self.OCTAVES):
             self.octave = self.LOWEST
 
-    def note_to_play(self, incoming_data, rhythm_rate):
+    def note_to_play(self, emission_dict):
         """receives raw data from soundbot controller
         and converts into piano note.
 
         incoming data = Nebula output from affect engine
         rhythm rate = nebula internal clock
         """
+
+        incoming_data = emission_dict.get("emission_data")
+        rhythm_rate = emission_dict.get("rhythm_rate")
 
         # decide to make sound or not based on project temperature
         if random() <= self.note_played_or_not:

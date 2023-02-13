@@ -43,7 +43,7 @@ class ProcessVisuals:
 
     def process_AI_signal(self, ai_signal_dict, harmony_dict):
         # print("processing signal")
-        master_output, rhythm_rate, width, height = itemgetter("master_output",
+        emission_data, rhythm_rate, width, height = itemgetter("emission_data",
                                                              "rhythm_rate",
                                                              "width",
                                                              "height")(ai_signal_dict)

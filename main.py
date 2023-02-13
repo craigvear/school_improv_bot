@@ -185,7 +185,7 @@ class MyWidget(QWidget):
 
     @Slot(str)
     def got_ai_signal(self, ai_msg):
-        """recieves and amends AI signals from Nebula"""
+        """recieves and amends AI signals from Nantucket"""
         ai_msg = literal_eval(ai_msg)
 
         screen_resolution = self.geometry()

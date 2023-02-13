@@ -21,7 +21,7 @@ import numpy as np
 from time import sleep
 
 # install local modules
-from nantucket.hivemind import DataBorg
+from hivemind import DataBorg
 import config
 
 # import Nebula modules
@@ -266,7 +266,8 @@ class AIFactory:
         self.running = False
 
 if __name__ == "__main__":
-    from nebula_dataclass import DataBorg
+    logging.basicConfig(level=logging.DEBUG)
+    from hivemind import DataBorg
     test = AIFactory()
     print(test.hivemind.move_rnn)
     test.make_data()
