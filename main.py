@@ -1,21 +1,24 @@
+# import python libraries
 import sys
 import platform
-
 from ast import literal_eval
 from operator import itemgetter
 import threading
 
 PLATFORM = platform.machine()
 
+# import PyQT methods
+# todo - change over to neoscore
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import pyqtSlot as Slot
 from PyQt5.QtGui import QPainter, QPen, QColor, QImage, QFont
 from PyQt5.QtWidgets import (QApplication, QWidget)
 
-from nebula.GotAISignal import GotAISignal
-from nebula.GotMusicSignal import GotMusicSignal
+# import own modules
+from nantucket.GotAISignal import GotAISignal
+from nantucket.GotMusicSignal import GotMusicSignal
 from visuals.processVisualImages import ProcessVisuals
-from sound.harmony_data import Harmony
+from sound.harmony_data import HarmonyBorg
 from nantucket.nantucket import NantucketAI
 from sound.audio_control import AudioEngine
 import config
@@ -46,20 +49,20 @@ class MyWidget(QWidget):
         # and connect to emitting stream
         ai_signal.ai_str.connect(self.got_ai_signal)
 
-        # open a signal streamer for music harmony reporting
-        harmony_signal = GotMusicSignal()
-
-        # and connect to emitting stream
-        harmony_signal.harmony_str.connect(self.got_harmony_signal)
+        # # open a signal streamer for music harmony reporting
+        # harmony_signal = GotMusicSignal()
+        #
+        # # and connect to emitting stream
+        # harmony_signal.harmony_str.connect(self.got_harmony_signal)
 
         # init the harmony dict to be shared
-        self.harmony_dict = Harmony
+        self.harmony_dict = HarmonyBorg()
 
         # start the ball rolling with all data generation and parsing
         # self._ai_data_engine = AIData(ai_signal, harmony_signal)
         # instantiate the Nebula server
         ai_engine = NantucketAI(ai_signal,
-                                harmony_signal,
+                                # harmony_signal,
                                 speed=1
                                 )
 
@@ -201,14 +204,14 @@ class MyWidget(QWidget):
         # print("adding to Queue : main {}".format(str(ai_msg)))
 
         self.process_AI_signal.add_to_queue(ai_msg, self.harmony_dict)
-
-    @Slot(object)
-    def got_harmony_signal(self, harmony_msg):
-        """recieves emissions from harmony controller"""
-        # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', harmony_msg)
-
-        self.harmony_dict = harmony_msg
-        # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', self.harmony_dict.get("BPM"))
+    #
+    # @Slot(object)
+    # def got_harmony_signal(self, harmony_msg):
+    #     """recieves emissions from harmony controller"""
+    #     # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', harmony_msg)
+    #
+    #     self.harmony_dict = harmony_msg
+    #     # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', self.harmony_dict.get("BPM"))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

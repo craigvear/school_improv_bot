@@ -11,7 +11,7 @@ progression3625 = [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7
 master_key: int = 3
 
 # which progression?
-harmonic_prog: str = "2511"
+harmonic_prog: str = "all of me"
 
 # what tempo?
 bpm: float = 120

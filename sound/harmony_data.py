@@ -3,33 +3,43 @@ from dataclasses import dataclass
 """a dataclass containing all the harmonic language
 and harmonic decision made by the AI"""
 
-@dataclass
-class Harmony:
-    """Current harmony data"""
+class HarmonyBorg:
+    __hivemind = None
 
-    chord_shape_list: list
-    """current chord shape dict"""
+    def __init__(self):
+        if not HarmonyBorg.__hivemind:
+            HarmonyBorg.__hivemind = self.__dict__
+            """Current harmony data"""
 
-    chord_name: str = "none"
-    """current chord name"""
+            self.chord_shape_list: list = []
+            """current chord shape dict"""
 
-    chord_shape: str = "none"
-    """current chord name"""
+            self.chord_name: str = "none"
+            """current chord name"""
 
-    note: str = "none"
-    """name chosen note"""
+            self.chord_shape: str = "none"
+            """current chord name"""
 
-    bar: int = 0
-    """bar position"""
+            self.note: str = "none"
+            """name chosen note"""
 
-    prog_pos: int = 0
-    """position in harmonic progression"""
+            self.bar: int = 0
+            """bar position"""
 
-    root_name: str = "c"
-    """root name of current chord in harmonic progression"""
+            self.prog_pos: int = 0
+            """position in harmonic progression"""
 
-    root_number: int = 3
-    """number of the root in relation to note alphabet"""
+            self.root_name: str = "c"
+            """root name of current chord in harmonic progression"""
+
+            self.root_number: int = 3
+            """number of the root in relation to note alphabet"""
+
+        else:
+            self.__dict__ = HarmonyBorg.__hivemind
+
+
+
 
 
 # alphabet of tuples (fluidsynth note name, Neoscore note name)
@@ -85,13 +95,13 @@ chord_shapes = {"Maj7": [[(0, 20), (4, 40), (7, 10), (11, 30)],
 # list the name and note alphabet position for each progression
 # format: chord shape, note alphabet for root, description
 # todo change to root of chord (from tonic); shape (e.g Maj7), slash bass note (from root??), modal shift??
-old_progression = {"2511": [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("1", 0, "Maj7")],
-               "1625": [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")],
-               "3625": [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")],
-               "1362": [("1", 0, "Maj7"), ("3", 4, "Dom7"), ("6", 9, "Dom7"), ("2", 2, "min7")],
-               "all of me": [("1", 0, "Maj7"), ("5", 4, "Dom7"), ("5", 9, "Dom7"), ("2", 2, "min7"),
-                             ("5", 4, "Dom7"), ("2", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
-               }
+# progression = {"2511": [("2", 2, "min7"), ("5", 7, "Dom9"), ("1", 0, "Maj7"), ("1", 0, "Maj7")],
+#                "1625": [("1", 0, "Maj7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")],
+#                "3625": [("3", 4, "min7"), ("6", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")],
+#                "1362": [("1", 0, "Maj7"), ("3", 4, "Dom7"), ("6", 9, "Dom7"), ("2", 2, "min7")],
+#                "all of me": [("1", 0, "Maj7"), ("5", 4, "Dom7"), ("5", 9, "Dom7"), ("2", 2, "min7"),
+#                              ("5", 4, "Dom7"), ("2", 9, "min7"), ("2", 2, "min7"), ("5", 7, "Dom9")]
+#                }
 # format = name of progression (key): [(root of chord), chord shape, bass substitute,
 # advanced harmony scales for each gear
 progression = {"2511": [(2, "min7", None, [None, None]),

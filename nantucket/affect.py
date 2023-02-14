@@ -16,7 +16,7 @@ class Affect:
 
     def __init__(self,
                  ai_signal_obj,
-                 harmony_signal,
+                 # harmony_signal,
                  duration_of_piece: int = 120,
                  continuous_line: bool = True,
                  speed: int = 5,
@@ -46,11 +46,11 @@ class Affect:
 
         # own the signal object for emission
         self.ai_signal = ai_signal_obj
-        self.harmony_signal = harmony_signal
+        # self.harmony_signal = harmony_signal
 
         # own the sound bot object and send harmony emitter
         # self.soundbot = Bot(self.harmony_signal)
-        self.piano = Piano(self.harmony_signal)
+        self.piano = Piano() #self.harmony_signal)
 
     def gesture_manager(self):
         """Listens to the realtime incoming signal that is stored in the dataclass ("mic_in")
@@ -103,7 +103,7 @@ class Affect:
                 #
                 # # self.rhythm_rate = self.rhythm_rate / self.global_speed
                 self.hivemind.rhythm_rate = self.rhythm_rate
-                logging.info(f'////////////////////////   rhythm rate = {self.self.rhythm_rate}')
+                logging.info(f'////////////////////////   rhythm rate = {self.rhythm_rate}')
                 logging.debug('\t\t\t\t\t\t\t\t=========Hello - child cycle 1 started ===========')
 
                 ##################################################################

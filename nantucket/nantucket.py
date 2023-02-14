@@ -69,7 +69,7 @@ class NNet:
 class NantucketAI:
     def __init__(self,
                  ai_signal_obj,
-                 harmony_signal,
+                 # harmony_signal,
                  speed=1,
                  ):
         """Nantucket is the core "director" of an AI factory.
@@ -213,14 +213,15 @@ class NantucketAI:
 
         # own the signal object for emission
         self.ai_signal = ai_signal_obj
-        self.harmony_signal = harmony_signal
+        # self.harmony_signal = harmony_signal
 
         # own the sound bot object and send harmony emitter
         # self.soundbot = Bot(self.harmony_signal)
-        self.piano = Piano(self.harmony_signal)
+        # self.piano = Piano() #self.harmony_signal)
 
         self.affect = Affect(self.ai_signal,
-                             self.harmony_signal)
+                             # self.harmony_signal
+                             )
 
         # todo: start threads here?
         # declares all threads

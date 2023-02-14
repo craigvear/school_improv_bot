@@ -17,14 +17,14 @@ from threading import Timer
 from sound import harmony_data
 from sound.notes import Notes
 import config
-from sound.harmony_data import Harmony
+from sound.harmony_data import HarmonyBorg
 
 PLATFORM = platform.machine()
 
 class Piano:
-    def __init__(self, harmony_signal):
+    def __init__(self): #, harmony_signal):
 
-        self.harmony_signal = harmony_signal
+        # self.harmony_signal = harmony_signal
         SF2 = "sound/soundfontGM.sf2"
         self.OCTAVES = 5  # number of octaves to show
         self.LOWEST = 3  # lowest octave to show
@@ -95,7 +95,7 @@ class Piano:
         # find the ms wait for subdivide
         self.sleep_dur = (bpm_to_ms / self.subdivision) / 1000
 
-        self.harmony_dict = Harmony
+        self.harmony_dict = HarmonyBorg()
 
         # init the note machine
         self.notes = Notes()
@@ -112,7 +112,7 @@ class Piano:
 
     def update_player(self):
         # print("-------- updating queues")
-        self.parse_queues()
+        self.process_queues()
 
         # send details to the harmony signal emitter
         # self.fill_harmony_dict()
@@ -158,7 +158,7 @@ class Piano:
         self.harmony_dict.prog_pos = current_progression_pos
         self.harmony_dict.root_number = root_number_of_this_chord
         self.harmony_dict.root_name = root_note_name
-        self.send_harmony_dict()
+        # self.send_harmony_dict()
 
         # on bar change play a bass note
         if current_bar != self._last_bar:
@@ -202,11 +202,13 @@ class Piano:
         # print('bar =', self.bar)
         return self.bar
 
-    def parse_queues(self):
+    def process_queues(self):
         # this func spins around controlling the 2 note queues
         # print("1")
         # print('incoming note queue', self.incoming_note_queue)
         if len(self.incoming_note_queue):
+
+            # piano
             for i, event in enumerate(self.incoming_note_queue):
                 note_name, octave, channel, dynamic = itemgetter("note_name",
                                                         "octave",
@@ -214,13 +216,20 @@ class Piano:
                                                         "dynamic")(event)
 
                 # play note
-                self.play_note(note_name, octave, channel, dynamic)
+                self.play_piano(note_name, octave, channel, dynamic)
 
                 # delete from incoming queue
                 del self.incoming_note_queue[i]
 
                 # add to played list
                 self.played_note_queue.append(event)
+
+            # bass
+
+
+
+            # drums
+
 
         if len(self.played_note_queue):
             for i, event in enumerate(self.played_note_queue):
@@ -237,12 +246,12 @@ class Piano:
                     # delete from played queue
                     del self.played_note_queue[i]
 
-    def send_harmony_dict(self):
+    # def send_harmony_dict(self):
+    #
+    #     self.harmony_signal.harmony_str.emit(self.harmony_dict)
+    #     # print('//////////////////                   EMITTING and making sound')
 
-        self.harmony_signal.harmony_str.emit(self.harmony_dict)
-        # print('//////////////////                   EMITTING and making sound')
-
-    def play_note(self, note_to_play, octave, channel, dynamic):
+    def play_piano(self, note_to_play, octave, channel, dynamic):
         """play_note determines the coordinates of a note on the keyboard image
         and sends a request to play the note to the fluidsynth server"""
 
@@ -286,7 +295,7 @@ class Piano:
             self.octave = self.LOWEST
 
     def note_to_play(self, emission_dict):
-        """receives raw data from soundbot controller
+        """receives raw data from Nantucket controller
         and converts into piano note.
 
         incoming data = Nebula output from affect engine

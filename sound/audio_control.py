@@ -97,7 +97,6 @@ class AudioEngine:
                         print("-----------------------------INTERRUPT----------------------------")
 
     def freq_to_note(self, freq):
-
         # formula taken from https://en.wikipedia.org/wiki/Piano_key_frequencies
         note_number = 12 * math.log2(freq / 440) + 49
         note_number = round(note_number)
