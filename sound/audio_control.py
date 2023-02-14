@@ -9,6 +9,7 @@ import math
 # from sound.audio_data import LiveAudioData
 from threading import Thread
 from random import random
+import logging
 
 #  import local methods
 from nantucket.hivemind import DataBorg
@@ -16,7 +17,7 @@ from nantucket.hivemind import DataBorg
 
 class AudioEngine:
     """controls audio listening"""
-    def __init__(self, ai_engine):
+    def __init__(self): #, ai_engine):
         self.running = True
         self.connected = False
         self.logging = False
@@ -47,13 +48,13 @@ class AudioEngine:
         self.notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 
         # own the AI data server
-        self.engine = ai_engine
+        # self.engine = ai_engine
 
-        t3 = Thread(target=self.snd_listen)
-        t3.start()
+        # t3 = Thread(target=self.snd_listen)
+        # t3.start()
 
     def snd_listen(self):
-        print("mic listener: started!")
+        logging.info("mic listener: started!")
         while self.running:
             data = np.frombuffer(self.stream.read(self.CHUNK,
                                                   exception_on_overflow = False),
@@ -74,7 +75,7 @@ class AudioEngine:
                 midinote = self.freq_to_note(freqPeak)
 
                 # Shows the peak frequency and the bars for the amplitude
-                print(f"peak frequency: {freqPeak} Hz, mididnote {midinote}:\t {bars}")
+                logging.debug(f"peak frequency: {freqPeak} Hz, mididnote {midinote}:\t {bars}")
 
                 self.hivemind.mic_in = peak # / 30000
                 self.hivemind.freq = freqPeak
@@ -94,7 +95,7 @@ class AudioEngine:
                     if random() > 0.36:
                         self.hivemind.interrupt_bang = False
                         self.hivemind.randomiser()
-                        print("-----------------------------INTERRUPT----------------------------")
+                        logging.info("-----------------------------INTERRUPT----------------------------")
 
     def freq_to_note(self, freq):
         # formula taken from https://en.wikipedia.org/wiki/Piano_key_frequencies

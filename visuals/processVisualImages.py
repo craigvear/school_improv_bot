@@ -36,12 +36,12 @@ class ProcessVisuals:
                                         QPainter.CompositionMode_Multiply,
                                         QPainter.CompositionMode_SoftLight)
 
-    def add_to_queue(self, ai_signal_dict, harmony_dict):
+    def add_to_queue(self, ai_signal_dict): #, harmony_dict):
         if len(self.queue) < 10:
             # print(f'\t\t\t\t\t ADDING PAINT EVENT TO QUEUE')
-            self.process_AI_signal(ai_signal_dict, harmony_dict)
+            self.process_AI_signal(ai_signal_dict) #, harmony_dict)
 
-    def process_AI_signal(self, ai_signal_dict, harmony_dict):
+    def process_AI_signal(self, ai_signal_dict): #, harmony_dict):
         # print("processing signal")
         emission_data, rhythm_rate, width, height = itemgetter("emission_data",
                                                              "rhythm_rate",
@@ -51,7 +51,7 @@ class ProcessVisuals:
         image_type = random.choice(self.visual_types)
 
         if image_type == "image":
-            generated_image = self.image_gen.make_image(harmony_dict)
+            generated_image = self.image_gen.make_image() #harmony_dict)
             # print('generated_image_path')
             # generated_image = random.randint(0, len(self.external_images) - 1)
         else:

@@ -4,6 +4,7 @@ import platform
 from ast import literal_eval
 from operator import itemgetter
 import threading
+import logging
 
 PLATFORM = platform.machine()
 
@@ -41,40 +42,28 @@ class MyWidget(QWidget):
         """This init, establishes the emmisions slots for passing gernbative
         data between the functions."""
 
-        # todo: atexit clear out the image folder & terminate threads properly
+        # declare level of logging
+        logging.basicConfig(level=logging.DEBUG)
 
-        # open a signal streamer for Nebula emissions
+        # todo: swap QT to neoscore
+
+        # open a signal streamer for NantucketAI emissions
         ai_signal = GotAISignal()
 
         # and connect to emitting stream
         ai_signal.ai_str.connect(self.got_ai_signal)
 
-        # # open a signal streamer for music harmony reporting
-        # harmony_signal = GotMusicSignal()
-        #
-        # # and connect to emitting stream
-        # harmony_signal.harmony_str.connect(self.got_harmony_signal)
-
-        # init the harmony dict to be shared
-        self.harmony_dict = HarmonyBorg()
-
-        # start the ball rolling with all data generation and parsing
-        # self._ai_data_engine = AIData(ai_signal, harmony_signal)
-        # instantiate the Nebula server
+        # instantiate the Nantucket AI server: inherits Affect and Audio engine
         ai_engine = NantucketAI(ai_signal,
                                 # harmony_signal,
                                 speed=1
                                 )
-
-        # instantiate the audio engine and pass AI/nebula engine
-        audio_engine = AudioEngine(ai_engine)
 
         # instantiate the visual processing object
         self.process_AI_signal = ProcessVisuals()
 
         # start the thread
         # self.gui_thread = None
-
         self.update_gui()
 
     def update_gui(self):
@@ -134,7 +123,8 @@ class MyWidget(QWidget):
     def create_telemetry(self):
         """Updates the onscreen telemetry"""
 
-        #todo : add telemetry for AI assement & condition
+        # init the harmony dict to be shared
+        self.harmony_dict = HarmonyBorg()
 
         bpm = config.bpm
         chord = self.harmony_dict.chord_name
@@ -191,7 +181,7 @@ class MyWidget(QWidget):
 
     @Slot(str)
     def got_ai_signal(self, ai_msg):
-        """recieves and amends AI signals from Nantucket"""
+        """receives and amends AI signals from NantucketAI"""
         ai_msg = literal_eval(ai_msg)
 
         screen_resolution = self.geometry()
@@ -203,15 +193,8 @@ class MyWidget(QWidget):
 
         # print("adding to Queue : main {}".format(str(ai_msg)))
 
-        self.process_AI_signal.add_to_queue(ai_msg, self.harmony_dict)
-    #
-    # @Slot(object)
-    # def got_harmony_signal(self, harmony_msg):
-    #     """recieves emissions from harmony controller"""
-    #     # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', harmony_msg)
-    #
-    #     self.harmony_dict = harmony_msg
-    #     # print('\t\t\t\t\t\t\t\t\t\t\t\ got harmony signal', self.harmony_dict.get("BPM"))
+        self.process_AI_signal.add_to_queue(ai_msg)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

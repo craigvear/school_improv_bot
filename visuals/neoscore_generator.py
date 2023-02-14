@@ -8,6 +8,7 @@ from operator import itemgetter
 from sound.notes import Notes
 from neoscore.common import *
 import sound.harmony_data as harmony
+from sound.harmony_data import HarmonyBorg
 import config
 
 
@@ -24,7 +25,7 @@ class ImageGen:
         self.temperature = config.temperature
 
 
-    def make_image(self, harmony_dict):
+    def make_image(self): #, harmony_dict):
         """generate a random seq of notes on a staff
         using current harmonic seq as guide"""
 
@@ -49,7 +50,7 @@ class ImageGen:
         # get current chord from harmony_dict
         # text = Text((Mm(3), staff.unit(-2)), staff, chord)
 
-        note_list = self.notes.which_note(harmony_dict, number_of_notes)
+        note_list = self.notes.which_note(number_of_notes)
         # print('note list = ', note_list)
 
         for n, note in enumerate(note_list):

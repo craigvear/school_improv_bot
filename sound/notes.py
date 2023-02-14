@@ -1,4 +1,5 @@
 from sound import harmony_data
+from sound.harmony_data import HarmonyBorg
 import config
 
 from random import getrandbits, shuffle, random
@@ -26,7 +27,7 @@ class Notes:
 
         self.progression = config.harmonic_prog
 
-    def which_note(self, harmony_dict, num_of_notes=1):
+    def which_note(self, num_of_notes=1):
         """calcs a note from current harmony matrix.
         this function calcs the harmonic chord tones"""
 

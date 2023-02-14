@@ -21,7 +21,34 @@ from sound.harmony_data import HarmonyBorg
 
 PLATFORM = platform.machine()
 
-class Piano:
+
+class Chord:
+    def __init__(self, chord_data):
+        self.root = chord_data[0]
+        self.tonic_root = self.calc_root_number(self.root)
+        self.root_position = self.calc_root_number(self.root)
+        self.lydian_root = self.calc_lydian_root(chord_data, self.tonic_root)
+
+    def calc_lydian_root(self, chord, tonic):
+        primary_modal_genre = chord[1]
+        if primary_modal_genre == "I":
+            return tonic
+        elif primary_modal_genre == "II":
+            return tonic - 2
+
+    def calc_root_number(self, root_name):
+        position = [i for i, note in enumerate(harmony_data.note_alphabet) if note == root_name]
+        return position
+
+    def generate_principle_scales(self):
+        gps = {}
+
+        return gps
+
+
+
+
+class Player:
     def __init__(self): #, harmony_signal):
 
         # self.harmony_signal = harmony_signal
@@ -38,7 +65,12 @@ class Piano:
         self.lyd_chord_shapes = harmony_data.lyd_chord_shapes
 
         # which progression
-        harmonic_prog = config.harmonic_prog
+        harmonic_prog = {}
+
+        for chord in config.harmonic_prog:
+            chord_object = Chord(chord)
+            harmonic_prog[f"{chord[0] + chord[1]}"] = chord_object
+
 
         # get progression from harmony dataclass
         self.progression = harmony_data.progression[harmonic_prog]

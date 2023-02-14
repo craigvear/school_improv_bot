@@ -7,7 +7,7 @@ import logging
 
 # import project modules
 from nantucket.hivemind import DataBorg
-from sound.piano import Piano
+from sound.player import Player
 import config
 
 class Affect:
@@ -17,11 +17,11 @@ class Affect:
     def __init__(self,
                  ai_signal_obj,
                  # harmony_signal,
-                 duration_of_piece: int = 120,
-                 continuous_line: bool = True,
+                 # duration_of_piece: int = 120,
+                 # continuous_line: bool = True,
                  speed: int = 5,
-                 staves: int = 1,
-                 pen: bool = True
+                 # staves: int = 1,
+                 # pen: bool = True
                  ):
 
         # set global path
@@ -31,13 +31,13 @@ class Affect:
         self.hivemind = DataBorg()
 
         # start operating vars
-        self.duration_of_piece = duration_of_piece
-        self.continuous_line = continuous_line
+        # self.duration_of_piece = duration_of_piece
+        # self.continuous_line = continuous_line
         self.running = True
         self.old_value = 0
         self.local_start_time = time()
         # self.end_time = self.start_time + duration_of_piece
-        self.pen = pen
+        # self.pen = pen
 
         # calculate the inverse of speed
         # NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
