@@ -23,22 +23,69 @@ PLATFORM = platform.machine()
 
 
 class Chord:
+    """Creates and object for each chord in the progression.
+    Args:
+
+        """
+
     def __init__(self, chord_data):
-        self.root = chord_data[0]
-        self.tonic_root = self.calc_root_number(self.root)
-        self.root_position = self.calc_root_number(self.root)
-        self.lydian_root = self.calc_lydian_root(chord_data, self.tonic_root)
+        self.tonic_root = chord_data[0]
+        _tonic_root_position = self.calc_note_number(self.tonic_root)
+        self.lydian_root = self.calc_lydian_root(chord_data, _tonic_root_position)
 
-    def calc_lydian_root(self, chord, tonic):
-        primary_modal_genre = chord[1]
-        if primary_modal_genre == "I":
-            return tonic
-        elif primary_modal_genre == "II":
-            return tonic - 2
-
-    def calc_root_number(self, root_name):
+    def calc_note_number(self, root_name):
+        """
+        Using harmony_data.note_alphabet calculates the position of the root
+        :param root_name:
+        :return:
+        """
         position = [i for i, note in enumerate(harmony_data.note_alphabet) if note == root_name]
         return position
+
+    def calc_lydian_root(self, chord_type, tonic_position):
+        """
+        Calculates the Lydian root given the chord type
+        (primary modal genre e.g. min 7th), and the tonic root.
+        Returns:
+            lydian tonic note name and position on note_list
+        """
+
+        tonic_root = chord_type[0]
+        primary_modal_genre = chord_type[1]
+
+        def check_note_number_range(tonic_position, lydian_offset):
+            """Calculates the lydian root using the root and lydian offset from the PMG model"""
+            lydian_position = tonic_position + lydian_offset
+            # note_num = self.root_number + note_pos + self.transposition
+            if lydian_position <= 11:
+                return harmony_data.note_alphabet[lydian_position]
+                # chord_note.append(harmony_data.note_alphabet[note_num])
+            else:
+                return harmony_data.note_alphabet[lydian_position - 12]
+
+        if primary_modal_genre == "I":
+            return tonic_root
+        elif primary_modal_genre == "II":
+            lydian_root_offset = 10
+            return check_note_number_range(tonic_position, lydian_root_offset)
+        elif primary_modal_genre == "III":
+            lydian_root_offset = 8
+            return check_note_number_range(tonic_position, lydian_root_offset)
+        elif primary_modal_genre == "+IV":
+            lydian_root_offset = 6
+            return check_note_number_range(tonic_position, lydian_root_offset)
+        elif primary_modal_genre == "V":
+            lydian_root_offset = 5
+            return check_note_number_range(tonic_position, lydian_root_offset)
+        elif primary_modal_genre == "VI":
+            lydian_root_offset = 3
+            return check_note_number_range(tonic_position, lydian_root_offset)
+        elif primary_modal_genre == "VII":
+            lydian_root_offset = 1
+            return check_note_number_range(tonic_position, lydian_root_offset)
+        elif primary_modal_genre == "+V":
+            lydian_root_offset = 4
+            return check_note_number_range(tonic_position, lydian_root_offset)
 
     def generate_principle_scales(self):
         gps = {}

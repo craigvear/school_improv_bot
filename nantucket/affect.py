@@ -50,7 +50,7 @@ class Affect:
 
         # own the sound bot object and send harmony emitter
         # self.soundbot = Bot(self.harmony_signal)
-        self.piano = Piano() #self.harmony_signal)
+        self.player = Player() #self.harmony_signal)
 
     def gesture_manager(self):
         """Listens to the realtime incoming signal that is stored in the dataclass ("mic_in")
@@ -204,7 +204,7 @@ class Affect:
             print('//////////////////                   EMITTING and making sound')
 
             # send make sound signal to piano
-            self.piano.note_to_play(emission_dict)
+            self.player.note_to_play(emission_dict)
 
         self.old_val = incoming_emission
 

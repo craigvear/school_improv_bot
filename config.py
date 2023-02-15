@@ -18,7 +18,7 @@ master_key: int = 3
 I   major (+ altered major) ----- Tonic
 II  7th (+ altered 7th) ------ Flat 7th
 III major 3b/ minor +5 ------ aug 5th
-IV  minor 7th b5 ----- aug 4th
++IV  minor 7th b5 ----- aug 4th
 V   major 5b -----  4th
 VI  minor (altered minor) ----- minor 3rd
 VII major 7b/ 11th b9 ----- flat 2nd
