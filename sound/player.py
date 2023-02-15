@@ -4,6 +4,7 @@ This class controls all the piano backing sound control and choices.
 It calculates the current bar and beat and coordinates the bass line
 It also controls all the piano note choices and rhythmical playback
 """
+
 # import python modules
 from mingus.containers import *
 from mingus.midi import fluidsynth
@@ -12,6 +13,8 @@ from random import random, randrange
 import platform
 from operator import itemgetter
 from threading import Timer
+import logging
+
 
 # import project modules
 from sound import harmony_data
@@ -29,9 +32,11 @@ class Chord:
         """
 
     def __init__(self, chord_data):
+
         self.tonic_root = chord_data[0]
         _tonic_root_position = self.calc_note_number(self.tonic_root)
         self.lydian_root = self.calc_lydian_root(chord_data, _tonic_root_position)
+        self.scale_dict = self.generate_principle_scales(self.lydian_root)
 
     def calc_note_number(self, root_name):
         """
@@ -53,8 +58,9 @@ class Chord:
         tonic_root = chord_type[0]
         primary_modal_genre = chord_type[1]
 
-        def check_note_number_range(tonic_position, lydian_offset):
+        def find_lydian_position(tonic_position, lydian_offset):
             """Calculates the lydian root using the root and lydian offset from the PMG model"""
+            print(tonic_position, lydian_offset)
             lydian_position = tonic_position + lydian_offset
             # note_num = self.root_number + note_pos + self.transposition
             if lydian_position <= 11:
@@ -67,31 +73,47 @@ class Chord:
             return tonic_root
         elif primary_modal_genre == "II":
             lydian_root_offset = 10
-            return check_note_number_range(tonic_position, lydian_root_offset)
+            return find_lydian_position(tonic_root, lydian_root_offset)
         elif primary_modal_genre == "III":
             lydian_root_offset = 8
-            return check_note_number_range(tonic_position, lydian_root_offset)
+            return find_lydian_position(tonic_root, lydian_root_offset)
         elif primary_modal_genre == "+IV":
             lydian_root_offset = 6
-            return check_note_number_range(tonic_position, lydian_root_offset)
+            return find_lydian_position(tonic_root, lydian_root_offset)
         elif primary_modal_genre == "V":
             lydian_root_offset = 5
-            return check_note_number_range(tonic_position, lydian_root_offset)
+            return find_lydian_position(tonic_root, lydian_root_offset)
         elif primary_modal_genre == "VI":
             lydian_root_offset = 3
-            return check_note_number_range(tonic_position, lydian_root_offset)
+            return find_lydian_position(tonic_root, lydian_root_offset)
         elif primary_modal_genre == "VII":
             lydian_root_offset = 1
-            return check_note_number_range(tonic_position, lydian_root_offset)
+            return find_lydian_position(tonic_root, lydian_root_offset)
         elif primary_modal_genre == "+V":
             lydian_root_offset = 4
-            return check_note_number_range(tonic_position, lydian_root_offset)
+            return find_lydian_position(tonic_root, lydian_root_offset)
 
-    def generate_principle_scales(self):
+    def generate_principle_scales(self, lydian_root):
         gps = {}
+        lyd_root_position = self.calc_note_number(lydian_root)
+
+        for i, scale_code in config.scale_patterns:
+            lydian_primary_scale = [lydian_root]
+            for interval in scale_code:
+
+                next_note = lyd_root_position + interval
+
+                if next_note <= 11:
+                    next_note_name = harmony_data.note_alphabet[next_note]
+                    # chord_note.append(harmony_data.note_alphabet[note_num])
+                else:
+                    next_note_name = harmony_data.note_alphabet[next_note - 12]
+
+                lydian_primary_scale.append(next_note_name)
+
+            gps[f"{i}"] = lydian_primary_scale
 
         return gps
-
 
 
 
@@ -116,7 +138,10 @@ class Player:
 
         for chord in config.harmonic_prog:
             chord_object = Chord(chord)
-            harmonic_prog[f"{chord[0] + chord[1]}"] = chord_object
+            try:
+                harmonic_prog[f"{chord[0] + chord[1]}"] = chord_object
+            except:
+                logging.info(f"{chord[0] + chord[1]} already existing in harmony dictionary")
 
 
         # get progression from harmony dataclass
@@ -426,3 +451,11 @@ class Player:
 
         else:
             print('skipped over this emission')
+
+
+if __name__ == "__main__":
+    test = Chord(("A", "+IV", 4))
+    print(f"tonic_root = {test.tonic_root}")
+    print(f"lydian_root = {test.lydian_root}")
+    for scale in test.scale_dict:
+        print(f"scale = {scale}")

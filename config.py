@@ -32,6 +32,16 @@ harmonic_prog: list = [("A", "+IV", 4),
                        ("Bf", "II", 4)
                        ]
 
+# lists of intervals that generate a lydian principle scale from a given tonic root
+scale_patterns: list = [(2, 2, 2, 1, 2, 2),
+                        (2, 2, 2, 2, 1, 2),
+                        (2, 1, 3, 1, 2, 2),
+                        (2, 2, 2, 1, 2, 1),
+                        (2, 2, 2, 2, 1),
+                        (2, 1, 2, 1, 2, 1, 2),
+                        (1, 2, 1, 2, 1, 2, 1)
+                        ]
+
 # what tempo?
 bpm: float = 120
 bpm_to_ms = ((60 / bpm) * 1000)
