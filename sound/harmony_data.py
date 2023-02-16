@@ -43,10 +43,12 @@ class HarmonyBorg:
 
 
 # alphabet of tuples (fluidsynth note name, Neoscore note name)
-note_alphabet = [("A", "a"), ("Bb", "bf"), ("B", "b"),
-                 ("C", "c"), ("C#", "cs"), ("D", "d"),
-                 ("Eb", "ef"), ("E", "e"), ("F", "f"),
-                 ("F#", "fs"), ("G", "g"), ("G#", "gs")]
+note_alphabet = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
+
+# note_alphabet = [("A", "a"), ("Bb", "bf"), ("B", "b"),
+#                  ("C", "c"), ("C#", "cs"), ("D", "d"),
+#                  ("Eb", "ef"), ("E", "e"), ("F", "f"),
+#                  ("F#", "fs"), ("G", "g"), ("G#", "gs")]
 
 # chord types are 1: tonic Maj7; 2: minor 7th; 4: sub dom maj7; 5: dom 7th etc
 # todo change these to chord shape names e.g. "maj7", "Dom7"
