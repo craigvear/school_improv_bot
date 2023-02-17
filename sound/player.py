@@ -32,11 +32,13 @@ class Chord:
         """
 
     def __init__(self, chord_data):
-
+        # generate harmonic params
         self.tonic_root = chord_data[0]
         _tonic_root_position = self.calc_note_number(self.tonic_root)
         self.lydian_root = self.calc_lydian_root(chord_data, _tonic_root_position)
-        self.scale_dict = self.generate_principle_scales(self.lydian_root)
+
+        # generate scales and chords with note names
+        self.scale_dict, self.chord_dict = self.generate_principle_scales(self.lydian_root)
 
     def calc_note_number(self, root_name):
         """
@@ -94,8 +96,10 @@ class Chord:
         """Generates a list of all the primary scales associated with the lydian
         root of this chord
         """
-        gps = {}
+        scales = {}
+        chords = {}
         lyd_root_position = self.calc_note_number(lydian_root)
+        ninth_chord_shape = [0, 3, 5, 7, 9]
 
         for i, scale_code in enumerate(config.scale_patterns):
             lydian_primary_scale = [lydian_root]
@@ -113,14 +117,33 @@ class Chord:
                 lydian_primary_scale.append(next_note_name)
                 this_note = next_note
 
-            gps[f"{i}"] = lydian_primary_scale
+            # check scale contains tonic (and is therefore prevailing in this chordmode)
+            for i, note in enumerate(lydian_primary_scale):
+                if note == self.tonic_root:
+                    scales[f"scale{i}"] = lydian_primary_scale
+                    next_note_pos = i
+                    print(f"tonic root position = {i}")
+                    # adding 9th chord for each valid scale
+                    chord = []
+                    for offset in ninth_chord_shape:
+                        print(f"offset = {offset}")
+                        next_note_pos += offset
+                        print(f"next_note_pos = {next_note_pos}")
+                        print(f"len(lydian_primary_scale) = {len(lydian_primary_scale)}")
 
-        return gps
+                        if next_note_pos > len(lydian_primary_scale):
+                            next_note_pos -= len(lydian_primary_scale)
+                        print(f"NEW         next_note_pos = {next_note_pos}")
 
-    def generate_chordmodes(self):
-        """Generates a list of chordmodes from the tonic root using
-        each of the principle scale a) trid, b) 7th, c) 9th, d) 11th"""
-        pass
+                        chord.append(lydian_primary_scale[next_note_pos])
+
+
+                    chords[f"chord{i}"] = chord
+
+                    break
+
+        return scales, chords
+
 
 class Player:
     def __init__(self): #, harmony_signal):
@@ -462,11 +485,13 @@ if __name__ == "__main__":
     test = Chord(("A", "+IV", 4))
     print(f"tonic_root = {test.tonic_root}")
     print(f"lydian_root = {test.lydian_root}")
+    print(f"test2.scale_dict.items = {test.scale_dict.items()}")
     for scale in test.scale_dict.items():
         print(f"scale = {scale}")
 
     test2 = Chord(("B", "V", 4))
     print(f"tonic_root = {test2.tonic_root}")
     print(f"lydian_root = {test2.lydian_root}")
+    print(f"test2.scale_dict.items = {test2.scale_dict.items()}")
     for scale in test2.scale_dict.items():
         print(f"scale = {scale}")
