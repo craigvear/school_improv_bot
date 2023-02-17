@@ -116,11 +116,14 @@ class Chord:
 
                 lydian_primary_scale.append(next_note_name)
                 this_note = next_note
+
+            logging.debug(f"lydian_primary_scale = {i, lydian_primary_scale}")
+
             # check scale contains tonic (and is therefore prevailing in this chordmode)
-            for i, note in enumerate(lydian_primary_scale):
+            for n, note in enumerate(lydian_primary_scale):
                 if note == self.tonic_root:
                     scales[f"scale{i}"] = lydian_primary_scale
-                    tonic_root_position = i
+                    tonic_root_position = n
 
                     # adding 9th chord for each valid scale
                     chord = []
@@ -133,8 +136,8 @@ class Chord:
 
                         chord.append(lydian_primary_scale[next_note_pos])
                     chords[f"chord{i}"] = chord
-
-                    break
+                    logging.debug(f"chord = {i, chord}")
+                    # break
 
         return scales, chords
 
@@ -476,7 +479,7 @@ class Player:
 
 
 if __name__ == "__main__":
-    test = Chord(("A", "+IV", 4))
+    test = Chord(("A", "II", 4))
     print(f"tonic_root = {test.tonic_root}")
     print(f"lydian_root = {test.lydian_root}")
     print(f"test2.scale_dict.items = {test.scale_dict.items()}")
@@ -486,12 +489,12 @@ if __name__ == "__main__":
     for chord in test.chord_dict.items():
         print(f"chord = {chord}")
 
-    test2 = Chord(("B", "V", 4))
-    print(f"tonic_root = {test2.tonic_root}")
-    print(f"lydian_root = {test2.lydian_root}")
-    print(f"test2.scale_dict.items = {test2.scale_dict.items()}")
-    for scale in test2.scale_dict.items():
-        print(f"scale = {scale}")
-    print(f"test2.chord_dict.items = {test2.chord_dict.items()}")
-    for chord in test2.chord_dict.items():
-        print(f"chord = {chord}")
+    # test2 = Chord(("B", "V", 4))
+    # print(f"tonic_root = {test2.tonic_root}")
+    # print(f"lydian_root = {test2.lydian_root}")
+    # print(f"test2.scale_dict.items = {test2.scale_dict.items()}")
+    # for scale in test2.scale_dict.items():
+    #     print(f"scale = {scale}")
+    # print(f"test2.chord_dict.items = {test2.chord_dict.items()}")
+    # for chord in test2.chord_dict.items():
+    #     print(f"chord = {chord}")
